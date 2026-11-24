@@ -1,0 +1,490 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#FEF7EE" name="theme-color"/>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="Triagem, priorização por contexto, comparação entre métodos e critérios para integrar análises a Pull Requests."/>
+  <title>Encontro 05 · Comparação de técnicas e CI/CD | CESAR School</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="../assets/css/laura-aulas.css" rel="stylesheet"/>
+  <link href="../assets/css/adaptacao.css" rel="stylesheet"/>
+  <link href="../assets/css/pedagogia-visual.css" rel="stylesheet"/>
+  <link href="../assets/css/melhorias.css" rel="stylesheet"/>
+  <script defer src="../assets/js/config.js"></script>
+  <script defer src="../assets/js/site.js"></script>
+</head>
+<body>
+<header class="topo"><div class="wrap">
+  <a aria-label="Início" href="../index.html" style="color:inherit;display:block"><span aria-label="CESAR School" class="logo" role="img"></span></a>
+  <div class="topo-titulo">Encontro 05 · Comparação de técnicas e CI/CD<small>Revisão de Código e Análise Estática · Especialização em Cibersegurança</small></div>
+  <div class="topo-acoes">
+    <a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Início</a>
+    <select aria-label="Ir diretamente a uma seção" id="irpara"></select>
+    <button aria-pressed="false" class="btn" id="btnAula" type="button">Modo aula</button>
+  </div>
+</div></header>
+<main>
+
+<section class="cena capa" data-nome="Capa" id="capa">
+  <div class="forma f1"></div><div class="forma f2"></div><div class="forma f3"></div><div class="forma f4"></div><div class="forma f5"></div>
+  <div class="wrap"><span aria-label="CESAR School" class="logo" role="img"></span>
+    <h1>Revisão de código e análise estática automatizada</h1>
+    <p class="sub">Encontro 05 · Comparação de técnicas e CI/CD</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WARM-UP 05 ═══════════════════════ -->
+<section class="cena" data-nome="Warm-up" id="warmup">
+<style>
+.wu-provoc{background:var(--sunk);border-left:5px solid var(--orange);border-radius:0 12px 12px 0;padding:22px 26px;margin:0 0 6px}
+.wu-provoc p{margin:0 0 10px;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.wu-provoc p:last-child{margin:0}
+.wu-provoc strong{color:var(--orange-ink)}
+.wu-caso{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px}
+.wu-caso .eyebrow{margin-bottom:6px}
+.wu-caso p{margin:0 0 8px;font-size:.93rem;color:var(--ink-2);line-height:1.6}
+.wu-caso p:last-child{margin:0}
+.wu-caso a{color:var(--orange-ink)}
+.wu-choices{display:grid;gap:10px;margin:16px 0 0}
+.wu-choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .14s,background .14s;line-height:1.5}
+.wu-choice:hover,.wu-choice:focus-visible{border-color:var(--orange)}
+.wu-choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.wu-choice[data-correct="true"][aria-pressed="true"]{border-color:var(--good);box-shadow:inset 5px 0 0 var(--good);background:var(--good-soft)}
+.wu-feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.6;font-size:.95rem;color:var(--ink)}
+.wu-feedback[hidden]{display:none}
+.wu-fechamento{background:var(--sunk);border-radius:14px;padding:20px 24px}
+.wu-fechamento p{margin:0;font-size:1rem;line-height:1.65;color:var(--ink)}
+.wu-fechamento strong{color:var(--orange-ink)}
+/* PR Simulator */
+.pr-box{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;max-width:560px}
+.pr-header{background:var(--sunk);padding:14px 18px;border-bottom:1.5px solid var(--line)}
+.pr-title-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.pr-badge{background:var(--good-soft);color:var(--good);font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;border:1px solid var(--good)}
+.pr-name{font-family:var(--f-disp);font-weight:700;font-size:1.05rem}
+.pr-checks{display:flex;flex-direction:column;gap:7px}
+.pr-check{display:flex;align-items:center;gap:10px;font-size:.88rem;padding:8px 10px;border-radius:8px;background:var(--surface)}
+.pr-check.ok{color:var(--good)}
+.pr-check.warn{color:var(--warn)}
+.pr-check-icon{font-size:1rem;flex:0 0 auto}
+.pr-alerts-detail{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.pr-alert-card{border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.pr-alert-head{padding:9px 14px;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:var(--sunk);transition:background .14s}
+.pr-alert-head:hover{background:var(--surface)}
+.pr-alert-head .pa-icon{font-size:.8rem;transition:transform .18s}
+.pr-alert-head[aria-expanded="true"] .pa-icon{transform:rotate(90deg)}
+.pr-alert-body{padding:12px 16px;font-size:.87rem;line-height:1.6;background:var(--surface);color:var(--ink-2);border-top:1.5px solid var(--line)}
+.pr-alert-body[hidden]{display:none}
+.pr-alert-decision{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.pr-dec-btn{font:inherit;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:.82rem;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.pr-dec-btn:hover{border-color:var(--orange)}
+.pr-dec-btn.block{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+.pr-dec-btn.invest{border-color:var(--muted)}
+.pr-dec-btn.accept{border-color:var(--good);color:var(--good);background:var(--good-soft)}
+.pr-dec-result{font-size:.82rem;line-height:1.5;padding:8px 10px;border-radius:7px;margin-top:6px}
+.pr-dec-result[hidden]{display:none}
+</style>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Warm-up · 15 minutos</p>
+      <h2>O pipeline passou. Podemos fazer o deploy?</h2>
+    </div>
+
+    <div class="wu-caso">
+      <p class="eyebrow">Referência histórica · XZ Utils, CVE-2024-3094</p>
+      <p>Em março de 2024, foi identificada uma tentativa de backdoor no XZ Utils. A situação foi descoberta por Andres Freund ao observar comportamentos anormais em operações relacionadas a SSH, e não por uma verificação automatizada de CI.</p>
+      <p><a href="https://nvd.nist.gov/vuln/detail/CVE-2024-3094" target="_blank" rel="noopener">NIST/NVD · CVE-2024-3094</a></p>
+      <p style="font-size:.82rem;color:var(--muted)">Atenção: não afirmar que todos os testes do projeto histórico passaram. O caso ilustra os limites de confiança em processos automatizados.</p>
+    </div>
+
+    <div class="wu-provoc">
+      <p>Uma aplicação pode compilar corretamente, passar nos testes automatizados e ainda assim conter código malicioso ou uma vulnerabilidade relevante?</p>
+      <p><strong>Qual seria sua decisão ao receber esse Pull Request?</strong></p>
+    </div>
+
+    <!-- Interação 1: PR Simulator -->
+    <div class="cartao">
+      <p class="eyebrow">Você aprovaria este Pull Request?</p>
+      <div class="pr-box">
+        <div class="pr-header">
+          <div class="pr-title-row">
+            <span class="pr-badge">Open</span>
+            <span class="pr-name">PR #128 · Atualização de funcionalidades</span>
+          </div>
+          <div style="font-size:.8rem;color:var(--muted)">Cenário fictício · para fins didáticos</div>
+        </div>
+        <div style="padding:14px 18px;background:var(--surface)">
+          <div class="pr-checks">
+            <div class="pr-check ok"><span class="pr-check-icon">✓</span> Compilação concluída com sucesso</div>
+            <div class="pr-check ok"><span class="pr-check-icon">✓</span> Testes funcionais: todos passaram</div>
+            <div class="pr-check warn"><span class="pr-check-icon">⚠</span> Análise de segurança: 3 alertas pendentes de triagem</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-weight:700;margin:16px 0 0">Qual seria sua decisão inicial?</p>
+      <div class="wu-choices" id="wu-pr-choices">
+        <button class="wu-choice" data-idx="0">Aprovar: os testes passaram.</button>
+        <button class="wu-choice" data-idx="1">Rejeitar definitivamente: existem alertas.</button>
+        <button class="wu-choice" data-idx="2" data-correct="true">Suspender até investigar os alertas.</button>
+      </div>
+      <div class="quiz-actions" style="margin-top:14px">
+        <button class="btn" id="wu-pr-btn" disabled>Ver análise</button>
+      </div>
+      <div class="wu-feedback" id="wu-pr-feedback" hidden>
+        Pipeline funcional não comprova segurança. Por outro lado, a existência de alertas não determina automaticamente que todos representem vulnerabilidades. É preciso analisar regra, fluxo, impacto e contexto antes de decidir. <strong>Suspender para investigar</strong> é a decisão inicial mais fundamentada com as informações disponíveis.
+      </div>
+    </div>
+
+    <!-- Interação 2: Alertas -->
+    <div class="cartao">
+      <p class="eyebrow">Investigue os três alertas</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Expanda cada alerta, leia o contexto e classifique sua decisão.</p>
+      <div class="pr-alerts-detail">
+
+        <div class="pr-alert-card">
+          <button class="pr-alert-head" aria-expanded="false" id="pra-btn-a" aria-controls="pra-body-a">
+            <span>⚠ Alerta A · SQL Injection</span><span class="pa-icon">▶</span>
+          </button>
+          <div class="pr-alert-body" id="pra-body-a" hidden>
+            <p>Entrada externa chega a uma consulta concatenada, sem parametrização. O valor é proveniente diretamente de parâmetro de requisição HTTP.</p>
+            <div class="pr-alert-decision">
+              <button class="pr-dec-btn block" onclick="prDecide(this,'block','Bloquear até correção. Evidência concreta de entrada não-confiável sem parametrização.')">Bloquear</button>
+              <button class="pr-dec-btn invest" onclick="prDecide(this,'inv','Investigar antes de decidir seria válido, mas há evidência suficiente para bloquear imediatamente.')">Investigar</button>
+              <button class="pr-dec-btn accept" onclick="prDecide(this,'acc','Aceitar este alerta sem correção representa risco concreto de SQL Injection documentado.')">Aceitar</button>
+            </div>
+            <div class="pr-dec-result" id="pra-res-a" hidden></div>
+          </div>
+        </div>
+
+        <div class="pr-alert-card">
+          <button class="pr-alert-head" aria-expanded="false" id="pra-btn-b" aria-controls="pra-body-b">
+            <span>⚠ Alerta B · Execução de comando</span><span class="pa-icon">▶</span>
+          </button>
+          <div class="pr-alert-body" id="pra-body-b" hidden>
+            <p>Chamada a <code>exec()</code> com argumento constante. No cenário analisado, não há influência de entrada externa compondo o comando.</p>
+            <div class="pr-alert-decision">
+              <button class="pr-dec-btn block" onclick="prDecide(this,'block','Bloquear sem evidência de injeção pode ser excessivo. O uso de exec() merece atenção, mas argumento constante não comprova injeção.')">Bloquear</button>
+              <button class="pr-dec-btn invest" onclick="prDecide(this,'inv','Investigar e documentar é a decisão mais fundamentada. Sem evidência de entrada externa, não há como confirmar injeção neste cenário.')">Investigar</button>
+              <button class="pr-dec-btn accept" onclick="prDecide(this,'acc','Aceitar com justificativa documentada pode ser válido se a investigação confirmar que nenhuma entrada externa alcança o comando.')">Aceitar</button>
+            </div>
+            <div class="pr-dec-result" id="pra-res-b" hidden></div>
+          </div>
+        </div>
+
+        <div class="pr-alert-card">
+          <button class="pr-alert-head" aria-expanded="false" id="pra-btn-c" aria-controls="pra-body-c">
+            <span>⚠ Alerta C · Dependência vulnerável</span><span class="pa-icon">▶</span>
+          </button>
+          <div class="pr-alert-body" id="pra-body-c" hidden>
+            <p>Versão com vulnerabilidade conhecida usada em uma funcionalidade ativa. A decisão depende de: exposição, gravidade, disponibilidade de exploração e política de segurança adotada.</p>
+            <div class="pr-alert-decision">
+              <button class="pr-dec-btn block" onclick="prDecide(this,'block','Bloquear pode ser adequado dependendo da gravidade e exposição. A resposta final depende do contexto.')">Bloquear</button>
+              <button class="pr-dec-btn invest" onclick="prDecide(this,'inv','Investigar contexto, exposição, impacto e urgência de atualização antes de decidir é uma abordagem fundamentada.')">Investigar</button>
+              <button class="pr-dec-btn accept" onclick="prDecide(this,'acc','Aceitar com justificativa pode ser válido com análise de risco documentada, dependendo da gravidade e do contexto.')">Aceitar</button>
+            </div>
+            <div class="pr-dec-result" id="pra-res-c" hidden></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="wu-fechamento">
+      <p><strong>Automatizar uma análise não significa automatizar todas as decisões. A qualidade de um pipeline depende das verificações realizadas e de como seus resultados são interpretados.</strong> A partir daqui: CI/CD, políticas de bloqueio e comparação de técnicas.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  /* PR votação */
+  var cpr=document.querySelectorAll('#wu-pr-choices .wu-choice'),bpr=document.getElementById('wu-pr-btn'),fpr=document.getElementById('wu-pr-feedback');
+  cpr.forEach(function(b){b.addEventListener('click',function(){cpr.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');bpr.disabled=false})});
+  bpr.addEventListener('click',function(){fpr.removeAttribute('hidden');var s=document.querySelector('#wu-pr-choices .wu-choice[aria-pressed="true"]');if(s&&s.dataset.correct){fpr.style.borderLeftColor='var(--good)';fpr.style.background='var(--good-soft)'}});
+  /* Alert accordion */
+  ['a','b','c'].forEach(function(k){
+    var btn=document.getElementById('pra-btn-'+k),body=document.getElementById('pra-body-'+k);
+    btn.addEventListener('click',function(){
+      var open=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',open?'false':'true');
+      open?body.setAttribute('hidden',''):body.removeAttribute('hidden');
+    });
+  });
+})();
+function prDecide(btn,type,msg){
+  var key=btn.closest('.pr-alert-card').querySelector('.pr-alert-body').id.replace('pra-body-','');
+  var res=document.getElementById('pra-res-'+key);
+  res.textContent=msg;
+  res.className='pr-dec-result'+(type==='block'?' warn-bg':type==='inv'?'':' good-bg');
+  res.style.background=type==='block'?'var(--warn-soft)':type==='acc'?'var(--good-soft)':'var(--sunk)';
+  res.style.border='1px solid '+(type==='block'?'var(--warn)':type==='acc'?'var(--good)':'var(--line)');
+  res.style.color=type==='block'?'var(--warn)':type==='acc'?'var(--good)':'var(--ink-2)';
+  res.removeAttribute('hidden');
+  btn.closest('.pr-alert-decision').querySelectorAll('button').forEach(function(b){b.disabled=true});
+}
+</script>
+
+<section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Antes de começar</p><h2>Consolidar achados, priorizar por risco e integrar ao pipeline</h2></div>
+    <p class="lede">Triagem, priorização por contexto, comparação entre métodos e critérios para integrar análises a Pull Requests.</p>
+    <div class="obj-grid">
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><p>Deduplificar achados de fontes diferentes e construir uma matriz consolidada</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><p>Priorizar por explorabilidade, exposição e impacto, não apenas por severidade declarada</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>Definir critérios de bloqueio para Pull Requests e integração ao pipeline CI/CD</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg></div><p>Compreender o papel da análise estática em Pull Requests como gate de qualidade</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6"/><path d="M9 12h6"/><path d="M9 15h4"/></svg></div><p>Comparar coberturas entre revisão manual, Semgrep, CodeQL e IA sem criar métricas enganosas</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><p>Distinguir alerta de achado e justificar cada decisão de triagem com rastreabilidade</p></div>
+    </div>
+    <div class="cartao" style="margin-top:14px"><h3>Como participar</h3><p>Explore os exemplos, responda às questões e consulte as explicações. As entregas oficiais ficam no Moodle.</p></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Alerta, achado e vulnerabilidade são diferentes" id="conceito-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 1</p><h2>Ferramenta, regra, alerta e vulnerabilidade são entidades diferentes</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Uma ferramenta executa um conjunto de regras sobre determinado escopo de código. Cada ocorrência produz um alerta. O alerta aponta uma condição que pode constituir vulnerabilidade. A validação exige contexto, fronteira de confiança e avaliação de impacto.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>A conclusão deve refletir evidências, não somente o texto gerado pelo scanner. <code>exec('echo lab')</code> é uma ocorrência da chamada proibida por uma regra ampla; isso não é automaticamente injeção de comando por dados externos.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Um IDOR comprovado manualmente pode não produzir qualquer alerta na execução SAST da mesma sessão.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>O NIST IR 8397 e o SSDF propõem práticas integradas de prevenção, identificação e resposta. A integração deve permitir que descobertas produzam melhoria no código e nos controles, não apenas números em dashboards.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 1: Da saída da ferramenta ao achado" id="visual-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Da saída da ferramenta ao achado documentado</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Cinco etapas entre o scanner e o relatório</h3></div>
+      <div class="hypo-flow">
+        <div class="hypo-step"><div class="hypo-num">01</div><h4>Ferramenta</h4><p>Executa varredura sobre o repositório</p></div>
+        <div class="hypo-step"><div class="hypo-num">02</div><h4>Regra</h4><p>Define o padrão ou fluxo buscado</p></div>
+        <div class="hypo-step"><div class="hypo-num">03</div><h4>Alerta</h4><p>Indica trecho suspeito com arquivo e linha</p></div>
+        <div class="hypo-step"><div class="hypo-num">04</div><h4>Triagem</h4><p>Analisa contexto, origem e impacto</p></div>
+        <div class="hypo-step"><div class="hypo-num">05</div><h4>Achado</h4><p>Documenta evidência, decisão e recomendação</p></div>
+      </div>
+      <p class="viz-caption">Alerta é resultado da ferramenta. Vulnerabilidade confirmada exige comprovação contextual.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Modelo de triagem" id="conceito-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Modelo de triagem de achados</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Cada alerta pode transitar: novo → em triagem → confirmado / não aplicável / necessita investigação → corrigido / risco aceito documentado.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Um registro consistente contém: ferramenta e versão, regra, hash do commit, arquivo e localização, caminho de dados ou evidência manual, premissas de explorabilidade, impacto, confiança, responsável e decisão.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Um alerta não deve ser marcado como FP apenas para "limpar painel". É necessário justificar por que a condição não ocorre ou por que o padrão não representa a fraqueza alegada.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>O estudo de Sadowski et al. sobre análise estática no Google destaca que precisão, utilidade e momento de apresentação do feedback influenciam a adoção pelos desenvolvedores.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Triagem e priorização" id="interacao-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 1</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="A prioridade considera contexto e consequências, não só severidade declarada pelo scanner.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Triagem e priorização</h3></div>
+      <p class="instrucao">Dois alertas possuem a mesma severidade nominal. O que deve orientar a priorização?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Somente a ordem da ferramenta</button>
+        <button class="choice" data-value="1" type="button">A explorabilidade, exposição, impacto e controles do contexto</button>
+        <button class="choice" data-value="2" type="button">A ordem alfabética dos arquivos</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Priorizar risco" id="conceito-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Priorizar risco não significa ordenar apenas pela severidade declarada</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Severidade intrínseca, probabilidade de exploração, exposição da função, privilégios requeridos, sensibilidade dos dados e alcance do impacto são dimensões relacionadas, mas distintas. O CVSS v4.0 distingue grupos Base, Threat, Environmental e Supplemental.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Para atividades de poucas horas, prefira uma matriz qualitativa com justificativa em vez de inventar uma nota CVSS exata.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Exemplo: rota de consulta de pedidos exposta a usuários comuns pode merecer prioridade alta se comprometer confidencialidade cross-tenant, independente da nota CVSS base.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Uma chamada a <code>exec</code> presente em arquivo não invocado merece remoção preventiva, mas não é comparável automaticamente a uma vulnerabilidade remota confirmada.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 2: Risk first" id="visual-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Prioridade não depende só do rótulo de severidade</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">MATRIZ</span><h3>Três cenários com severidade similar, prioridade diferente</h3></div>
+      <div class="vtable-scroll"><table class="visual-table">
+        <thead><tr><th>Cenário</th><th>Exposição</th><th>Impacto</th><th>Decisão ilustrativa</th></tr></thead>
+        <tbody>
+          <tr><td>Acesso a pedido de outro tenant</td><td>Remoto, usuário autenticado</td><td>Vazamento cross-tenant, violação de privacidade</td><td>Prioridade alta; corrigir antes de entregar</td></tr>
+          <tr><td>Padrão exec com argumento literal</td><td>Sem entrada externa demonstrada</td><td>Exposição não confirmada</td><td>Investigar; não equiparar a exploração confirmada</td></tr>
+          <tr><td>Achado com controle compensatório comprovado</td><td>Mitigado por outro controle</td><td>Impacto limitado pelo controle</td><td>Documentar, revalidar controle, monitorar</td></tr>
+        </tbody>
+      </table></div>
+      <p class="viz-caption">Exemplos conceituais; cada caso real exige avaliação contextual própria.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Comparar coberturas sem métricas enganosas" id="conceito-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Comparar coberturas sem criar métricas enganosas</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Para o mesmo commit e escopo, considere conjuntos M (manual) e A (automatizado):</p>
+        <ul>
+          <li>M∩A reúne problemas identificados por ambos</li>
+          <li>M−A é o que o automatizado não sinalizou</li>
+          <li>A−M inclui alertas que precisam de validação. Não presumir que A−M é verdadeiro positivo.</li>
+        </ul>
+      </article>
+      <article class="study-card"><span class="study-card-no">02</span><p>A unidade de comparação deve ser uma fraqueza validada em uma localização/fluxo, não cada linha repetida do log da ferramenta.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Resultados medidos neste projeto didático não podem ser generalizados para ferramentas comerciais ou aplicações corporativas sem amostra, desenho experimental e controle de configurações adequados.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: CI/CD e Pull Requests" id="conceito-5">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 5</p><h2>Integrar verificações ao pipeline e a Pull Requests</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Verificações em CI/CD executam automaticamente a cada push ou PR. São eficazes para padrões objetivos: segredos expostos, dependências com CVEs conhecidos, regras de linting de segurança.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Um critério de bloqueio (gate) só deve bloquear o que a equipe acordou que é inaceitável. Gates muito sensíveis geram ruído e são ignorados ou desativados.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>A revisão de PR humana complementa o CI: ela pode verificar lógica de autorização, transições de estado e contexto de negócio que nenhuma regra automática cobre.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Resultado pedagógico do estudo Sadowski et al.: precisão, momento de apresentação e acionabilidade do feedback determinam se os desenvolvedores adotam a ferramenta ou a ignoram.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 3: Pipeline CI/CD" id="visual-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Verificações no pipeline: o que bloqueia e o que informa</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Etapas típicas de um pipeline com gate de segurança</h3></div>
+      <div class="pipeline-row" aria-label="Etapas do pipeline CI/CD com verificações de segurança">
+        <div class="pipe-step ps-pass"><div class="pipe-label">Sempre</div><h4>Build</h4><p>Compilação e testes unitários</p></div>
+        <div class="pipe-step ps-warn"><div class="pipe-label">Alerta</div><h4>SAST</h4><p>Semgrep com regras acordadas; reporta, não bloqueia por padrão</p></div>
+        <div class="pipe-step ps-block"><div class="pipe-label">Bloqueia</div><h4>Secrets</h4><p>Bloqueia se detectar token, chave ou credencial exposta</p></div>
+        <div class="pipe-step ps-warn"><div class="pipe-label">Alerta</div><h4>SCA</h4><p>Dependências com CVEs críticos; equipe decide o gate</p></div>
+        <div class="pipe-step ps-pass"><div class="pipe-label">Humano</div><h4>PR Review</h4><p>Revisão manual obrigatória antes do merge</p></div>
+      </div>
+      <p class="viz-caption">A linha entre alerta e bloqueio deve ser acordada pela equipe antes de configurar o pipeline.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Interpretação de contagens" id="interacao-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="Contagens brutas não são equivalentes a vulnerabilidades confirmadas ou cobertura de riscos.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Interpretação de contagens</h3></div>
+      <p class="instrucao">Um método detectou 10 alertas e outro 3. Pode-se concluir que o primeiro encontrou mais vulnerabilidades?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Sim, independentemente da triagem</button>
+        <button class="choice" data-value="1" type="button">Não; é preciso validar as ocorrências, cobertura e escopo</button>
+        <button class="choice" data-value="2" type="button">Sim, porque alertas equivalem a incidentes</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Critério de bloqueio em CI" id="interacao-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 3</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="Um gate muito sensível gera ruído e perde credibilidade. Deve cobrir apenas o que a equipe considera inaceitável de forma objetiva.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Critério de bloqueio em CI</h3></div>
+      <p class="instrucao">Qual é o critério mais adequado para bloquear automaticamente um PR no pipeline?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Qualquer alerta do scanner, independente da triagem</button>
+        <button class="choice" data-value="1" type="button">Apenas alertas de categorias acordadas pela equipe como inaceitáveis (ex.: segredos expostos)</button>
+        <button class="choice" data-value="2" type="button">Bloquear nunca; gates são desnecessários</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Registro de ideias" id="anotacoes">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Reflexão individual ou em dupla</p><h2>Explique antes de concluir</h2></div>
+    <div class="lab" data-journal="">
+      <div class="lab-cab"><p class="eyebrow">Pausa para discussão</p><h3>Registre uma hipótese em suas palavras</h3></div>
+      <p class="instrucao">Escreva uma justificativa breve sobre o conceito da aula. A anotação é local e opcional.</p>
+      <textarea aria-label="Seu rascunho" class="journal" placeholder="Qual hipótese você levantaria? Que evidência faltaria para confirmá-la?"></textarea>
+      <div class="actions-row">
+        <button class="btn prim" data-copy type="button">Copiar meu rascunho</button>
+        <button class="btn" data-clear type="button">Limpar</button>
+        <span class="note-local" role="status"></span>
+      </div>
+      <p class="note-local">Não há envio de respostas nem coleta de dados nesta atividade.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 5 · Matriz de comparação e pipeline</h2></div>
+    <div class="lab projeto">
+      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 5 · Matriz de comparação e pipeline</h3></div>
+      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
+      <ul class="check-list">
+        <li>Consolidar achados das etapas 2, 3 e 4 em uma única matriz; deduplificar por fraqueza e localização.</li>
+        <li>Priorizar os achados com justificativa de explorabilidade, exposição e impacto.</li>
+        <li>Descrever uma política de pipeline com as verificações que seriam configuradas e os critérios de bloqueio.</li>
+        <li>Explorar um exemplo de verificação em Pull Request usando as regras do Semgrep.</li>
+      </ul>
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Registro esperado</h3>
+        <p><code>entregas/05_matriz.md</code> e <code>entregas/05_pipeline.md</code> (registros de acompanhamento).</p>
+      </div>
+      <div class="lab-links">
+        <a class="btn" data-target="githubOrganization">Repositórios GitHub</a>
+        <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Referências" id="referencias">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Bibliografia da aula</p><h2>Continue o estudo pelas fontes indicadas</h2></div>
+    <ul class="fonte-lista">
+      <li><p><strong>Artigo:</strong> SADOWSKI, C. et al. <em>Tricorder: Building a Program Analysis Ecosystem</em>. ICSE, 2015. <a href="https://doi.org/10.1109/ICSE.2015.76">doi.org/10.1109/ICSE.2015.76</a></p></li>
+      <li><p><strong>Documento técnico:</strong> BLACK, P. et al. <em>NIST IR 8397</em>. 2021. <a href="https://doi.org/10.6028/NIST.IR.8397">doi.org/10.6028/NIST.IR.8397</a></p></li>
+      <li><p><strong>Padrão técnico:</strong> SOUPPAYA, M. et al. <em>NIST SP 800-218, SSDF v1.1</em>. 2022. <a href="https://doi.org/10.6028/NIST.SP.800-218">doi.org/10.6028/NIST.SP.800-218</a></p></li>
+      <li><p><strong>Artigo:</strong> BRAZ, L.; BACCHELLI, A. <em>Less is More</em>. ICSE, 2022. <a href="https://doi.org/10.1145/3510003.3511560">doi.org/10.1145/3510003.3511560</a></p></li>
+    </ul>
+    <p class="note-local">Consulte as fontes originais para aprofundar o conteúdo.</p>
+  </div>
+</section>
+
+<section class="cena fecho" data-nome="Encerramento" id="encerramento">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Síntese</p>
+      <h2>O conceito fica. A investigação continua.</h2>
+      <p class="lede" style="color:#E9DED2">Contagens de alertas não são métricas de segurança. Priorize por contexto e risco real. Integre ao pipeline o que a equipe acordou como inaceitável.</p>
+    </div>
+    <div class="actions-row">
+      <a class="btn prim" href="aula-06.html" style="color:white">Avançar ao encontro 06</a>
+      <a class="btn" href="../guia/">Guia de estudo</a>
+      <a class="btn" href="../index.html">Início</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div aria-label="Controles do modo aula" class="controles">
+  <button aria-label="Seção anterior" class="btn" id="antes" type="button">←</button>
+  <span class="cont num" id="contador"></span>
+  <button aria-label="Próxima seção" class="btn" id="depois" type="button">→</button>
+  <button class="btn" id="cheia" type="button">Tela cheia</button>
+</div>
+</body>
+</html>

@@ -1,0 +1,2108 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#FEF7EE" name="theme-color"/>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="O que significa revisar software sob a perspectiva da segurança; distinção entre autenticação e autorização, risco, fraqueza e evidência."/>
+  <title>Encontro 01 · Fundamentos de segurança e riscos | CESAR School</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="../assets/css/laura-aulas.css" rel="stylesheet"/>
+  <link href="../assets/css/adaptacao.css" rel="stylesheet"/>
+  <link href="../assets/css/pedagogia-visual.css" rel="stylesheet"/>
+  <link href="../assets/css/melhorias.css" rel="stylesheet"/>
+  <link href="../assets/css/apresentacao-docente.css" rel="stylesheet"/>
+  <script defer src="../assets/js/config.js"></script>
+  <script defer src="../assets/js/site.js"></script>
+
+  <style>
+    /* ── melhorias pontuais desta aula, sem conflitar com o sistema base ── */
+
+    /* Objetivos: grid com ícone SVG no lugar de marcador de lista genérico */
+    .obj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .obj-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .obj-icon {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      background: var(--orange-soft);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .obj-icon svg { width: 20px; height: 20px; }
+    .obj-item p { font-size: .97rem; line-height: 1.55; color: var(--ink-2); margin: 0; padding-right: 32px; }
+    .obj-item { position: relative; }
+    .obj-btn { position: absolute; bottom: 10px; right: 10px; width: 24px; height: 24px; border: 1.5px solid var(--line); border-radius: 50%; background: var(--surface); color: var(--orange-ink); font-size: 1.15rem; font-weight: 300; line-height: 24px; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 0 1px 0; transition: background .15s, border-color .15s; }
+    .obj-btn:hover { background: var(--orange-soft); border-color: var(--orange); }
+    .obj-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .2s; }
+    .obj-modal-overlay.ativo { opacity: 1; pointer-events: auto; }
+    .obj-modal-box { background: var(--surface); border-radius: 16px; padding: 28px 32px; max-width: min(90vw, 660px); width: 100%; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,.28); }
+    .obj-modal-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border: none; background: var(--sunk); border-radius: 50%; cursor: pointer; font-size: .82rem; color: var(--muted); display: flex; align-items: center; justify-content: center; padding: 0; }
+    .obj-modal-close:hover { color: var(--ink); background: var(--line); }
+    .obj-modal-title { font-family: var(--f-disp); font-weight: 700; font-size: 1.1rem; color: var(--orange-ink); margin: 0 0 14px; }
+    .obj-modal-body p { font-size: .92rem; line-height: 1.6; color: var(--ink-2); margin: 0 0 10px; hyphens: none; }
+    .obj-modal-body p:last-child { margin: 0; }
+    .obj-modal-body ul { margin: 0 0 4px; padding-left: 1.25rem; }
+    .obj-modal-body li { font-size: .92rem; line-height: 1.6; color: var(--ink-2); margin-bottom: 6px; hyphens: none; }
+    .obj-modal-body li:last-child { margin-bottom: 0; }
+    .obj-modal-ex { background: var(--sunk); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: .88rem; line-height: 1.55; color: var(--ink-2); margin: 12px 0 0; hyphens: none; }
+    .obj-modal-ex strong { color: var(--orange-ink); display: block; margin-bottom: 4px; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; }
+    .obj-modal-ex code { font-family: var(--f-mono); font-size: .84em; background: rgba(0,0,0,.07); padding: 1px 4px; border-radius: 3px; }
+
+    /* Diagrama de camadas de segurança */
+    .layer-layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      margin-top: 18px;
+    }
+    @media (max-width: 760px) {
+      .layer-layout { flex-direction: column; }
+      .layer-layout .layer-overlay { width: 100%; }
+    }
+    .layer-diagram {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+    .layer-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .layer-label {
+      font-family: var(--f-disp);
+      font-weight: 700;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      color: var(--muted);
+      width: 115px;
+      flex: none;
+      text-align: right;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .layer-bar {
+      flex: 1;
+      border-radius: 8px;
+      padding: 11px 16px;
+      font-weight: 600;
+      font-size: .97rem;
+      border: 1.5px solid transparent;
+    }
+    .layer-bar.l-infra  { background: var(--sunk);        border-color: var(--line);         color: var(--muted); }
+    .layer-bar.l-authn  { background: var(--warn-soft);   border-color: var(--warn);         color: var(--warn); }
+    .layer-bar.l-authz  { background: var(--orange-soft); border-color: var(--orange);       color: var(--orange-ink); }
+    .layer-bar.l-biz    { background: var(--good-soft);   border-color: var(--good);         color: var(--good); }
+    .layer-bar small    { font-weight: 400; font-size: .83rem; display: block; margin-top: 2px; opacity: .8; }
+
+    /* Interatividade do diagrama de camadas */
+    button.layer-bar {
+      -webkit-appearance: none; appearance: none;
+      font: inherit; text-align: left; width: 100%; cursor: pointer;
+      position: relative;
+      transition: filter .15s, box-shadow .15s;
+    }
+    button.layer-bar::after {
+      content: '▸';
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: .85rem; opacity: .4; transition: opacity .15s;
+    }
+    button.layer-bar:hover, button.layer-bar:focus-visible {
+      filter: brightness(.93);
+      box-shadow: 0 2px 10px rgba(0,0,0,.12);
+      outline: none;
+    }
+    button.layer-bar:hover::after, button.layer-bar:focus-visible::after { opacity: .9; }
+    button.layer-bar[aria-expanded="true"] { box-shadow: 0 0 0 2.5px var(--orange); }
+    button.layer-bar[aria-expanded="true"]::after { content: '▾'; opacity: 1; }
+
+    /* Overlay de detalhes da camada */
+    .layer-overlay {
+      flex: 1; min-width: 200px;
+      border-radius: 14px; border: 1.5px solid var(--line);
+      background: var(--surface); padding: 20px 22px 18px;
+      position: relative;
+      animation: lay-in .18s ease;
+    }
+    @keyframes lay-in {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .layer-overlay[hidden] { display: none; }
+    .layer-ov-close {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: 1.5px solid var(--line);
+      border-radius: 8px; padding: 2px 9px; font-size: .85rem;
+      cursor: pointer; color: var(--muted); line-height: 1.5;
+    }
+    .layer-ov-close:hover { border-color: var(--orange); color: var(--orange-ink); }
+    .layer-ov-title { font-family: var(--f-disp); font-size: 1.2rem; font-weight: 700; margin: 0 0 3px; }
+    .layer-ov-scope { color: var(--ink-2); font-size: .93rem; margin: 0 0 14px; line-height: 1.5; }
+    .layer-ov-label {
+      font-size: .68rem; font-weight: 800; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--muted); margin: 0 0 5px;
+    }
+    .layer-ov-examples { margin: 0 0 14px; padding-left: 1.3em; font-size: .91rem; line-height: 1.6; color: var(--ink); }
+    .layer-ov-examples li { margin-bottom: 3px; }
+    .layer-ov-limit {
+      background: var(--sunk); border-left: 4px solid var(--warn);
+      border-radius: 0 8px 8px 0; padding: 10px 14px;
+      font-size: .88rem; color: var(--ink-2); line-height: 1.5; margin-bottom: 0;
+    }
+    .layer-ov-code {
+      margin-top: 12px; background: #22201E; color: #F3EADF;
+      border-radius: 10px; padding: .75rem 1rem;
+      font-size: .77rem; font-family: var(--f-mono, monospace);
+      line-height: 1.6; overflow-x: auto; white-space: pre;
+    }
+    .layer-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      padding: 2px 0;
+    }
+    .layer-arrow span { width: 2px; height: 8px; background: var(--line); display: block; }
+
+    /* Taxonomia: cards com cor de destaque por tipo */
+    .taxo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+      gap: 12px;
+      margin: 18px 0 14px;
+    }
+    .taxo-card {
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      padding: 16px 18px;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .taxo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+    }
+    .taxo-card.tc-owasp::before  { background: var(--bad); }
+    .taxo-card.tc-cwe::before    { background: var(--warn); }
+    .taxo-card.tc-cve::before    { background: var(--orange); }
+    .taxo-card.tc-cvss::before   { background: var(--c4); }
+    .taxo-card.tc-asvs::before   { background: var(--good); }
+    .taxo-card .tc-tag {
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .taxo-card h4 { font-family: var(--f-disp); font-size: 1.1rem; margin: 0 0 5px; }
+    .taxo-card .tc-q { font-size: .82rem; color: var(--orange-ink); font-weight: 600; margin-bottom: 4px; }
+    .taxo-card p { font-size: .88rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
+
+    /* Fluxo hipótese: versão mais visual */
+    .hypo-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+      gap: 0;
+      margin: 20px 0 14px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .hypo-step {
+      padding: 20px 16px;
+      border-right: 1.5px solid var(--line);
+      position: relative;
+      background: var(--surface);
+    }
+    .hypo-step:last-child { border-right: none; }
+    .hypo-step::after {
+      content: '→';
+      position: absolute;
+      right: -13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--orange);
+      font-weight: 700;
+      font-size: 1.1rem;
+      z-index: 1;
+      background: var(--surface);
+      padding: 2px 0;
+      display: none; /* visível só em desktop via media query abaixo */
+    }
+    @media (min-width: 700px) {
+      .hypo-step:not(:last-child)::after { display: block; }
+    }
+    @media (max-width: 699px) {
+      .hypo-flow { grid-template-columns: 1fr; }
+      .hypo-step { border-right: none; border-bottom: 1.5px solid var(--line); }
+      .hypo-step:last-child { border-bottom: none; }
+    }
+    .hypo-num {
+      font-family: var(--f-disp);
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--orange-ink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .hypo-step h4 { font-family: var(--f-disp); font-size: 1.1rem; margin: 0 0 5px; }
+    .hypo-step p  { font-size: .86rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
+
+    /* Estudo de caso: layout duplo código + análise */
+    .case-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (max-width: 720px) { .case-split { grid-template-columns: 1fr; } }
+    .case-panel {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid var(--line);
+    }
+    .case-panel-head {
+      padding: 10px 14px;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: var(--sunk);
+      border-bottom: 1.5px solid var(--line);
+      color: var(--ink-2);
+    }
+    .case-panel-head.head-warn  { background: var(--warn-soft);  color: var(--warn); }
+    .case-panel-head.head-safe  { background: var(--good-soft);  color: var(--good); }
+    .case-panel-body { padding: 14px 16px; background: var(--surface); }
+
+    /* Lentes de revisão: três colunas comparativas */
+    .lens-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      margin: 18px 0 14px;
+    }
+    @media (max-width: 680px) { .lens-row { grid-template-columns: 1fr; } }
+    .lens-col {
+      padding: 20px 18px;
+      border-right: 1.5px solid var(--line);
+    }
+    .lens-col:last-child { border-right: none; }
+    @media (max-width: 680px) {
+      .lens-col { border-right: none; border-bottom: 1.5px solid var(--line); }
+      .lens-col:last-child { border-bottom: none; }
+    }
+    .lens-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .lens-icon svg { width: 22px; height: 22px; }
+    .li-func  { background: var(--sunk); }
+    .li-qual  { background: var(--warn-soft); }
+    .li-sec   { background: var(--orange-soft); }
+    .lens-col h4 { font-family: var(--f-disp); font-size: 1.15rem; margin: 0 0 6px; }
+    .lens-col p  { font-size: .9rem; line-height: 1.55; color: var(--ink-2); margin: 0 0 8px; }
+    .lens-col .lens-ex {
+      font-size: .82rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line-soft);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .lens-col .lens-ex strong { color: var(--orange-ink); }
+
+    /* Alerta / callout de distinção */
+    .distinction-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0 14px;
+    }
+    @media (max-width: 680px) { .distinction-box { grid-template-columns: 1fr; } }
+    .dist-side {
+      border-radius: 12px;
+      border: 1.5px solid var(--line);
+      padding: 18px 20px;
+    }
+    .dist-side.ds-authn { border-top: 5px solid var(--warn); }
+    .dist-side.ds-authz { border-top: 5px solid var(--orange); }
+    .dist-side .ds-label {
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .dist-side h4 { font-family: var(--f-disp); font-size: 1.25rem; margin: 0 0 8px; }
+    .dist-side p  { font-size: .9rem; line-height: 1.55; color: var(--ink-2); margin: 0; }
+    .dist-side ul { font-size: .88rem; color: var(--ink-2); margin: 8px 0 0; padding-left: 1.2rem; }
+    .dist-side li { margin-bottom: 4px; }
+
+    /* Checklist visual */
+    .check-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0;
+    }
+    .check-list li {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: .97rem;
+      line-height: 1.5;
+    }
+    .check-list li::before {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid var(--orange);
+      border-radius: 5px;
+      margin-top: 2px;
+    }
+
+    /* SVG de fronteira de confiança: versão melhorada */
+    .trust-diagram { width: 100%; overflow-x: auto; }
+    .trust-diagram svg { min-width: 580px; display: block; width: 100%; height: auto; }
+  </style>
+</head>
+
+<body>
+
+<!-- ═══════════════════════ CABEÇALHO ═══════════════════════ -->
+<header class="topo">
+  <div class="wrap">
+    <a aria-label="Ir para o início do curso" href="../index.html" style="color:inherit;display:block">
+      <span aria-label="CESAR School" class="logo" role="img"></span>
+    </a>
+    <div class="topo-titulo">
+      Encontro 01 · Fundamentos de segurança e riscos
+      <small>Revisão de Código e Análise Estática · Especialização em Cibersegurança</small>
+    </div>
+    <div class="topo-acoes">
+      <a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Início</a>
+      <select aria-label="Ir diretamente a uma seção" id="irpara"></select>
+      <button aria-pressed="false" class="btn" id="btnAula" type="button">Modo aula</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════ CAPA ═══════════════════════ -->
+<section class="cena capa" data-nome="Capa" id="capa">
+  <div class="forma f1"></div><div class="forma f2"></div>
+  <div class="forma f3"></div><div class="forma f4"></div><div class="forma f5"></div>
+  <div class="wrap">
+    <span aria-label="CESAR School" class="logo" role="img"></span>
+    <h1>Revisão de código e análise estática automatizada</h1>
+    <p class="sub">Encontro 01 · Fundamentos de segurança e riscos</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ APRESENTAÇÃO DOCENTE ═══════════════════════ -->
+<section
+  class="cena apresentacao-docente"
+  data-nome="Quem conduz esta disciplina?"
+  id="apresentacao-docente"
+  aria-labelledby="titulo-apresentacao-docente"
+>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Apresentação</p>
+      <h2 id="titulo-apresentacao-docente">Quem conduz esta disciplina?</h2>
+    </div>
+
+    <div class="apresentacao-docente__grade">
+      <div class="apresentacao-docente__conteudo">
+        <h3 class="apresentacao-docente__nome">Matheus Garrido</h3>
+        <p class="apresentacao-docente__funcao">
+          Desenvolvedor Full Stack Sênior e Professor Universitário
+        </p>
+
+        <p>
+          Sou graduado em <strong>Engenharia de Petróleo pela UFCG</strong>
+          e mestre em <strong>Engenharia Civil pela UFPE</strong>.
+          Minha trajetória profissional passou pelas engenharias e me levou
+          ao desenvolvimento de software, especialmente à construção e à
+          evolução de aplicações web e sistemas corporativos.
+        </p>
+
+        <p>
+          Atualmente, atuo como
+          <strong>Desenvolvedor Full Stack Sênior na NTT DATA</strong>
+          e como <strong>Consultor Técnico de Aprendizagem PBL
+          na CESAR School</strong>, conectando a prática de desenvolvimento
+          de software à formação de profissionais de tecnologia.
+        </p>
+      </div>
+
+      <div class="apresentacao-docente__fotos">
+        <figure class="apresentacao-docente__foto-principal">
+          <img
+            src="../assets/matheus-profissional.jpg"
+            alt="Retrato de Matheus Garrido"
+            width="520"
+            height="520"
+            decoding="async"
+          />
+        </figure>
+
+        <!-- Opcional: remover o figure inteiro se a foto não for incluída. -->
+        <figure class="apresentacao-docente__foto-secundaria">
+          <img
+            src="../assets/matheus-corrida.jpg"
+            alt="Matheus Garrido participando de uma corrida"
+            width="260"
+            height="260"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <div class="apresentacao-docente__forma" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="apresentacao-docente__conexao">
+      <h3>Da prática profissional à revisão segura de código</h3>
+      <p>
+        No desenvolvimento de APIs, microsserviços e aplicações
+        corporativas, decisões sobre arquitetura, manutenção, validação,
+        autenticação e regras de negócio afetam não apenas o funcionamento
+        de uma funcionalidade, mas também sua confiabilidade e segurança.
+      </p>
+      <p>
+        É essa perspectiva que vamos explorar na disciplina:
+        <strong>ler código criticamente, investigar comportamentos
+        inesperados, identificar riscos e sustentar conclusões com
+        evidências</strong>, combinando revisão manual e ferramentas
+        automatizadas.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════ APRESENTAÇÃO PESSOAL ═══════════════════════ -->
+<section
+  class="cena apresentacao-pessoal"
+  data-nome="Além do código: um pouco sobre mim"
+  id="apresentacao-pessoal"
+  aria-labelledby="titulo-apresentacao-pessoal"
+>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Além do código...</p>
+      <h2 id="titulo-apresentacao-pessoal">Um pouco sobre mim fora da sala de aula e do trabalho.</h2>
+    </div>
+
+    <div class="apresentacao-pessoal__grade">
+      <div class="apresentacao-pessoal__fotos">
+        <figure class="apresentacao-pessoal__foto-principal">
+          <img
+            src="../assets/matheus-corrida.jpg"
+            alt="Matheus Garrido participando de uma corrida"
+            width="520"
+            height="520"
+            decoding="async"
+          />
+        </figure>
+        <figure class="apresentacao-pessoal__foto-secundaria">
+          <img
+            src="../assets/matheus-profissional.jpg"
+            alt="Retrato de Matheus Garrido"
+            width="260"
+            height="260"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+        <div class="apresentacao-pessoal__forma" aria-hidden="true"></div>
+      </div>
+
+      <div class="apresentacao-pessoal__conteudo">
+        <p>Quando não estou desenvolvendo software ou dando aulas, gosto de aproveitar meu tempo com outras atividades:</p>
+
+        <ul class="apresentacao-pessoal__lista">
+          <li>
+            <span class="ap-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="7" r="2"/><circle cx="15.5" cy="7" r="2"/><circle cx="4.5" cy="12.5" r="1.8"/><circle cx="19.5" cy="12.5" r="1.8"/><path d="M12 22a5 5 0 0 1-4-2l-.5-1A4 4 0 0 1 9 13h6a4 4 0 0 1 1.5 6l-.5 1A5 5 0 0 1 12 22z"/></svg></span>
+            <div>
+              <strong>Meus companheiros</strong>
+              <p>Tenho dois cachorros, Tobby (SRD) e Bruce (Pug).</p>
+            </div>
+          </li>
+          <li>
+            <span class="ap-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" x2="18" y1="17" y2="17"/></svg></span>
+            <div>
+              <strong>Na cozinha</strong>
+              <p>Gosto de cozinhar, principalmente de confeitaria.</p>
+            </div>
+          </li>
+          <li>
+            <span class="ap-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+            <div>
+              <strong>Na playlist</strong>
+              <p>Sou apaixonado por Música Popular Brasileira (MPB).</p>
+            </div>
+          </li>
+          <li>
+            <span class="ap-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/><path d="M7 4H2v3c0 2.2 1.8 4 4 4"/><path d="M17 4h5v3c0 2.2-1.8 4-4 4"/><path d="M6 2h12v8c0 3.3-2.7 6-6 6-3.3 0-6-2.7-6-6V2Z"/></svg></span>
+            <div>
+              <strong>No esporte</strong>
+              <p>Sou corredor e já completei uma meia-maratona de 21,65 km, com ritmo médio de 5min20s/km.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="apresentacao-pessoal__fechamento">
+      <p>"Acredito que conhecer um pouco das pessoas com quem compartilhamos experiências torna o processo de aprendizagem mais próximo e colaborativo."</p>
+    </div>
+
+    <div class="apresentacao-docente__pergunta">
+      <p class="eyebrow">Para começar, uma pergunta</p>
+      <p>
+        Uma aplicação pode funcionar corretamente e, ainda assim,
+        ser insegura?
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WARM-UP 01 ═══════════════════════ -->
+<section class="cena" data-nome="Warm-up" id="warmup">
+<style>
+.wu-provoc{background:var(--sunk);border-left:5px solid var(--orange);border-radius:0 12px 12px 0;padding:22px 26px;margin:0 0 6px}
+.wu-provoc p{margin:0 0 10px;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.wu-provoc p:last-child{margin:0}
+.wu-provoc strong{color:var(--orange-ink)}
+.wu-caso{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px}
+.wu-caso .eyebrow{margin-bottom:6px}
+.wu-caso p{margin:0 0 8px;font-size:.93rem;color:var(--ink-2);line-height:1.6}
+.wu-caso p:last-child{margin:0}
+.wu-caso a{color:var(--orange-ink)}
+.wu-choices{display:grid;gap:10px;margin:16px 0 0}
+.wu-choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .14s,background .14s;line-height:1.5}
+.wu-choice:hover,.wu-choice:focus-visible{border-color:var(--orange)}
+.wu-choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.wu-choice[data-correct="true"][aria-pressed="true"]{border-color:var(--good);box-shadow:inset 5px 0 0 var(--good);background:var(--good-soft)}
+.wu-feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.6;font-size:.95rem;color:var(--ink)}
+.wu-feedback[hidden]{display:none}
+.wu-code-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+@media(max-width:680px){.wu-code-grid{grid-template-columns:1fr}}
+.wu-code-card{border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.wu-code-head{padding:10px 14px;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--sunk);border-bottom:1.5px solid var(--line);color:var(--ink-2)}
+.wu-code-head.unsafe{background:var(--warn-soft);color:var(--warn)}
+.wu-code-head.safe{background:var(--good-soft);color:var(--good)}
+.wu-code-body{padding:14px 16px;background:var(--surface)}
+.wu-code-body pre{background:#22201E;color:#F3EADF;border-radius:10px;padding:.75rem 1rem;font-size:.8rem;line-height:1.65;overflow-x:auto;white-space:pre;margin:0 0 10px;font-family:var(--f-mono)}
+.wu-code-body pre:last-child{margin-bottom:0}
+.wu-code-body .highlight-bad{color:#FF8C69;font-weight:700}
+.wu-code-body .highlight-good{color:#7EE8A2;font-weight:700}
+.wu-code-body p{font-size:.88rem;color:var(--ink-2);margin:10px 0 0;line-height:1.5}
+.wu-flow{display:flex;flex-direction:column;align-items:center;gap:0;margin:14px 0}
+.wu-flow-step{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:14px 20px;text-align:center;min-width:220px;position:relative}
+.wu-flow-step > strong{display:block;font-family:var(--f-disp);font-size:1rem;margin-bottom:3px}
+.wu-flow-step span{font-size:.85rem;color:var(--ink-2)}
+.wu-flow-step.step-warn{border-color:var(--warn);background:var(--warn-soft)}
+.wu-flow-step.step-bad{border-color:var(--bad,#C0392B);background:var(--bad-soft,#FDF0EE)}
+.wu-flow-arrow{color:var(--orange);font-size:1.3rem;line-height:1;padding:2px 0;transition:font-size .2s,color .2s}
+    .wu-flow-arrow.ativo{font-size:1.6rem;color:var(--bad,#C0392B)}
+    .wu-flow-step{cursor:pointer;user-select:none;transition:box-shadow .15s;width:90%}
+    .wu-flow-step:hover,.wu-flow-step:focus-visible{box-shadow:0 2px 10px rgba(0,0,0,.12);outline:none}
+    .wu-flow-step[aria-expanded="true"]{box-shadow:0 0 0 2.5px var(--orange)}
+    .wu-flow-step.step-warn[aria-expanded="true"]{box-shadow:0 0 0 2.5px var(--warn)}
+    .wu-flow-step.step-bad[aria-expanded="true"]{box-shadow:0 0 0 2.5px var(--bad,#C0392B)}
+    .wu-toggle{position:absolute;right:12px;top:14px;font-size:.85rem;opacity:.35;pointer-events:none;transition:opacity .15s,transform .15s;line-height:1}
+    .wu-flow-step[aria-expanded="true"] .wu-toggle{opacity:1;color:var(--orange-ink);transform:rotate(90deg)}
+    .wu-step-sub{font-size:.85rem;color:var(--ink-2)}
+    .wu-step-detail{text-align:left;margin-top:12px;padding-top:12px;border-top:1.5px solid rgba(0,0,0,.08);font-size:.87rem;line-height:1.5;animation:step-in .17s ease}
+    @keyframes step-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+    .wu-step-detail p{margin:0 0 8px;color:var(--ink-2);hyphens:none}
+    .wu-step-detail p:last-child{margin-bottom:0}
+    .wu-step-insight{background:var(--sunk);border-left:3px solid var(--orange);padding:7px 12px;border-radius:0 6px 6px 0;font-weight:600;font-size:.84rem;color:var(--orange-ink);margin:8px 0 0}
+    .wu-step-code{background:#231F1A;color:#F3EADF;border-radius:8px;padding:10px 14px;font-family:var(--f-mono,monospace);font-size:.77rem;line-height:1.5;overflow-x:auto;white-space:pre;margin:8px 0;text-align:left}
+    .wu-step-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:8px 0}
+    .wu-step-table th,.wu-step-table td{padding:5px 8px;border:1px solid var(--line);text-align:left;vertical-align:top}
+    .wu-step-table th{background:var(--sunk);font-weight:600;color:var(--ink-2);font-size:.78rem}
+    .wu-step-table code{font-size:.9em;background:rgba(0,0,0,.07);padding:1px 4px;border-radius:3px;font-family:var(--f-mono,monospace)}
+.wu-fechamento{background:var(--sunk);border-radius:14px;padding:20px 24px}
+.wu-fechamento p{margin:0;font-size:1rem;line-height:1.65;color:var(--ink)}
+.wu-fechamento strong{color:var(--orange-ink)}
+.wu-reveal-btn{margin-top:14px}
+</style>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Warm-up · 10 minutos</p>
+      <h2>O sistema funciona. Mas ele é seguro?</h2>
+    </div>
+
+    <div class="wu-caso">
+      <p class="eyebrow">Referência histórica · MOVEit Transfer, 2023</p>
+      <p>Em 2023, uma vulnerabilidade de SQL Injection no MOVEit Transfer (CVE-2023-34362) foi explorada em larga escala. O software de transferência de arquivos funcionava normalmente para seus usuários.</p>
+      <p><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-34362" target="_blank" rel="noopener">NIST/NVD · CVE-2023-34362</a></p>
+    </div>
+
+    <div class="wu-provoc">
+      <p>Imagine que um sistema passou em todos os testes funcionais, autentica seus usuários e permite consultar informações corretamente. A equipe considera a funcionalidade concluída.</p>
+      <p><strong>O que esses testes realmente demonstram sobre a segurança da aplicação?</strong></p>
+    </div>
+
+    <!-- Interação 1: Votação -->
+    <div class="cartao">
+      <p class="eyebrow">Votação</p>
+      <h3 style="font-size:1.1rem;margin-bottom:16px">Se uma aplicação passa em todos os testes funcionais, podemos considerá-la segura?</h3>
+      <div class="wu-choices" id="wu1-choices">
+        <button class="wu-choice" data-idx="0">Sim. Se funciona conforme os requisitos, está segura.</button>
+        <button class="wu-choice" data-idx="1" data-correct="true">Não. O funcionamento correto não garante segurança.</button>
+        <button class="wu-choice" data-idx="2">Depende apenas da tecnologia utilizada.</button>
+      </div>
+      <div class="quiz-actions wu-reveal-btn">
+        <button class="btn" id="wu1-btn" disabled>Ver análise</button>
+      </div>
+      <div class="wu-feedback" id="wu1-feedback" hidden>
+        Testes funcionais verificam comportamentos esperados nos cenários cobertos. Uma vulnerabilidade pode existir em entradas inesperadas, permissões inadequadas ou caminhos que esses testes não exercitaram. Segurança exige investigação de outros cenários e evidências.
+      </div>
+    </div>
+
+    <!-- Interação 2: Comparação de código -->
+    <div class="cartao">
+      <p class="eyebrow">Identifique a decisão perigosa</p>
+      <p style="margin:0 0 4px;font-size:.95rem;color:var(--ink-2)">As duas implementações podem retornar o mesmo resultado para uma entrada válida.</p>
+      <p style="margin:0 0 14px;font-weight:600">Qual delas apresenta um risco de segurança mais evidente?</p>
+      <div class="wu-code-grid">
+        <div class="wu-code-card" id="wu2-a">
+          <div class="wu-code-head" id="wu2-a-head">Implementação A</div>
+          <div class="wu-code-body">
+<pre><code>const sql =
+  `SELECT * FROM users
+   WHERE email = '<span class="highlight-bad">${email}</span>'`;
+
+await prisma.$queryRawUnsafe(sql);</code></pre>
+            <p>Entrada do usuário interpolada diretamente no texto SQL.</p>
+          </div>
+        </div>
+        <div class="wu-code-card" id="wu2-b">
+          <div class="wu-code-head" id="wu2-b-head">Implementação B</div>
+          <div class="wu-code-body">
+<pre><code>const users =
+  await prisma.$queryRaw`
+    SELECT * FROM users
+    WHERE email = <span class="highlight-good">${email}</span>
+  `;</code></pre>
+            <p>Template tagged do Prisma: valor parametrizado, separado da estrutura SQL.</p>
+          </div>
+        </div>
+      </div>
+      <div class="wu-choices" id="wu2-choices" style="margin-top:16px">
+        <button class="wu-choice" data-idx="0" data-correct="true">Implementação A apresenta risco mais evidente.</button>
+        <button class="wu-choice" data-idx="1">Implementação B apresenta risco mais evidente.</button>
+        <button class="wu-choice" data-idx="2">Ambas apresentam o mesmo risco.</button>
+        <button class="wu-choice" data-idx="3">Nenhuma apresenta risco.</button>
+      </div>
+      <div class="quiz-actions wu-reveal-btn">
+        <button class="btn" id="wu2-btn" disabled>Ver análise</button>
+      </div>
+      <div class="wu-feedback" id="wu2-feedback" hidden>
+        <strong>A é a implementação perigosa.</strong> A interpolação direta no texto SQL permite que uma entrada controlada externamente altere a estrutura da consulta (SQL Injection). Em B, o template tagged do Prisma parametriza o valor, preservando a separação entre dado e comando. Não confundir com interpolação arbitrária de identificadores SQL.
+      </div>
+    </div>
+
+    <!-- Fluxo visual -->
+    <div class="cartao">
+      <p class="eyebrow">Fluxo · Da entrada ao impacto</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Uma vulnerabilidade não depende de intenção maliciosa na entrada. Depende do que o código faz com ela.</p>
+      <div class="wu-flow">
+        <div class="wu-flow-step step-warn" role="button" tabindex="0" aria-expanded="false">
+          <strong>Entrada não confiável</strong>
+          <span class="wu-step-sub">Dado controlado externamente, via HTTP, URL ou cabeçalho</span>
+          <span class="wu-toggle" aria-hidden="true">▸</span>
+          <div class="wu-step-detail" hidden>
+            <p>Qualquer dado que chega de fora é entrada não confiável: parâmetros de URL, corpo de requisições POST, cabeçalhos HTTP, cookies, respostas de APIs externas. O problema não está no dado: está no que o código fará com ele.</p>
+            <div class="wu-step-code">GET /buscar?q='; DROP TABLE usuarios--
+User-Agent: &lt;script&gt;alert(1)&lt;/script&gt;
+Cookie: sessao=../../../etc/passwd</div>
+            <p class="wu-step-insight">Regra prática: se o valor veio de fora do processo, considere-o não confiável.</p>
+          </div>
+        </div>
+        <div class="wu-flow-arrow">↓</div>
+        <div class="wu-flow-step" role="button" tabindex="0" aria-expanded="false">
+          <strong>Código da aplicação</strong>
+          <span class="wu-step-sub">Processa, transforma ou encaminha o dado</span>
+          <span class="wu-toggle" aria-hidden="true">▸</span>
+          <div class="wu-step-detail" hidden>
+            <p>O código recebe a entrada e a transforma: concatena strings, monta URLs, insere em templates. É aqui que a separação entre dado e instrução pode ser quebrada.</p>
+            <div class="wu-step-code">// Entrada concatenada diretamente na query
+const sql = "SELECT * FROM users WHERE nome = '"
+           + req.query.nome + "'";
+
+// Entrada inserida diretamente no HTML
+res.send("&lt;p&gt;Olá, " + req.query.nome + "&lt;/p&gt;");</div>
+            <p class="wu-step-insight">A vulnerabilidade nasce aqui: não na entrada, não no banco.</p>
+          </div>
+        </div>
+        <div class="wu-flow-arrow">↓</div>
+        <div class="wu-flow-step step-warn" role="button" tabindex="0" aria-expanded="false">
+          <strong>Operação sensível</strong>
+          <span class="wu-step-sub">SQL, comando de sistema, chamada de API, renderização HTML</span>
+          <span class="wu-toggle" aria-hidden="true">▸</span>
+          <div class="wu-step-detail" hidden>
+            <p>Operações sensíveis são pontos onde dados se tornam ações, chamados de <strong>sinks</strong>. O sink em si não é o problema: o problema é a chegada de entrada não confiável sem validação.</p>
+            <table class="wu-step-table">
+              <thead><tr><th>Sink</th><th>Risco</th></tr></thead>
+              <tbody>
+                <tr><td><code>db.query(sql)</code></td><td>Injeção de SQL</td></tr>
+                <tr><td><code>exec(cmd)</code></td><td>Injeção de comando</td></tr>
+                <tr><td><code>innerHTML = val</code></td><td>XSS</td></tr>
+                <tr><td><code>eval(code)</code></td><td>Execução arbitrária</td></tr>
+                <tr><td><code>fs.readFile(path)</code></td><td>Path traversal</td></tr>
+              </tbody>
+            </table>
+            <p class="wu-step-insight">Encontrar um sink em auditoria é o início da investigação, não a confirmação da vulnerabilidade.</p>
+          </div>
+        </div>
+        <div class="wu-flow-arrow">↓</div>
+        <div class="wu-flow-step step-bad" role="button" tabindex="0" aria-expanded="false">
+          <strong>Possível impacto</strong>
+          <span class="wu-step-sub" id="wu-impact-text">Clique para revelar após a discussão</span>
+          <span class="wu-toggle" aria-hidden="true">▸</span>
+          <div class="wu-step-detail" hidden>
+            <p>O impacto depende do sink atingido e do contexto da aplicação.</p>
+            <table class="wu-step-table">
+              <thead><tr><th>Vulnerabilidade</th><th>Impacto possível</th></tr></thead>
+              <tbody>
+                <tr><td>SQL Injection</td><td>Dados de todos os usuários, bypass de login, deleção de tabelas</td></tr>
+                <tr><td>XSS Stored</td><td>Roubo de sessão, redirecionamento malicioso</td></tr>
+                <tr><td>Command Injection</td><td>Acesso ao sistema operacional, instalação de malware</td></tr>
+                <tr><td>Path Traversal</td><td>Leitura de arquivos fora do escopo, exposição de segredos</td></tr>
+              </tbody>
+            </table>
+            <p class="wu-step-insight">A revisão de código busca identificar o caminho antes que o impacto se concretize.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wu-fechamento">
+      <p><strong>Código funcional não é sinônimo de código seguro.</strong> A segurança exige compreender como o software se comporta quando recebe entradas, solicitações e interações que não fazem parte do fluxo esperado. A partir daqui: vulnerabilidade, ameaça, risco, OWASP Top 10 e revisão de código.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  /* Interação 1: votação */
+  var c1=document.querySelectorAll('#wu1-choices .wu-choice'),btn1=document.getElementById('wu1-btn'),fb1=document.getElementById('wu1-feedback');
+  c1.forEach(function(b){b.addEventListener('click',function(){c1.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');btn1.disabled=false});});
+  btn1.addEventListener('click',function(){fb1.removeAttribute('hidden');var sel=document.querySelector('#wu1-choices .wu-choice[aria-pressed="true"]');if(sel&&sel.dataset.correct){fb1.style.borderLeftColor='var(--good)';fb1.style.background='var(--good-soft)'}});
+
+  /* Interação 2: código */
+  var c2=document.querySelectorAll('#wu2-choices .wu-choice'),btn2=document.getElementById('wu2-btn'),fb2=document.getElementById('wu2-feedback');
+  c2.forEach(function(b){b.addEventListener('click',function(){c2.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');btn2.disabled=false});});
+  btn2.addEventListener('click',function(){
+    fb2.removeAttribute('hidden');
+    var sel=document.querySelector('#wu2-choices .wu-choice[aria-pressed="true"]');
+    if(sel&&sel.dataset.correct){
+      fb2.style.borderLeftColor='var(--good)';fb2.style.background='var(--good-soft)';
+      document.getElementById('wu2-a-head').classList.add('unsafe');
+      document.getElementById('wu2-b-head').classList.add('safe');
+    }
+  });
+
+  /* Fluxo: etapas interativas */
+  document.querySelectorAll('.wu-flow .wu-flow-step').forEach(function(step){
+    function toggle(){
+      var expanded=step.getAttribute('aria-expanded')==='true';
+      step.setAttribute('aria-expanded',String(!expanded));
+      var detail=step.querySelector('.wu-step-detail');
+      if(detail)detail.hidden=expanded;
+      var tog=step.querySelector('.wu-toggle');
+      if(tog)tog.textContent=expanded?'▸':'▾';
+      var arrow=step.nextElementSibling;
+      if(arrow&&arrow.classList.contains('wu-flow-arrow'))arrow.classList.toggle('ativo',!expanded);
+      if(!expanded&&step.classList.contains('step-bad')){
+        var imp=document.getElementById('wu-impact-text');
+        if(imp)imp.textContent='Clique para fechar';
+      } else if(expanded&&step.classList.contains('step-bad')){
+        var imp2=document.getElementById('wu-impact-text');
+        if(imp2)imp2.textContent='Clique para revelar após a discussão';
+      }
+    }
+    step.addEventListener('click',toggle);
+    step.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  });
+})();
+</script>
+
+<!-- ═══════════════════════ OBJETIVOS (específicos da aula 01) ═══════════════════════ -->
+<section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Antes de começar</p>
+      <h2>Fundamentos que sustentam todos os encontros seguintes</h2>
+    </div>
+    <p class="lede">O que significa revisar software sob a perspectiva da segurança; distinção entre autenticação e autorização, risco, fraqueza e evidência.</p>
+
+    <div class="obj-grid">
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: olho / inspeção -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <p>Distinguir revisão funcional, de qualidade e de segurança a partir do mesmo trecho de código</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="1">+</button>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: escudo -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <p>Nomear ativo, ameaça, fraqueza, vulnerabilidade e risco sem confundir os termos</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="2">+</button>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: chave / autenticação -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+          </svg>
+        </div>
+        <p>Separar autenticação de autorização e aplicar essa distinção na análise de endpoints</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="3">+</button>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: banco de dados / injeção -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+          </svg>
+        </div>
+        <p>Reconhecer injeção como padrão de interpretação indevida de dados como comandos</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="4">+</button>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: lista / taxonomia -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <p>Usar OWASP Top 10, CWE, CVE, CVSS e ASVS para a finalidade certa de cada um</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="5">+</button>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon">
+          <!-- ícone: documentar / evidência -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <p>Formular hipóteses rastreáveis associando código, condição e impacto, sem afirmar exploração</p>
+        <button class="obj-btn" aria-label="Ver detalhes" data-modal="6">+</button>
+      </div>
+    </div>
+
+    <!-- Conteúdo dos modais de cada objetivo -->
+    <div id="obj-modal-1" hidden>
+      <p class="obj-modal-title">Tipos de revisão de código</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li><strong>Funcional:</strong> verifica se o código faz o que foi pedido</li>
+          <li><strong>Qualidade:</strong> verifica legibilidade, manutenibilidade e cobertura de testes</li>
+          <li><strong>Segurança:</strong> verifica se o código pode ser explorado por quem não deveria ter acesso</li>
+          <li>As três perspectivas são complementares: código correto e limpo ainda pode ser inseguro</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplo</strong>
+          Endpoint de login: funcional verifica se o usuário entra; qualidade verifica clareza do código; segurança verifica se a comparação de senha usa tempo constante, se há rate limiting e se o erro não revela qual campo falhou.
+        </div>
+      </div>
+    </div>
+    <div id="obj-modal-2" hidden>
+      <p class="obj-modal-title">Vocabulário de segurança</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li><strong>Ativo:</strong> o que tem valor: dados, sessões, credenciais</li>
+          <li><strong>Ameaça:</strong> quem ou o que pode causar dano</li>
+          <li><strong>Fraqueza (CWE):</strong> falha no código ou no design do sistema</li>
+          <li><strong>Vulnerabilidade:</strong> fraqueza explorável em um contexto específico</li>
+          <li><strong>Risco:</strong> combinação de probabilidade e impacto</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplo</strong>
+          Ativo: registros de usuários. Ameaça: atacante externo. Fraqueza: CWE-89. Vulnerabilidade: endpoint <code>/buscar</code> sem parametrização. Risco: alto.
+        </div>
+      </div>
+    </div>
+    <div id="obj-modal-3" hidden>
+      <p class="obj-modal-title">Autenticação vs. Autorização</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li><strong>Autenticação:</strong> responde "quem é você?" e verifica identidade</li>
+          <li><strong>Autorização:</strong> responde "o que você pode fazer?" e verifica permissões</li>
+          <li>São camadas independentes: passar pela autenticação não garante autorização</li>
+          <li>Falhas em cada camada têm causas e controles diferentes</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplo</strong>
+          Usuário autenticado que acessa <code>/admin/relatorio</code> sem checar se é administrador: falha de autorização, não de autenticação. Token válido reutilizado após logout: falha de autenticação.
+        </div>
+      </div>
+    </div>
+    <div id="obj-modal-4" hidden>
+      <p class="obj-modal-title">O padrão de injeção</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li>Ocorre quando dados externos são interpretados como parte de um comando ou consulta</li>
+          <li>Não é exclusivo de SQL: aparece em comandos de sistema, templates e renderização HTML</li>
+          <li>A fraqueza está no código que mistura dado e instrução</li>
+          <li>A entrada em si não é o problema: é o que o código faz com ela</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplos</strong>
+          SQL: <code>"SELECT … WHERE id = " + req.params.id</code><br>
+          Comando: <code>exec("ls " + userInput)</code><br>
+          XSS: <code>innerHTML = userInput</code> com payload <code>&lt;script&gt;…&lt;/script&gt;</code>
+        </div>
+      </div>
+    </div>
+    <div id="obj-modal-5" hidden>
+      <p class="obj-modal-title">Taxonomias e referências</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li><strong>OWASP Top 10:</strong> categorias de risco mais prevalentes em aplicações web</li>
+          <li><strong>CWE:</strong> catálogo de fraquezas no código (causas raiz)</li>
+          <li><strong>CVE:</strong> instâncias de vulnerabilidades em software específico</li>
+          <li><strong>CVSS:</strong> sistema de pontuação de severidade (0 a 10)</li>
+          <li><strong>ASVS:</strong> padrão de verificação para auditorias de segurança</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplo</strong>
+          SQL Injection: A03:2021 no OWASP Top 10, CWE-89 como causa, registrada como CVE com CVSS 9.8, verificável pelo item 5.3.4 do ASVS.
+        </div>
+      </div>
+    </div>
+    <div id="obj-modal-6" hidden>
+      <p class="obj-modal-title">Hipóteses rastreáveis</p>
+      <div class="obj-modal-body">
+        <ul>
+          <li><strong>Código:</strong> onde está a potencial fraqueza (arquivo, linha, parâmetro)</li>
+          <li><strong>Condição:</strong> como poderia ser explorada por um atacante</li>
+          <li><strong>Impacto:</strong> o que aconteceria se fosse explorada com sucesso</li>
+          <li>Não afirma exploração: afirma possibilidade verificável e rastreável</li>
+        </ul>
+        <div class="obj-modal-ex">
+          <strong>Exemplo</strong>
+          "O parâmetro <code>id</code> (linha 42, <code>UserController.java</code>) é concatenado na query SQL (linha 47). Se um atacante enviar <code>1 OR 1=1</code>, a cláusula WHERE é contornada, expondo todos os registros."
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay modal compartilhado -->
+    <div class="obj-modal-overlay" id="obj-modal-overlay" role="dialog" aria-modal="true" aria-label="Detalhes do objetivo">
+      <div class="obj-modal-box">
+        <button class="obj-modal-close" aria-label="Fechar">✕</button>
+        <div id="obj-modal-content"></div>
+      </div>
+    </div>
+    <script>
+    (function(){
+      var overlay=document.getElementById('obj-modal-overlay');
+      var content=document.getElementById('obj-modal-content');
+      var closeBtn=overlay.querySelector('.obj-modal-close');
+      function open(id){
+        var tpl=document.getElementById('obj-modal-'+id);
+        if(!tpl)return;
+        content.innerHTML=tpl.innerHTML;
+        overlay.classList.add('ativo');
+        closeBtn.focus();
+      }
+      function close(){overlay.classList.remove('ativo');}
+      document.querySelectorAll('.obj-btn').forEach(function(btn){
+        btn.addEventListener('click',function(e){e.stopPropagation();open(btn.dataset.modal);});
+      });
+      closeBtn.addEventListener('click',close);
+      overlay.addEventListener('click',function(e){if(e.target===overlay)close();});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape')close();});
+    })();
+    </script>
+
+    <div class="cartao" style="margin-top:14px">
+      <h3>Como participar</h3>
+      <p>Explore os exemplos, responda às questões e consulte as explicações. Use o <strong>Modo aula</strong> para navegar por seções ou acompanhe o conteúdo em sequência no modo leitura. As entregas oficiais ficam no Moodle e nos repositórios privados das equipes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 1: segurança como propriedade do software ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: Segurança como propriedade do software" id="conceito-1">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 1</p>
+      <h2>Segurança como propriedade do software, não apenas da infraestrutura</h2>
+    </div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>Um sistema pode ter HTTPS, firewall, autenticação e logs e ainda expor dados por uma falha no controle de autorização de um endpoint. Segurança no código exige examinar quais ações são permitidas, para quem, sobre quais recursos e sob quais condições.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>A análise não é sinônimo de encontrar sintaxe ruim. Parte dos riscos está na relação entre a implementação e os requisitos de negócio que definem quem pode fazer o quê.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <p>McGraw posiciona práticas de segurança em todo o ciclo de desenvolvimento. O NIST SSDF orienta a prevenção e a mitigação de vulnerabilidades ao longo desse ciclo, não apenas ao final.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <p>Revisão de código identifica problemas antes da entrega. Testes exercitam caminhos executáveis. Análise estática oferece escala sobre padrões conhecidos. Modelagem de ameaças pergunta o que pode dar errado no design. Nenhuma dessas práticas substitui completamente as outras.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">05</span>
+          <p>O NIST IR 8397 recomenda técnicas múltiplas de verificação, entre elas análise estática, detecção de segredos e testes. A combinação delas é o tema central desta disciplina.</p>
+        </article>
+      </div>
+    </div>
+
+    <!-- Diagrama de camadas: infraestrutura não substitui controles no código -->
+    <div class="visual-panel" style="margin-top:18px">
+      <div class="viz-heading">
+        <span class="viz-mark">DIAGRAMA</span>
+        <h3>Camadas de proteção: cada uma tem escopo diferente</h3>
+      </div>
+      <div class="layer-layout">
+        <div class="layer-diagram" aria-label="Diagrama das camadas de proteção" id="layer-diagram">
+          <div class="layer-row">
+            <span class="layer-label">Infraestrutura</span>
+            <button class="layer-bar l-infra" data-layer="infra" aria-expanded="false" aria-controls="layer-overlay">Firewall, HTTPS, WAF, rede <small>Protege o canal e reduz superfície de rede</small></button>
+          </div>
+          <div class="layer-arrow"><span></span><span></span></div>
+          <div class="layer-row">
+            <span class="layer-label">Autenticação</span>
+            <button class="layer-bar l-authn" data-layer="authn" aria-expanded="false" aria-controls="layer-overlay">JWT, sessão, MFA <small>Confirma quem é o sujeito da requisição</small></button>
+          </div>
+          <div class="layer-arrow"><span></span><span></span></div>
+          <div class="layer-row">
+            <span class="layer-label">Autorização</span>
+            <button class="layer-bar l-authz" data-layer="authz" aria-expanded="false" aria-controls="layer-overlay">Papel, organização, propriedade do recurso <small>Decide se o sujeito pode executar a operação</small></button>
+          </div>
+          <div class="layer-arrow"><span></span><span></span></div>
+          <div class="layer-row">
+            <span class="layer-label">Regras de negócio</span>
+            <button class="layer-bar l-biz" data-layer="biz" aria-expanded="false" aria-controls="layer-overlay">Estados, transições, contexto de domínio <small>Valida que a operação faz sentido para o negócio</small></button>
+          </div>
+        </div>
+        <div class="layer-overlay" id="layer-overlay" hidden aria-live="polite"></div>
+      </div>
+      <p class="viz-caption">Uma falha em qualquer camada pode comprometer a segurança mesmo que as outras estejam corretas. A revisão de código alcança principalmente as três últimas. <em>Clique em cada camada para ver exemplos.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 1: três lentes ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 1: Três lentes de revisão" id="visual-1">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Revisar o mesmo endpoint por três lentes</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">CONTRASTE</span>
+        <h3>O que cada perspectiva pergunta sobre <code>GET /orders/:id</code></h3>
+      </div>
+
+      <div class="lens-row" aria-label="Comparação das três perspectivas de revisão">
+        <div class="lens-col">
+          <div class="lens-icon li-func">
+            <!-- check circle -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h4>Funcional</h4>
+          <p>Retorna o recurso solicitado? O corpo e o status HTTP estão corretos?</p>
+          <div class="lens-ex">Exemplo: <strong>200 e payload esperado no formato certo</strong></div>
+        </div>
+        <div class="lens-col">
+          <div class="lens-icon li-qual">
+            <!-- code -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--warn)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <h4>Qualidade</h4>
+          <p>O código é legível, testável e mantível? Tipos, nomes e tratamento de erro estão adequados?</p>
+          <div class="lens-ex">Exemplo: <strong>função sem `any`, erros tratados, cobertura de testes</strong></div>
+        </div>
+        <div class="lens-col">
+          <div class="lens-icon li-sec">
+            <!-- lock -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h4>Segurança</h4>
+          <p>Quem pode acessar este recurso? Verificou usuário, organização e estado do pedido?</p>
+          <div class="lens-ex">Exemplo: <strong>pedido deve pertencer ao tenant do sujeito autenticado</strong></div>
+        </div>
+      </div>
+
+      <div class="callout orange" style="margin-top:4px">
+        <h3>Ponto-chave</h3>
+        <p>Um endpoint pode funcionar corretamente, ter código limpo e ainda violar uma regra de acesso. As três perguntas precisam ser feitas de forma independente.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 2: revisão funcional vs segurança ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: Revisão funcional versus revisão de segurança" id="conceito-2">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 2</p>
+      <h2>Revisão funcional, de qualidade e revisão de segurança</h2>
+    </div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>Revisão funcional verifica se a alteração atende à história ou ao requisito. Revisão de qualidade considera clareza, manutenção, tratamento de erros e convenções.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>Revisão de segurança pergunta se uma entrada maliciosa, um usuário com privilégios insuficientes ou uma mudança inesperada de estado pode causar acesso, processamento ou divulgação indevida.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <p>A OWASP diferencia revisão orientada à segurança de uma inspeção geral de código e recomenda analisar lógica, fluxo de dados e controles sensíveis.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <p>Exemplo concreto: um método <code>getOrder(id)</code> pode ser correto funcionalmente, ter tipos adequados e retornar status HTTP consistente. Mesmo assim, se um usuário autenticado receber um pedido que pertence a outro, há uma fraqueza de autorização. O erro não aparece em linters ou verificações de tipo.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ INTERAÇÃO 1 ═══════════════════════ -->
+<section class="cena" data-nome="Autenticação versus autorização" id="interacao-1">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Aplicação rápida · interação 1</p>
+      <h2>E agora, como você decidiria?</h2>
+    </div>
+    <div aria-label="Atividade de reforço conceitual" class="lab quiz"
+         data-correct="0"
+         data-explanation="Um token válido identifica o usuário, mas não lhe concede acesso automático ao pedido. É preciso relacionar sujeito, recurso e política de acesso.">
+      <div class="lab-cab">
+        <p class="eyebrow">para praticar</p>
+        <h3>Autenticação versus autorização</h3>
+      </div>
+      <p class="instrucao">Uma requisição apresenta um JWT válido e tenta consultar um pedido de outro cliente. Qual controle ainda precisa existir?</p>
+      <div aria-label="Alternativas" class="choices" role="group">
+        <button aria-pressed="false" class="choice" data-value="0" type="button">Autorização que considere o recurso e o sujeito</button>
+        <button aria-pressed="false" class="choice" data-value="1" type="button">Verificar novamente apenas a assinatura do JWT</button>
+        <button aria-pressed="false" class="choice" data-value="2" type="button">Validar somente o formato numérico do ID</button>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn prim check-answer" disabled type="button">Conferir resposta</button>
+        <button class="btn reset-answer" type="button">Refazer</button>
+      </div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 3: do risco ao achado ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: Do risco ao achado" id="conceito-3">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 3</p>
+      <h2>Do risco ao achado: ativo, ameaça, fraqueza e impacto</h2>
+    </div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>Quatro perguntas estruturam qualquer revisão:</p>
+          <ul>
+            <li>O que protegemos? (dados de pedidos, tokens, informações pessoais)</li>
+            <li>Quem interage? (usuário, serviço, administrador)</li>
+            <li>Por onde os dados entram? (parâmetro de rota, body, header, fila, variável de ambiente)</li>
+            <li>Qual controle deveria mediar a ação? (validação, autenticação, autorização, parametrização)</li>
+          </ul>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>Uma suspeita se torna achado defendido quando está associada a um trecho de código, uma condição de exploração e um efeito concreto. Padrão suspeito não é vulnerabilidade confirmada.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <p>Terminologia essencial:</p>
+          <ul>
+            <li>CWE cataloga classes de fraquezas de software</li>
+            <li>CVE identifica vulnerabilidades divulgadas em produtos específicos</li>
+            <li>CVSS descreve características e severidade de vulnerabilidades avaliadas</li>
+          </ul>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <p>OWASP Top 10 não é checklist completo de testes, mas documento de conscientização. A versão 2025 coloca controle de acesso quebrado em A01, injeção em A05 e falhas de autenticação em A07. Para critérios verificáveis, use o OWASP ASVS 5.0.0.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 2: fluxo da hipótese ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 2: Do ativo à evidência" id="visual-2">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Do ativo à evidência: o percurso de uma hipótese</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">FLUXO</span>
+        <h3>Cinco perguntas antes de concluir que encontrou uma vulnerabilidade</h3>
+      </div>
+
+      <div class="hypo-flow" aria-label="Percurso de uma hipótese">
+        <div class="hypo-step">
+          <div class="hypo-num">01</div>
+          <h4>Ativo</h4>
+          <p>O que precisamos proteger? Dados pessoais, tokens, registros financeiros?</p>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">02</div>
+          <h4>Entrada</h4>
+          <p>Como e por onde dados externos entram no sistema? Rota, body, header, fila?</p>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">03</div>
+          <h4>Fronteira</h4>
+          <p>Onde os dados mudam de nível de confiança? Qual camada recebe a entrada?</p>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">04</div>
+          <h4>Controle</h4>
+          <p>Qual regra deveria mediar o acesso? Está implementada e aplicada aqui?</p>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">05</div>
+          <h4>Impacto</h4>
+          <p>O que acontece sem a proteção? Para quem? Qual a consequência de negócio?</p>
+        </div>
+      </div>
+
+      <p class="viz-caption">Use esse percurso antes de registrar um achado. Uma suspeita sem condição de exploração e impacto documentado não está pronta para o relatório.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 3: taxonomias ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 3: Taxonomias" id="visual-3">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>As cinco referências não respondem à mesma pergunta</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">MAPA</span>
+        <h3>Qual ferramenta usar em cada momento da análise</h3>
+      </div>
+
+      <div class="taxo-grid" aria-label="Comparação das referências de segurança">
+        <div class="taxo-card tc-owasp">
+          <div class="tc-tag">OWASP Top 10</div>
+          <h4>Categorias de risco</h4>
+          <div class="tc-q">Pergunta: quais riscos priorizar?</div>
+          <p>Priorização de classes de riscos web. Não é checklist exaustivo nem garantia de verificação.</p>
+        </div>
+        <div class="taxo-card tc-cwe">
+          <div class="tc-tag">CWE</div>
+          <h4>Classe de fraqueza</h4>
+          <div class="tc-q">Pergunta: qual padrão está presente?</div>
+          <p>Descreve tipos de fraqueza no código. Use para classificar achados e relacionar a padrões conhecidos.</p>
+        </div>
+        <div class="taxo-card tc-cve">
+          <div class="tc-tag">CVE</div>
+          <h4>Vulnerabilidade divulgada</h4>
+          <div class="tc-q">Pergunta: já existe no produto X?</div>
+          <p>Identifica vulnerabilidades publicadas em produtos específicos. Não descreve código próprio.</p>
+        </div>
+        <div class="taxo-card tc-cvss">
+          <div class="tc-tag">CVSS</div>
+          <h4>Severidade</h4>
+          <div class="tc-q">Pergunta: qual a gravidade?</div>
+          <p>Descreve características e severidade. Útil para priorização; não substitui análise contextual.</p>
+        </div>
+        <div class="taxo-card tc-asvs">
+          <div class="tc-tag">OWASP ASVS</div>
+          <h4>Requisitos verificáveis</h4>
+          <div class="tc-q">Pergunta: o controle está implementado?</div>
+          <p>Critérios auditáveis por versão. Use para derivar requisitos de segurança com edição e ID.</p>
+        </div>
+      </div>
+
+      <p class="viz-caption">Categoria de risco, classe de fraqueza, vulnerabilidade registrada, severidade e requisito verificável são conceitos distintos. Usar um pelo outro produz relatórios imprecisos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ INTERAÇÃO 2 ═══════════════════════ -->
+<section class="cena" data-nome="Classificação de conceitos" id="interacao-2">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Aplicação rápida · interação 2</p>
+      <h2>E agora, como você decidiria?</h2>
+    </div>
+    <div aria-label="Atividade de reforço conceitual" class="lab quiz"
+         data-correct="1"
+         data-explanation="CWE organiza classes de fraquezas e CVE identifica vulnerabilidades divulgadas em produtos específicos. CVSS é usado para descrever severidade.">
+      <div class="lab-cab">
+        <p class="eyebrow">para praticar</p>
+        <h3>Classificação de conceitos</h3>
+      </div>
+      <p class="instrucao">Qual afirmação distingue melhor uma CWE de uma CVE?</p>
+      <div aria-label="Alternativas" class="choices" role="group">
+        <button aria-pressed="false" class="choice" data-value="0" type="button">CWE é o ID de um incidente e CVE um requisito de negócio</button>
+        <button aria-pressed="false" class="choice" data-value="1" type="button">CWE classifica tipos de fraqueza; CVE identifica vulnerabilidades divulgadas em produtos específicos</button>
+        <button aria-pressed="false" class="choice" data-value="2" type="button">Ambas são métricas numéricas de severidade</button>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn prim check-answer" disabled type="button">Conferir resposta</button>
+        <button class="btn reset-answer" type="button">Refazer</button>
+      </div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 4: autenticação ≠ autorização ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: Autenticação não é autorização" id="conceito-4">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 4</p>
+      <h2>Autenticação não é autorização</h2>
+    </div>
+    <div class="section-text">
+      <div class="distinction-box" aria-label="Comparação entre autenticação e autorização">
+        <div class="dist-side ds-authn">
+          <div class="ds-label">Autenticação</div>
+          <h4>Quem é o sujeito?</h4>
+          <p>Confirma a identidade. Um token válido garante que sabemos de quem se trata, mas não o que esse sujeito pode fazer.</p>
+          <ul>
+            <li>JWT assinado e verificado</li>
+            <li>Sessão ativa no servidor</li>
+            <li>Resultado: identidade confirmada</li>
+          </ul>
+        </div>
+        <div class="dist-side ds-authz">
+          <div class="ds-label">Autorização</div>
+          <h4>O que esse sujeito pode fazer?</h4>
+          <p>Decide permissões sobre cada recurso específico. Depende de papel, organização, propriedade e estado.</p>
+          <ul>
+            <li>Papel (CUSTOMER, APPROVER, MANAGER)</li>
+            <li>Organização do sujeito vs. do recurso</li>
+            <li>Propriedade do objeto (order.ownerId)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="learning-grid" style="margin-top:14px">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>Em APIs com identificadores na URL, verificar somente a existência do objeto não basta. É preciso relacioná-lo ao sujeito, seu papel e, eventualmente, à organização a que pertence. A MITRE documenta em CWE-639 o desvio de autorização por chave controlada pelo usuário.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>No laboratório, o login emite um JWT verificado criptograficamente. O servidor obtém a identidade do usuário validado. Isso não resolve, por si só, as decisões de autorização de cada pedido. Avalie papel, organização, propriedade e estado separadamente.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 4: fronteira de confiança (SVG melhorado) ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 4: Fronteira de confiança" id="visual-4">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>A autenticação não elimina a fronteira de confiança</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">DIAGRAMA</span>
+        <h3>Dois controles independentes para a mesma requisição</h3>
+      </div>
+
+      <div class="trust-diagram" role="img" aria-label="Diagrama mostrando cliente, fronteira de confiança, API com autenticação e autorização, e banco de dados">
+        <svg viewBox="0 0 820 300" xmlns="http://www.w3.org/2000/svg" font-family="Barlow, system-ui, sans-serif">
+          <defs>
+            <style>
+              /* Paleta clara (padrão) */
+              .sv-bg-cliente   { fill: #FFF0E2; stroke: #F07423; }
+              .sv-bg-clabel    { fill: #FFE7D6; }
+              .sv-bg-api       { fill: #FEF7EE; stroke: #C0A890; }
+              .sv-bg-authn     { fill: #FBEED6; stroke: #C9960F; }
+              .sv-bg-authz     { fill: #FFE7D6; stroke: #F07423; }
+              .sv-bg-indep     { fill: #FFD6C0; stroke: #F07423; }
+              .sv-bg-banco     { fill: #EFE7DF; stroke: #C0A890; }
+              .sv-txt-main     { fill: #402B22; }
+              .sv-txt-authn    { fill: #5A3200; }
+              .sv-txt-authn-h  { fill: #6B3D00; }
+              .sv-txt-authz    { fill: #702000; }
+              .sv-txt-authz-h  { fill: #8C3200; }
+              .sv-txt-indep-h  { fill: #8C2E00; }
+              .sv-txt-indep    { fill: #6B2000; }
+              .sv-txt-clabel   { fill: #8C3200; }
+              .sv-txt-border   { fill: #C74024; }
+              .sv-stroke-border { stroke: #C74024; fill: none; }
+              /* Modo escuro */
+              @media (prefers-color-scheme: dark) {
+                .sv-stroke-border { stroke: #FF7055; }
+                .sv-bg-cliente   { fill: #3A2010; stroke: #F07423; }
+                .sv-bg-clabel    { fill: #4A2A14; }
+                .sv-bg-api       { fill: #251C10; stroke: #7A6A58; }
+                .sv-bg-authn     { fill: #362200; stroke: #D9A020; }
+                .sv-bg-authz     { fill: #3A1600; stroke: #F07423; }
+                .sv-bg-indep     { fill: #3A1200; stroke: #F07423; }
+                .sv-bg-banco     { fill: #221A10; stroke: #7A6A58; }
+                .sv-txt-main     { fill: #F0D8BC; }
+                .sv-txt-authn    { fill: #FFB870; }
+                .sv-txt-authn-h  { fill: #FFD090; }
+                .sv-txt-authz    { fill: #FFA870; }
+                .sv-txt-authz-h  { fill: #FFBC90; }
+                .sv-txt-indep-h  { fill: #FFC080; }
+                .sv-txt-indep    { fill: #FFB070; }
+                .sv-txt-clabel   { fill: #FFAE80; }
+                .sv-txt-border   { fill: #FF7055; }
+              }
+              html[data-theme="dark"] .sv-bg-cliente   { fill: #3A2010; stroke: #F07423; }
+              html[data-theme="dark"] .sv-bg-clabel    { fill: #4A2A14; }
+              html[data-theme="dark"] .sv-bg-api       { fill: #251C10; stroke: #7A6A58; }
+              html[data-theme="dark"] .sv-bg-authn     { fill: #362200; stroke: #D9A020; }
+              html[data-theme="dark"] .sv-bg-authz     { fill: #3A1600; stroke: #F07423; }
+              html[data-theme="dark"] .sv-bg-indep     { fill: #3A1200; stroke: #F07423; }
+              html[data-theme="dark"] .sv-bg-banco     { fill: #221A10; stroke: #7A6A58; }
+              html[data-theme="dark"] .sv-txt-main     { fill: #F0D8BC; }
+              html[data-theme="dark"] .sv-txt-authn    { fill: #FFB870; }
+              html[data-theme="dark"] .sv-txt-authn-h  { fill: #FFD090; }
+              html[data-theme="dark"] .sv-txt-authz    { fill: #FFA870; }
+              html[data-theme="dark"] .sv-txt-authz-h  { fill: #FFBC90; }
+              html[data-theme="dark"] .sv-txt-indep-h  { fill: #FFC080; }
+              html[data-theme="dark"] .sv-txt-indep    { fill: #FFB070; }
+              html[data-theme="dark"] .sv-txt-clabel   { fill: #FFAE80; }
+              html[data-theme="dark"] .sv-txt-border   { fill: #FF7055; }
+              html[data-theme="dark"] .sv-stroke-border { stroke: #FF7055; }
+            </style>
+            <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#F07423"/>
+            </marker>
+            <marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#C74024"/>
+            </marker>
+          </defs>
+
+          <!-- cliente -->
+          <rect x="12" y="80" width="170" height="140" rx="14" stroke-width="2" class="sv-bg-cliente"/>
+          <text x="97" y="116" text-anchor="middle" font-size="17" font-weight="700" class="sv-txt-main">Cliente</text>
+          <text x="97" y="140" text-anchor="middle" font-size="14" class="sv-txt-main">Token JWT</text>
+          <text x="97" y="158" text-anchor="middle" font-size="14" class="sv-txt-main">+ id do pedido</text>
+          <!-- label "controlável pelo usuário" -->
+          <rect x="22" y="190" width="150" height="22" rx="6" class="sv-bg-clabel"/>
+          <text x="97" y="205" text-anchor="middle" font-size="12" font-weight="700" class="sv-txt-clabel">controlável pelo usuário</text>
+
+          <!-- seta cliente → API -->
+          <path d="M182 150 H230" fill="none" stroke="#F07423" stroke-width="2.5" marker-end="url(#arr)"/>
+
+          <!-- fronteira de confiança (linha tracejada) -->
+          <line x1="215" y1="30" x2="215" y2="270" stroke-width="2.5" stroke-dasharray="8 5" class="sv-stroke-border"/>
+          <text x="215" y="22" text-anchor="middle" font-size="13" font-weight="700" class="sv-txt-border">Fronteira de confiança</text>
+
+          <!-- API box -->
+          <rect x="234" y="62" width="340" height="176" rx="14" stroke-width="1.5" class="sv-bg-api"/>
+          <text x="404" y="88" text-anchor="middle" font-size="17" font-weight="700" class="sv-txt-main">API</text>
+
+          <!-- bloco autenticação -->
+          <rect x="250" y="98" width="140" height="68" rx="10" stroke-width="1.5" class="sv-bg-authn"/>
+          <text x="320" y="121" text-anchor="middle" font-size="13" font-weight="700" class="sv-txt-authn-h">Autenticação</text>
+          <text x="320" y="140" text-anchor="middle" font-size="13" class="sv-txt-authn">Verifica JWT</text>
+          <text x="320" y="156" text-anchor="middle" font-size="13" class="sv-txt-authn">Extrai identidade</text>
+
+          <!-- bloco autorização -->
+          <rect x="410" y="98" width="150" height="68" rx="10" stroke-width="1.5" class="sv-bg-authz"/>
+          <text x="485" y="121" text-anchor="middle" font-size="13" font-weight="700" class="sv-txt-authz-h">Autorização</text>
+          <text x="485" y="140" text-anchor="middle" font-size="13" class="sv-txt-authz">Papel + org.</text>
+          <text x="485" y="156" text-anchor="middle" font-size="13" class="sv-txt-authz">+ propriedade</text>
+
+          <!-- seta entre authn e authz -->
+          <path d="M390 132 H410" fill="none" stroke="#C74024" stroke-width="2" marker-end="url(#arr2)"/>
+
+          <!-- label "precisam ser independentes" -->
+          <rect x="250" y="180" width="310" height="44" rx="8" stroke-width="1.5" class="sv-bg-indep"/>
+          <text x="405" y="199" text-anchor="middle" font-size="12" font-weight="700" class="sv-txt-indep-h">Token válido ≠ acesso permitido ao recurso</text>
+          <text x="405" y="216" text-anchor="middle" font-size="12" class="sv-txt-indep">Cada controle tem escopo diferente</text>
+
+          <!-- seta API → banco -->
+          <path d="M574 150 H624" fill="none" stroke="#F07423" stroke-width="2.5" marker-end="url(#arr)"/>
+
+          <!-- banco -->
+          <rect x="628" y="80" width="170" height="140" rx="14" stroke-width="1.5" class="sv-bg-banco"/>
+          <text x="713" y="116" text-anchor="middle" font-size="17" font-weight="700" class="sv-txt-main">Banco</text>
+          <text x="713" y="140" text-anchor="middle" font-size="14" class="sv-txt-main">Pedido e</text>
+          <text x="713" y="158" text-anchor="middle" font-size="14" class="sv-txt-main">proprietário</text>
+        </svg>
+      </div>
+
+      <p class="viz-caption">O servidor precisa validar a identidade e, em seguida, decidir se a operação sobre cada recurso específico é permitida. São dois controles distintos que precisam coexistir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 5: injeção ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: Injeção" id="conceito-5">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 5</p>
+      <h2>Injeção: quando dados passam a ser interpretados como instruções</h2>
+    </div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>Uma falha de injeção ocorre quando dados não confiáveis alcançam um interpretador sem delimitação adequada entre conteúdo e comando. SQL construído por concatenação e execução de comando de sistema com texto controlado externamente são exemplos típicos.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>A correção preferencial é usar mecanismos estruturados e parametrizados, além de reduzir privilégios. Validação de entrada é defesa adicional, não substitui parametrização.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <p>Atenção: um padrão de construção insegura não prova, por si só, um ataque bem-sucedido. É preciso verificar se a string efetivamente chega ao banco sem parametrização e de onde ela vem.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <p>A análise estática pode sinalizar esse padrão com uma regra de taint; a revisão manual verifica se existe um fluxo real entre o dado externo e a chamada não parametrizada.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 5: código SQL, antes e depois ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 5: SQL, dado ou comando?" id="visual-5">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>SQL: dado ou comando? Interpolação versus parametrização</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">CÓDIGO COMENTADO</span>
+        <h3>O que muda entre as duas abordagens</h3>
+      </div>
+
+      <div class="case-split">
+        <div class="case-panel">
+          <div class="case-panel-head head-warn">Construção suspeita: interpolação</div>
+          <div class="case-panel-body">
+            <pre class="codigo"><code>// dado externo compõe o texto da instrução
+function findUser(username: string) {
+  const sql = `SELECT id FROM users
+    WHERE username = '${username}'`;
+  return db.query(sql);
+}</code></pre>
+            <p style="font-size:.88rem;color:var(--warn);margin-top:10px;line-height:1.5">O valor de <code>username</code> torna-se parte da instrução SQL. Se vier de entrada HTTP sem sanitização, abre espaço para injeção.</p>
+          </div>
+        </div>
+        <div class="case-panel">
+          <div class="case-panel-head head-safe">Consulta parametrizada (recomendada)</div>
+          <div class="case-panel-body">
+            <pre class="codigo"><code>// instrução e valor trafegam separadamente
+function findUser(username: string) {
+  const sql = 'SELECT id FROM users WHERE username = $1';
+  const params = [username];
+  return db.query(sql, params);
+}</code></pre>
+            <p style="font-size:.88rem;color:var(--good);margin-top:10px;line-height:1.5">O driver recebe instrução e valor separados. O interpretador não pode confundir dado com comando.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout orange" style="margin-top:14px">
+        <h3>O que verificar na revisão</h3>
+        <p>Encontrar o padrão de interpolação não prova exploração. Rastreie: de onde vem o valor? Passa por alguma sanitização antes? Existe outro mecanismo que parametrize a chamada?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONCEITO 6: o que a revisão manual vê ═══════════════════════ -->
+<section class="cena" data-nome="Conceito: O que a revisão manual vê que uma ferramenta pode perder" id="conceito-6">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 6</p>
+      <h2>O que a revisão manual vê que uma ferramenta pode perder</h2>
+    </div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <p>A revisão manual relaciona regras de negócio, estados, papéis e intenções de design. Uma ferramenta reconhece operações perigosas e fluxos configurados, mas não compreende automaticamente toda política organizacional.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <p>O estudo de Braz e Bacchelli identifica dificuldades de desenvolvedores para avaliar segurança em revisões e reforça a necessidade de treinamento específico. Isso motiva a dinâmica desta disciplina: primeiro o olhar humano, depois o alerta automatizado.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <p>Por outro lado, ferramentas cobrem escala e consistência: varrem todo o repositório sem fadiga, seguem regras declaradas e produzem resultados repetíveis em diferentes versões do código. A revisão humana não tem a mesma escala.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <p>A conclusão prática é que nem ausência de alerta confirma ausência de vulnerabilidade, nem presença de alerta confirma vulnerabilidade explorável. Ambas as abordagens precisam de julgamento contextual.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ VISUAL 6: lentes complementares ═══════════════════════ -->
+<section class="cena viz-scene" data-nome="Visual 6: Revisão manual e SAST são complementares" id="visual-6">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Revisão manual e SAST: o que cada uma cobre</h2>
+    </div>
+    <div class="visual-panel">
+      <div class="viz-heading">
+        <span class="viz-mark">CONTRASTE</span>
+        <h3>Pontos fortes e lacunas das duas abordagens</h3>
+      </div>
+
+      <div class="vtable-scroll">
+        <table class="visual-table">
+          <thead>
+            <tr>
+              <th>Dimensão</th>
+              <th>Revisão manual</th>
+              <th>SAST / Semgrep / CodeQL</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Regras de negócio</td>
+              <td>Consegue relacionar política, estado e intenção de design</td>
+              <td>Não interpreta política organizacional não codificada</td>
+            </tr>
+            <tr>
+              <td>Escala</td>
+              <td>Limitada pela capacidade e atenção humana</td>
+              <td>Varre repositório completo de forma consistente</td>
+            </tr>
+            <tr>
+              <td>Padrões conhecidos</td>
+              <td>Depende do conhecimento do revisor</td>
+              <td>Aplica regras declaradas com precisão e repetibilidade</td>
+            </tr>
+            <tr>
+              <td>Fluxo de dados intermodular</td>
+              <td>Requer rastreamento manual entre funções</td>
+              <td>Pode modelar source → sink entre módulos (CodeQL)</td>
+            </tr>
+            <tr>
+              <td>Falsos positivos</td>
+              <td>Menor, com contexto adequado</td>
+              <td>Presente; exige triagem por quem entende o contexto</td>
+            </tr>
+            <tr>
+              <td>Falsos negativos</td>
+              <td>Presente; fadiga, viés e escopo incompleto</td>
+              <td>Presente; regras cobrindo só padrões declarados</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="viz-caption">A ausência de alerta não confirma a ausência de vulnerabilidades, e a presença de alerta não confirma exploração. Ambas as abordagens são complementares.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ INTERAÇÃO 3 ═══════════════════════ -->
+<section class="cena" data-nome="Padrão de injeção" id="interacao-3">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Aplicação rápida · interação 3</p>
+      <h2>E agora, como você decidiria?</h2>
+    </div>
+    <div aria-label="Atividade de reforço conceitual" class="lab quiz"
+         data-correct="1"
+         data-explanation="A concatenação sinaliza risco; confirmar a vulnerabilidade exige compreender o fluxo até o interpretador e os controles efetivos sobre o dado.">
+      <div class="lab-cab">
+        <p class="eyebrow">para praticar</p>
+        <h3>Padrão de injeção</h3>
+      </div>
+      <p class="instrucao">Um código concatena diretamente um parâmetro HTTP em um comando SQL. Qual é a avaliação adequada?</p>
+      <div aria-label="Alternativas" class="choices" role="group">
+        <button aria-pressed="false" class="choice" data-value="0" type="button">A compilação TypeScript elimina qualquer risco</button>
+        <button aria-pressed="false" class="choice" data-value="1" type="button">Há um padrão potencialmente inseguro; é preciso verificar se o texto chega ao interpretador sem parametrização</button>
+        <button aria-pressed="false" class="choice" data-value="2" type="button">Só existe problema se o valor for armazenado em JWT</button>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn prim check-answer" disabled type="button">Conferir resposta</button>
+        <button class="btn reset-answer" type="button">Refazer</button>
+      </div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ INTERAÇÃO 4 ═══════════════════════ -->
+<section class="cena" data-nome="Revisão de segurança" id="interacao-4">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Aplicação rápida · interação 4</p>
+      <h2>Aplique o conceito ao cenário</h2>
+    </div>
+    <div aria-label="Atividade de reforço conceitual" class="lab quiz"
+         data-correct="1"
+         data-explanation="Conformidade funcional e tipagem não demonstram que uma ação é autorizada para todos os sujeitos e contextos.">
+      <div class="lab-cab">
+        <p class="eyebrow">para praticar</p>
+        <h3>Revisão de segurança</h3>
+      </div>
+      <p class="instrucao">O código retorna HTTP 200, tem tipos corretos e passa no lint. O que ainda pode estar errado?</p>
+      <div aria-label="Alternativas" class="choices" role="group">
+        <button aria-pressed="false" class="choice" data-value="0" type="button">Nada, pois qualidade implica segurança</button>
+        <button aria-pressed="false" class="choice" data-value="1" type="button">Uma regra de autorização ou de negócio pode ser violada</button>
+        <button aria-pressed="false" class="choice" data-value="2" type="button">Apenas o nome da variável</button>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn prim check-answer" disabled type="button">Conferir resposta</button>
+        <button class="btn reset-answer" type="button">Refazer</button>
+      </div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ESTUDO DE CASO ═══════════════════════ -->
+<section class="cena" data-nome="Caso para discussão" id="estudo-caso">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Exemplo comentado</p>
+      <h2>Não basta localizar uma função: interprete o contexto</h2>
+    </div>
+    <div class="lab">
+      <div class="lab-cab">
+        <p class="eyebrow">Estudo de caso independente</p>
+        <h3>Exemplo isolado: consulta SQL</h3>
+      </div>
+      <p class="instrucao">Leia o trecho, formule uma hipótese e só então abra a análise comentada.</p>
+      <pre class="codigo"><code>function findUser(email: string) {
+  const query = `SELECT id FROM users WHERE email = '${email}'`;
+  return db.query(query);
+}</code></pre>
+      <details class="conta">
+        <summary>Mostrar discussão orientadora</summary>
+        <div class="corpo">
+          <p><strong>Perguntas que orientam a análise:</strong></p>
+          <ul style="margin:.6rem 0 0;padding-left:1.3rem;line-height:1.65">
+            <li>Qual é a origem de <code>email</code>? Vem de uma requisição HTTP, de um arquivo de configuração ou de outro lugar?</li>
+            <li>A consulta enviada ao banco é parametrizada ou contém texto interpolado?</li>
+            <li>Existe algum controle entre a origem do dado e essa chamada que sanitize ou escape o valor?</li>
+          </ul>
+          <p style="margin-top:.8rem">O padrão de interpolação é suspeito, mas a confirmação exige rastrear o fluxo do dado. Não confunda padrão suspeito com exploração demonstrada.</p>
+          <p class="ref-nota">Este exemplo é independente da API avaliada no projeto.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ REGISTRO DE IDEIAS ═══════════════════════ -->
+<section class="cena" data-nome="Registro de ideias" id="anotacoes">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Reflexão individual ou em dupla</p>
+      <h2>Explique antes de concluir</h2>
+    </div>
+    <div class="lab" data-journal="">
+      <div class="lab-cab">
+        <p class="eyebrow">Pausa para discussão</p>
+        <h3>Registre uma hipótese em suas palavras</h3>
+      </div>
+      <p class="instrucao">Escreva uma justificativa breve sobre o conceito da aula. A anotação é local e opcional; copie-a se desejar guardar.</p>
+      <textarea aria-label="Seu rascunho" class="journal" placeholder="Qual hipótese você levantaria? Que evidência faltaria para confirmá-la? Qual a diferença entre o alerta da ferramenta e um achado confirmado?"></textarea>
+      <div class="actions-row">
+        <button class="btn prim" data-copy type="button">Copiar meu rascunho</button>
+        <button class="btn" data-clear type="button">Limpar</button>
+        <span class="note-local" role="status"></span>
+      </div>
+      <p class="note-local">Não há envio de respostas nem coleta de dados nesta atividade.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ORIENTAÇÕES DO LABORATÓRIO ═══════════════════════ -->
+<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Aplicação no projeto real</p>
+      <h2>Etapa 1 · Reconhecimento do projeto</h2>
+    </div>
+    <div class="lab projeto">
+      <div class="lab-cab">
+        <p class="eyebrow">Projeto integrador · Atividade orientada</p>
+        <h3>Etapa 1 · Reconhecimento do projeto</h3>
+      </div>
+      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
+
+      <ul class="check-list">
+        <li><span>Registrar a composição da equipe no Moodle e acessar o repositório privado atribuído.</span></li>
+        <li><span>Executar <code>npm run doctor</code>, <code>npm run setup</code> e <code>npm run dev</code> quando possível; utilizar leitura pelo navegador se houver dificuldade de ambiente.</span></li>
+        <li><span>Ler os requisitos de negócio e identificar atores, organizações, papéis (CUSTOMER, APPROVER, MANAGER), endpoints e fluxos de confiança.</span></li>
+        <li><span>Mapear as rotas disponíveis e relacioná-las a quais recursos expõem e quais papéis deveriam acessá-las.</span></li>
+        <li><span>Produzir três hipóteses fundamentadas e preservar a referência do commit inicial. <strong>Não corrigir nem usar SAST ou IA nesta etapa.</strong></span></li>
+      </ul>
+
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Registro esperado</h3>
+        <p><code>entregas/01_inventario.md</code>: registro de acompanhamento, não entrega de nota. Inclua: equipe, commit inspecionado, atores mapeados e três hipóteses com localização no código.</p>
+      </div>
+
+      <div class="lab-links">
+        <a aria-label="Abrir ambiente oficial quando o endereço estiver configurado" class="btn" data-target="githubOrganization">Repositórios GitHub</a>
+        <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ REFERÊNCIAS ═══════════════════════ -->
+<section class="cena" data-nome="Referências" id="referencias">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Bibliografia da aula</p>
+      <h2>Continue o estudo pelas fontes indicadas</h2>
+    </div>
+    <ul class="fonte-lista">
+      <li id="ref-1">
+        <p><strong>Livro:</strong> MCGRAW, Gary. <em>Software Security: Building Security In</em>. Addison-Wesley, 2006. ISBN 978-0-321-35670-3.
+        Conceito de práticas de segurança integradas ao desenvolvimento.
+        <a href="https://www.oreilly.com/library/view/software-security-building/0321356705/">oreilly.com</a></p>
+      </li>
+      <li id="ref-2">
+        <p><strong>Documento técnico:</strong> SOUPPAYA, M.; SCARFONE, K.; DODSON, D. <em>NIST SP 800-218, Secure Software Development Framework (SSDF) v1.1</em>. NIST, 2022.
+        <a href="https://doi.org/10.6028/NIST.SP.800-218">doi.org/10.6028/NIST.SP.800-218</a></p>
+      </li>
+      <li id="ref-3">
+        <p><strong>Documento técnico:</strong> BLACK, P.; GUTTMAN, B.; OKUN, V. <em>NIST IR 8397: Guidelines on Minimum Standards for Developer Verification of Software</em>. NIST, 2021.
+        <a href="https://doi.org/10.6028/NIST.IR.8397">doi.org/10.6028/NIST.IR.8397</a></p>
+      </li>
+      <li id="ref-4">
+        <p><strong>Guia técnico:</strong> OWASP. <em>Secure Code Review Cheat Sheet</em>.
+        <a href="https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html">cheatsheetseries.owasp.org</a></p>
+      </li>
+      <li id="ref-5">
+        <p><strong>Referência de riscos:</strong> OWASP. <em>Top 10:2025</em>. Categorias A01, A05 e A07.
+        <a href="https://top10.owasp.org/2025/pt-BR/">top10.owasp.org</a></p>
+      </li>
+      <li id="ref-6">
+        <p><strong>Padrão de verificação:</strong> OWASP. <em>Application Security Verification Standard, v5.0.0</em>. 2025.
+        <a href="https://asvs.owasp.org/">asvs.owasp.org</a></p>
+      </li>
+      <li id="ref-7">
+        <p><strong>Taxonomia:</strong> MITRE. <em>CWE-639: Authorization Bypass Through User-Controlled Key</em>. Contexto de IDOR.
+        <a href="https://cwe.mitre.org/data/definitions/639.html">cwe.mitre.org/639</a></p>
+      </li>
+      <li id="ref-8">
+        <p><strong>Taxonomia:</strong> MITRE. <em>CWE-89: Improper Neutralization of Special Elements used in an SQL Command</em>. Exemplo de injeção SQL.
+        <a href="https://cwe.mitre.org/data/definitions/89.html">cwe.mitre.org/89</a></p>
+      </li>
+      <li id="ref-9">
+        <p><strong>Artigo científico:</strong> BRAZ, Larissa; BACCHELLI, Alberto. <em>Software Security during Modern Code Review: The Developer's Perspective</em>. ACM FSE, 2022.
+        <a href="https://doi.org/10.1145/3540250.3549135">doi.org/10.1145/3540250.3549135</a></p>
+      </li>
+    </ul>
+    <p class="note-local">Consulte as fontes originais para aprofundar o conteúdo e conferir as recomendações.</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ ENCERRAMENTO ═══════════════════════ -->
+<section class="cena fecho" data-nome="Encerramento" id="encerramento">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Síntese</p>
+      <h2>O conceito fica. A investigação continua.</h2>
+      <p class="lede" style="color:#E9DED2">Autenticação e autorização são controles distintos. Padrão suspeito não é vulnerabilidade confirmada. Revisão manual e ferramentas se complementam. Registre as hipóteses do projeto com evidências e preserve o commit inicial.</p>
+    </div>
+    <div class="actions-row">
+      <a class="btn prim" href="aula-02.html" style="color:white">Avançar ao encontro 02</a>
+      <a class="btn" href="../guia/">Guia de estudo</a>
+      <a class="btn" href="../index.html">Início</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Controles do modo aula -->
+<div aria-label="Controles do modo aula" class="controles">
+  <button aria-label="Seção anterior" class="btn" id="antes" type="button">←</button>
+  <span class="cont num" id="contador"></span>
+  <button aria-label="Próxima seção" class="btn" id="depois" type="button">→</button>
+  <button class="btn" id="cheia" type="button">Tela cheia</button>
+</div>
+
+<script>
+(function () {
+  var LAYERS = {
+    infra: {
+      title: 'Infraestrutura',
+      scope: 'Protege o canal de comunicação e reduz a superfície de ataque de rede.',
+      examples: [
+        'Firewall bloqueando portas não usadas pela aplicação',
+        'HTTPS garantindo confidencialidade e integridade do tráfego',
+        'WAF filtrando padrões conhecidos de ataque na camada HTTP',
+        'Rate limiting impedindo força bruta em endpoints públicos',
+      ],
+      limit: 'Não verifica identidade nem decide o que um usuário autenticado pode acessar. Uma requisição com HTTPS válido ainda pode acessar dados de outro usuário se a autorização estiver ausente no código.',
+    },
+    authn: {
+      title: 'Autenticação',
+      scope: 'Verifica a identidade do sujeito da requisição.',
+      examples: [
+        'Validação da assinatura e da expiração do JWT',
+        'Extração do userId e da organização do payload do token',
+        'MFA exigido para operações sensíveis',
+      ],
+      limit: 'Responde apenas "quem é?". Não decide se esse sujeito pode operar sobre o recurso específico solicitado.',
+      code: '// Autenticação: verifica o token\nconst decoded = jwt.verify(token, SECRET);\nconst { userId, org } = decoded;\n// ← ainda não sabe se pode acessar o pedido #42',
+    },
+    authz: {
+      title: 'Autorização',
+      scope: 'Decide se o sujeito identificado pode executar a operação sobre o recurso específico.',
+      examples: [
+        'Verificar se o pedido pertence à organização do usuário autenticado',
+        'Confirmar que o papel (CUSTOMER, APPROVER) permite a ação solicitada',
+        'Rejeitar acesso quando orderId não corresponde ao tenant do token',
+      ],
+      limit: 'Pode estar ausente em endpoints legados, fragmentada em múltiplos locais ou confundida com autenticação.',
+      code: '// Autorização: verifica o recurso\nconst order = await orderRepo.findById(orderId);\nif (order.orgId !== decoded.org) throw new ForbiddenError();\n// ← autenticação + autorização são dois controles distintos',
+    },
+    biz: {
+      title: 'Regras de negócio',
+      scope: 'Valida que a operação faz sentido dentro do domínio do negócio.',
+      examples: [
+        'Pedido só pode ser aprovado se estiver no estado PENDING',
+        'Transferência não pode exceder o saldo disponível da conta',
+        'Aprovação requer papel APPROVER e pertencer à mesma organização',
+      ],
+      limit: 'Mesmo com autenticação e autorização corretas, ignorar as regras de negócio pode permitir transições de estado inválidas ou operações fora do contexto esperado.',
+    },
+  };
+
+  var overlay = document.getElementById('layer-overlay');
+  var buttons = document.querySelectorAll('[data-layer]');
+  var active = null;
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function open(btn) {
+    var key = btn.dataset.layer;
+    var d = LAYERS[key];
+    if (!d) return;
+    if (active === btn) { close(); return; }
+    active = btn;
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-expanded', b === btn ? 'true' : 'false');
+    });
+    var items = d.examples.map(function (e) { return '<li>' + esc(e) + '</li>'; }).join('');
+    var codeBlock = d.code
+      ? '<p class="layer-ov-label" style="margin-top:14px">Exemplo de código</p><div class="layer-ov-code">' + esc(d.code) + '</div>'
+      : '';
+    overlay.innerHTML =
+      '<button class="layer-ov-close" aria-label="Fechar">✕</button>' +
+      '<p class="layer-ov-title">' + esc(d.title) + '</p>' +
+      '<p class="layer-ov-scope">' + esc(d.scope) + '</p>' +
+      '<p class="layer-ov-label">Exemplos</p>' +
+      '<ul class="layer-ov-examples">' + items + '</ul>' +
+      '<p class="layer-ov-label">Limitação</p>' +
+      '<p class="layer-ov-limit">' + esc(d.limit) + '</p>' +
+      codeBlock;
+    overlay.removeAttribute('hidden');
+    overlay.querySelector('.layer-ov-close').addEventListener('click', close);
+    if (window.innerWidth < 760) {
+      setTimeout(function () {
+        overlay.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 60);
+    }
+  }
+
+  function close() {
+    overlay.setAttribute('hidden', '');
+    buttons.forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+    active = null;
+  }
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () { open(btn); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && active) close();
+  });
+})();
+</script>
+
+</body>
+</html>

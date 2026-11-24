@@ -1,0 +1,565 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#FEF7EE" name="theme-color"/>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="Regras, AST, padrões, alertas, falsos positivos e falsos negativos, com triagem e criação de uma regra simples."/>
+  <title>Encontro 03 · SAST com Semgrep | CESAR School</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="../assets/css/laura-aulas.css" rel="stylesheet"/>
+  <link href="../assets/css/adaptacao.css" rel="stylesheet"/>
+  <link href="../assets/css/pedagogia-visual.css" rel="stylesheet"/>
+  <link href="../assets/css/melhorias.css" rel="stylesheet"/>
+  <script defer src="../assets/js/config.js"></script>
+  <script defer src="../assets/js/site.js"></script>
+</head>
+<body>
+<header class="topo"><div class="wrap">
+  <a aria-label="Início" href="../index.html" style="color:inherit;display:block"><span aria-label="CESAR School" class="logo" role="img"></span></a>
+  <div class="topo-titulo">Encontro 03 · SAST com Semgrep<small>Revisão de Código e Análise Estática · Especialização em Cibersegurança</small></div>
+  <div class="topo-acoes">
+    <a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Início</a>
+    <select aria-label="Ir diretamente a uma seção" id="irpara"></select>
+    <button aria-pressed="false" class="btn" id="btnAula" type="button">Modo aula</button>
+  </div>
+</div></header>
+<main>
+
+<section class="cena capa" data-nome="Capa" id="capa">
+  <div class="forma f1"></div><div class="forma f2"></div><div class="forma f3"></div><div class="forma f4"></div><div class="forma f5"></div>
+  <div class="wrap"><span aria-label="CESAR School" class="logo" role="img"></span>
+    <h1>Revisão de código e análise estática automatizada</h1>
+    <p class="sub">Encontro 03 · SAST com Semgrep</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WARM-UP 03 ═══════════════════════ -->
+<section class="cena" data-nome="Warm-up" id="warmup">
+<style>
+.wu-provoc{background:var(--sunk);border-left:5px solid var(--orange);border-radius:0 12px 12px 0;padding:22px 26px;margin:0 0 6px}
+.wu-provoc p{margin:0 0 10px;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.wu-provoc p:last-child{margin:0}
+.wu-provoc strong{color:var(--orange-ink)}
+.wu-caso{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px}
+.wu-caso .eyebrow{margin-bottom:6px}
+.wu-caso p{margin:0 0 8px;font-size:.93rem;color:var(--ink-2);line-height:1.6}
+.wu-caso p:last-child{margin:0}
+.wu-caso a{color:var(--orange-ink)}
+.wu-choices{display:grid;gap:10px;margin:16px 0 0}
+.wu-choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .14s,background .14s;line-height:1.5}
+.wu-choice:hover,.wu-choice:focus-visible{border-color:var(--orange)}
+.wu-choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.wu-feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.6;font-size:.95rem;color:var(--ink)}
+.wu-feedback[hidden]{display:none}
+.wu-fechamento{background:var(--sunk);border-radius:14px;padding:20px 24px}
+.wu-fechamento p{margin:0;font-size:1rem;line-height:1.65;color:var(--ink)}
+.wu-fechamento strong{color:var(--orange-ink)}
+/* Triagem */
+.triage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin:14px 0}
+.triage-card{border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+.triage-head{padding:10px 14px;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--sunk);border-bottom:1.5px solid var(--line);color:var(--ink-2)}
+.triage-body{padding:14px 16px;background:var(--surface)}
+.triage-body pre{background:#22201E;color:#F3EADF;border-radius:8px;padding:.6rem .9rem;font-size:.77rem;line-height:1.6;overflow-x:auto;white-space:pre;margin:0 0 10px;font-family:var(--f-mono)}
+.triage-ctx{font-size:.83rem;color:var(--muted);margin:0 0 10px}
+.triage-select{font:inherit;width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);cursor:pointer}
+.triage-explain{font-size:.85rem;line-height:1.5;padding:10px 12px;border-radius:8px;margin-top:8px}
+.triage-explain[hidden]{display:none}
+.triage-explain.vuln{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
+.triage-explain.inv{background:var(--sunk);color:var(--ink-2);border:1px solid var(--line)}
+.triage-explain.safe{background:var(--good-soft);color:var(--good);border:1px solid var(--good)}
+/* Métricas */
+.metrics-table{width:100%;border-collapse:collapse;font-size:.9rem;margin:14px 0}
+.metrics-table th,.metrics-table td{border:1px solid var(--line);padding:10px 14px;text-align:left}
+.metrics-table th{background:var(--sunk);font-weight:700}
+.metrics-bar-wrap{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.metrics-bar-col{font-size:.85rem}
+.metrics-bar-col strong{display:block;margin-bottom:8px}
+.bar-track{background:var(--sunk);border-radius:999px;height:18px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:999px;transition:width .4s ease}
+.bar-fill.confirmed{background:var(--good)}
+.bar-fill.unconf{background:var(--warn)}
+.bar-label{font-size:.8rem;color:var(--ink-2);margin-top:4px}
+</style>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Warm-up · 15 minutos</p>
+      <h2>A ferramenta encontrou uma vulnerabilidade. Será?</h2>
+    </div>
+
+    <div class="wu-caso">
+      <p class="eyebrow">Referência · Google Static Analysis Tools, 2018</p>
+      <p>Sadowski et al. (2018) descrevem a experiência de incorporar análise estática ao processo de desenvolvimento no Google, enfatizando a necessidade de produzir resultados <em>úteis e relevantes</em> para quem recebe os alertas.</p>
+      <p><a href="https://doi.org/10.1145/3188720" target="_blank" rel="noopener">DOI: 10.1145/3188720</a></p>
+    </div>
+
+    <div class="wu-provoc">
+      <p>Uma ferramenta analisou milhares de linhas de código e encontrou <strong>120 alertas</strong>. Outra analisou o mesmo projeto e encontrou apenas <strong>15</strong>.</p>
+      <p><strong>Qual delas fez o melhor trabalho?</strong></p>
+    </div>
+
+    <!-- Interação 1: Triagem -->
+    <div class="cartao">
+      <p class="eyebrow">Triagem de alertas</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Classifique cada trecho. Use o menu abaixo de cada alerta e depois revele a análise.</p>
+      <div class="triage-grid">
+        <div class="triage-card">
+          <div class="triage-head">Alerta A</div>
+          <div class="triage-body">
+<pre>const sql = `SELECT * FROM users
+  WHERE id = ${id}`;
+await prisma.$queryRawUnsafe(sql);</pre>
+            <p class="triage-ctx">Contexto: <code>id</code> recebido de requisição HTTP.</p>
+            <select class="triage-select" id="triage-a">
+              <option value="">Selecionar classificação…</option>
+              <option value="vuln">Vulnerabilidade provável</option>
+              <option value="inv">Requer investigação</option>
+              <option value="safe">Padrão protegido</option>
+            </select>
+            <div class="triage-explain vuln" id="triage-a-ex" hidden>
+              <strong>Vulnerabilidade provável.</strong> Valor controlável externamente incorporado a SQL sem parametrização.
+            </div>
+          </div>
+        </div>
+        <div class="triage-card">
+          <div class="triage-head">Alerta B</div>
+          <div class="triage-body">
+<pre>exec("date", (error, stdout) => {
+  console.log(stdout);
+});</pre>
+            <p class="triage-ctx">Contexto: argumento constante, sem entrada de requisição compondo o comando.</p>
+            <select class="triage-select" id="triage-b">
+              <option value="">Selecionar classificação…</option>
+              <option value="vuln">Vulnerabilidade provável</option>
+              <option value="inv">Requer investigação</option>
+              <option value="safe">Padrão protegido</option>
+            </select>
+            <div class="triage-explain inv" id="triage-b-ex" hidden>
+              <strong>Requer investigação.</strong> Uso de <code>exec</code> merece atenção, mas argumento constante não comprova injeção de comandos no cenário descrito.
+            </div>
+          </div>
+        </div>
+        <div class="triage-card">
+          <div class="triage-head">Alerta C</div>
+          <div class="triage-body">
+<pre>await prisma.$queryRaw`
+  SELECT * FROM users
+  WHERE id = ${id}
+`;</pre>
+            <p class="triage-ctx">Contexto: template tagged do Prisma, com valor parametrizado.</p>
+            <select class="triage-select" id="triage-c">
+              <option value="">Selecionar classificação…</option>
+              <option value="vuln">Vulnerabilidade provável</option>
+              <option value="inv">Requer investigação</option>
+              <option value="safe">Padrão protegido</option>
+            </select>
+            <div class="triage-explain safe" id="triage-c-ex" hidden>
+              <strong>Padrão protegido</strong> contra a injeção examinada. A parametrização separa o valor da estrutura da consulta. "Padrão protegido" não significa "aplicação inteiramente segura".
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-actions" style="margin-top:4px">
+        <button class="btn" id="triage-reveal">Revelar análise de todos</button>
+      </div>
+    </div>
+
+    <!-- Interação 2: Métricas -->
+    <div class="cartao">
+      <p class="eyebrow">Qual ferramenta foi mais precisa?</p>
+      <p style="margin:0 0 4px;font-size:.82rem;color:var(--muted)">Dados hipotéticos e fictícios, apenas para fins didáticos.</p>
+      <table class="metrics-table">
+        <thead>
+          <tr><th>Indicador</th><th>Ferramenta A</th><th>Ferramenta B</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Alertas identificados</td><td>100</td><td>25</td></tr>
+          <tr><td>Vulnerabilidades confirmadas</td><td>12</td><td>18</td></tr>
+          <tr><td>Alertas sem confirmação</td><td>88</td><td>7</td></tr>
+        </tbody>
+      </table>
+      <div class="metrics-bar-wrap">
+        <div class="metrics-bar-col">
+          <strong>Ferramenta A (100 alertas)</strong>
+          <div class="bar-track"><div class="bar-fill confirmed" style="width:12%"></div></div>
+          <div class="bar-label">12% confirmados (12 de 100)</div>
+          <div class="bar-track" style="margin-top:6px"><div class="bar-fill unconf" style="width:88%"></div></div>
+          <div class="bar-label">88% sem confirmação</div>
+        </div>
+        <div class="metrics-bar-col">
+          <strong>Ferramenta B (25 alertas)</strong>
+          <div class="bar-track"><div class="bar-fill confirmed" style="width:72%"></div></div>
+          <div class="bar-label">72% confirmados (18 de 25)</div>
+          <div class="bar-track" style="margin-top:6px"><div class="bar-fill unconf" style="width:28%"></div></div>
+          <div class="bar-label">28% sem confirmação</div>
+        </div>
+      </div>
+      <div class="wu-feedback" style="margin-top:14px;border-left-color:var(--good);background:var(--good-soft)">
+        <strong>Ferramenta B</strong> apresentou conjunto mais preciso para este recorte. Atenção: não conhecemos as vulnerabilidades que cada ferramenta deixou de identificar; não é possível afirmar qual teve maior <em>cobertura (revocação)</em>.
+      </div>
+    </div>
+
+    <div class="wu-fechamento">
+      <p><strong>Ferramentas automatizadas encontram evidências e padrões. Cabe ao analista interpretar o significado deles no contexto da aplicação.</strong> A partir daqui: SAST, Semgrep, regras personalizadas, falsos positivos e falsos negativos.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var CORRECT={a:'vuln',b:'inv',c:'safe'};
+  ['a','b','c'].forEach(function(k){
+    document.getElementById('triage-'+k).addEventListener('change',function(){
+      /* feedback imediato ao selecionar */
+    });
+  });
+  document.getElementById('triage-reveal').addEventListener('click',function(){
+    ['a','b','c'].forEach(function(k){
+      var sel=document.getElementById('triage-'+k);
+      var ex=document.getElementById('triage-'+k+'-ex');
+      ex.removeAttribute('hidden');
+      if(sel.value===CORRECT[k]){sel.style.borderColor='var(--good)'}
+      else if(sel.value){sel.style.borderColor='var(--warn)'}
+    });
+    this.disabled=true;
+  });
+})();
+</script>
+
+<section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Antes de começar</p><h2>Da varredura automática à decisão fundamentada</h2></div>
+    <p class="lede">Regras, AST, padrões, alertas, falsos positivos e falsos negativos, com triagem e criação de uma regra simples.</p>
+    <div class="obj-grid">
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>Distinguir análise estática de análise dinâmica e de SCA</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><p>Compreender como o Semgrep representa código como AST para aplicar regras de padrão</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><p>Classificar alertas como verdadeiro positivo, falso positivo ou falso negativo com justificativa</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><p>Escrever uma regra Semgrep simples com caso positivo e caso negativo</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>Registrar resultados com ferramenta, versão, regra, arquivo, linha e decisão de triagem</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><p>Entregar a revisão manual parcial formal no Moodle conforme o plano de ensino</p></div>
+    </div>
+    <div class="cartao" style="margin-top:14px"><h3>Como participar</h3><p>Explore os exemplos, responda às questões e consulte as explicações. As entregas oficiais ficam no Moodle.</p></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: O que é e o que não é análise estática" id="conceito-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 1</p><h2>O que é e o que não é análise estática</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Análise estática examina representações do programa sem executar os fluxos operacionais. Pode trabalhar com texto, tokens, árvore sintática abstrata (AST), tipos, grafo de chamadas e grafo de fluxo de dados.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Diferente de uma chamada HTTP contra uma aplicação em execução (DAST), o SAST procura padrões ou relações no código disponível. Permite verificações repetíveis em repositórios, mas impõe limites sobre ambientes dinâmicos.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>SAST não equivale a SCA: a primeira examina o código da aplicação; a segunda examina componentes e dependências. SAST não equivale a secret scanning, embora determinadas ferramentas detectem literais suspeitos.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Chess e West discutem como integrar análise estática à revisão e por que encontrar defeitos potenciais demanda interpretação. O NIST IR 8397 recomenda varreduras estáticas para localizar classes de problemas, mas não as apresenta como método exclusivo.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 1: SAST vs DAST vs SCA" id="visual-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Três técnicas com escopos diferentes</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">CONTRASTE</span><h3>O que cada abordagem realmente analisa</h3></div>
+      <div class="vtable-scroll"><table class="visual-table">
+        <thead><tr><th>Técnica</th><th>Material analisado</th><th>Ponto forte</th><th>Limitação principal</th></tr></thead>
+        <tbody>
+          <tr><td>SAST</td><td>Código fonte / AST sem execução</td><td>Cobertura de padrões em todo o repositório</td><td>Política de negócio não modelada</td></tr>
+          <tr><td>DAST</td><td>Aplicação em execução</td><td>Comportamento real sob entradas adversariais</td><td>Cobertura depende de testes e estados alcançados</td></tr>
+          <tr><td>SCA</td><td>Dependências e componentes</td><td>CVEs conhecidos em bibliotecas externas</td><td>Não analisa toda a lógica autoral</td></tr>
+          <tr><td>Secret scanning</td><td>Padrões de segredos no código</td><td>Detecta chaves e tokens expostos</td><td>Pode confundir exemplo didático com segredo real</td></tr>
+        </tbody>
+      </table></div>
+      <p class="viz-caption">Abordagens complementares; nenhuma substitui as demais.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Do texto ao modelo" id="conceito-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Do texto ao modelo: AST e reconhecimento de padrões</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Uma regra muito simples procura a ocorrência textual <code>exec(</code>. O problema: <code>exec</code> pode nomear uma função inocente, uma importação diferente ou uma chamada com argumento constante sem entrada externa.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Um reconhecedor baseado em AST considera a estrutura sintática de uma chamada, reduzindo parte do ruído, mas por si só não prova que a entrada é controlável por um adversário.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Desempenho e precisão variam conforme a regra, a linguagem, o framework e o contexto do projeto. Uma mesma regra pode ter precisão diferente em projetos distintos.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Uma regra de padrão <code>exec(...)</code> encontra ambas as chamadas abaixo. O primeiro trecho pode ser vulnerabilidade se <code>input</code> for não confiável; o segundo não demonstra injeção por entrada externa. O alerta é uma proposta de investigação, não um juízo final.</p></article>
+    </div>
+    <div class="case-split" style="margin-top:14px">
+      <div class="case-panel"><div class="case-panel-head head-warn">Entrada a investigar</div><div class="case-panel-body"><pre class="codigo"><code>function concerning(input: string) {
+  exec(input); // origem a rastrear
+}</code></pre><p style="font-size:.88rem;color:var(--warn);margin-top:8px">Fonte de <code>input</code> precisa ser verificada.</p></div></div>
+      <div class="case-panel"><div class="case-panel-head head-info">Argumento literal</div><div class="case-panel-body"><pre class="codigo"><code>function staticCase() {
+  exec('echo lab'); // argumento fixo
+}</code></pre><p style="font-size:.88rem;color:var(--muted);margin-top:8px">Pode gerar alerta pelo mesmo padrão; exige leitura contextual.</p></div></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 2: Da regra à decisão" id="visual-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Da regra à decisão: um alerta precisa de interpretação</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Cinco etapas entre o padrão configurado e o achado</h3></div>
+      <div class="hypo-flow">
+        <div class="hypo-step"><div class="hypo-num">01</div><h4>Regra</h4><p>Padrão configurado na ferramenta</p></div>
+        <div class="hypo-step"><div class="hypo-num">02</div><h4>Ocorrência</h4><p>Trecho de código correspondente</p></div>
+        <div class="hypo-step"><div class="hypo-num">03</div><h4>Contexto</h4><p>Origem, fluxo e alcance do dado</p></div>
+        <div class="hypo-step"><div class="hypo-num">04</div><h4>Validação</h4><p>Teste ou evidência adicional</p></div>
+        <div class="hypo-step"><div class="hypo-num">05</div><h4>Decisão</h4><p>Corrigir, investigar ou justificar descarte</p></div>
+      </div>
+      <p class="viz-caption">Não equipare a contagem bruta de alertas ao número de vulnerabilidades comprovadas.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Alerta não é prova" id="interacao-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 1</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="Um padrão pode merecer revisão sem demonstrar entrada controlável ou exploração.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Alerta não é prova</h3></div>
+      <p class="instrucao">O Semgrep detecta uma chamada a uma função sensível com argumento constante. Qual a conclusão correta?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Há exploração confirmada</button>
+        <button class="choice" data-value="1" type="button">O padrão mereceu alerta, mas o contexto deve ser verificado</button>
+        <button class="choice" data-value="2" type="button">O Semgrep falhou e deve ser ignorado</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Falsos positivos e falsos negativos" id="conceito-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Falsos positivos, falsos negativos e precisão</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p><strong>Verdadeiro positivo (VP):</strong> alerta corresponde a um problema confirmado segundo critério definido.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p><strong>Falso positivo (FP):</strong> alerta sinaliza como vulnerabilidade um caso não vulnerável no contexto validado. Marcar FP apenas para "limpar painel" sem justificativa é uma prática problemática.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p><strong>Falso negativo (FN):</strong> uma vulnerabilidade presente no código não é sinalizada pela regra. Só pode ser contado se houver referência independente.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Exemplo hipotético: uma regra encontra 8 ocorrências, 5 confirmadas; existem 2 vulnerabilidades não detectadas. Precisão = 5/8 (62,5%). Revocação = 5/7 (71,4%). Não estimar esses valores sem um conjunto de referência validado.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 3: Quadrantes de classificação" id="visual-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Como classificar cada alerta na triagem</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">MAPA</span><h3>Quatro categorias possíveis para cada ocorrência</h3></div>
+      <div class="triage-grid">
+        <div class="triage-card tc-confirm"><div class="triage-tag">Verdadeiro positivo</div><h4>Confirmar</h4><p>Alerta corresponde a problema demonstrável com condição, fluxo e impacto documentados.</p></div>
+        <div class="triage-card tc-fp"><div class="triage-tag">Falso positivo</div><h4>Descartar (justificado)</h4><p>Padrão presente, mas o dado não chega ao interpretador ou existe sanitização adequada. Exige justificativa.</p></div>
+        <div class="triage-card tc-invest"><div class="triage-tag">Necessita investigação</div><h4>Pendente</h4><p>Contexto insuficiente para decidir. Registrar o que falta verificar e quem é responsável.</p></div>
+        <div class="triage-card tc-accept"><div class="triage-tag">Risco aceito</div><h4>Documentar</h4><p>Problema conhecido, correção inviável no momento. Registrar decisão e responsável com data de reavaliação.</p></div>
+      </div>
+      <p class="viz-caption">Toda decisão de triagem precisa de justificativa registrada e rastreável ao commit analisado.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Semgrep, estrutura de uma regra" id="conceito-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Semgrep: estrutura de uma regra</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Uma regra Semgrep declara: <code>id</code>, <code>languages</code>, <code>severity</code>, <code>message</code> e os operadores de padrão (<code>pattern</code>, <code>pattern-not</code>, <code>pattern-inside</code>, <code>patterns</code>, <code>pattern-either</code>).</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Metavariáveis como <code>$VAR</code> representam partes variáveis de expressões. <code>$VAR</code> captura qualquer identificador; <code>...</code> captura argumentos em número variável.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>A análise de taint do Semgrep permite declarar <code>sources</code>, <code>sinks</code> e <code>sanitizers</code> explicitamente, rastreando o fluxo entre eles sem precisar escrever toda a lógica de propagação.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Uma regra útil equilibra sensibilidade (detectar o problema) e precisão (evitar ruído). Regras muito amplas produzem falsos positivos que reduzem a adoção, como evidenciado pelo estudo de Sadowski et al. sobre integração de análise estática no Google.</p></article>
+    </div>
+    <div style="margin-top:16px">
+      <pre class="codigo"><code># Exemplo de estrutura de regra Semgrep (YAML)
+rules:
+  - id: exec-with-external-input
+    languages: [typescript]
+    severity: WARNING
+    message: Chamada a exec() com argumento possivelmente externo
+    patterns:
+      - pattern: exec($INPUT)
+      - pattern-not: exec("...")   # descarta literais fixos
+    metadata:
+      cwe: CWE-78</code></pre>
+    </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Falso negativo" id="interacao-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="Ausência de alerta não comprova ausência de vulnerabilidade. Ferramentas possuem escopo e modelos limitados.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Falso negativo</h3></div>
+      <p class="instrucao">Um analisador não detecta uma falha de lógica de aprovação conhecida por inspeção manual. Isso significa que...</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">A falha não existe</button>
+        <button class="choice" data-value="1" type="button">A ferramenta não a detectou com as regras e modelos utilizados</button>
+        <button class="choice" data-value="2" type="button">A revisão manual deve ser descartada</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Metavariáveis no Semgrep" id="interacao-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 3</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="0" data-explanation="Metavariáveis representam partes variáveis de expressões que devem corresponder ao padrão, como um identificador, uma expressão ou uma chamada.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Metavariáveis no Semgrep</h3></div>
+      <p class="instrucao">O que uma metavariável como <code>$VAR</code> permite representar em uma regra de padrão?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Partes variáveis de expressões que devem corresponder ao padrão</button>
+        <button class="choice" data-value="1" type="button">Uma migration do Prisma</button>
+        <button class="choice" data-value="2" type="button">Uma licença do GitHub</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Critérios para triagem" id="conceito-7">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 5</p><h2>Critérios para triagem de alertas</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Para cada ocorrência documentar:</p>
+        <ol>
+          <li>Regra executada</li>
+          <li>Linha e função</li>
+          <li>Fonte do argumento</li>
+          <li>Possibilidade de o caminho ser chamado</li>
+          <li>Eventual controle sobre o dado</li>
+          <li>Impacto se o fluxo for alcançado</li>
+          <li>Nível de confiança</li>
+          <li>Recomendação</li>
+        </ol>
+      </article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Uma ocorrência em código de demonstração não invocado não comprova exploração de uma rota. Pode ainda ser uma má prática e justificar remoção, mas deve ser classificada com precisão.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Registrar a versão exata do Semgrep, o conjunto de regras utilizado e o commit analisado. Sem isso, o relatório não pode ser reproduzido.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Triagem" id="interacao-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 4</p><h2>Aplique o conceito ao cenário</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="Rastreabilidade permite reproduzir a análise e justificar por que um alerta foi confirmado, descartado ou ficou pendente.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Triagem</h3></div>
+      <p class="instrucao">Qual a forma adequada de registrar um resultado SAST?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Apenas o total de alertas</button>
+        <button class="choice" data-value="1" type="button">Versão, regra, arquivo, linha, fluxo/contexto, decisão de triagem e evidências</button>
+        <button class="choice" data-value="2" type="button">Somente a cor do alerta na interface</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Caso para discussão" id="estudo-caso">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Exemplo comentado</p><h2>Leia, formule hipótese, depois analise</h2></div>
+    <div class="lab">
+      <div class="lab-cab"><p class="eyebrow">Estudo de caso independente</p><h3>Exemplo isolado: alerta estático</h3></div>
+      <p class="instrucao">Leia o trecho, formule uma hipótese e só então abra a análise comentada.</p>
+      <pre class="codigo"><code>import { exec } from 'node:child_process';
+exec('echo treinamento');
+// Padrão reconhecido: chamada a exec(...).
+// Contexto: string fixa neste exemplo.</code></pre>
+      <details class="conta">
+        <summary>Mostrar discussão orientadora</summary>
+        <div class="corpo">
+          <p>Uma regra que reconhece <code>exec(...)</code> pode emitir alerta. Isso basta para provar que a entrada do usuário chega ao shell?</p>
+          <ul style="margin:.6rem 0 0;padding-left:1.3rem;line-height:1.65">
+            <li>O argumento é literal ou vem de uma variável?</li>
+            <li>A variável tem origem em uma requisição HTTP ou de outro lugar?</li>
+            <li>Existe alguma sanitização entre a origem e a chamada?</li>
+          </ul>
+          <p class="ref-nota">Este exemplo é independente da API avaliada no projeto.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Registro de ideias" id="anotacoes">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Reflexão individual ou em dupla</p><h2>Explique antes de concluir</h2></div>
+    <div class="lab" data-journal="">
+      <div class="lab-cab"><p class="eyebrow">Pausa para discussão</p><h3>Registre uma hipótese em suas palavras</h3></div>
+      <p class="instrucao">Escreva uma justificativa breve sobre o conceito da aula. A anotação é local e opcional.</p>
+      <textarea aria-label="Seu rascunho" class="journal" placeholder="Qual hipótese você levantaria? Que evidência faltaria para confirmá-la?"></textarea>
+      <div class="actions-row">
+        <button class="btn prim" data-copy type="button">Copiar meu rascunho</button>
+        <button class="btn" data-clear type="button">Limpar</button>
+        <span class="note-local" role="status"></span>
+      </div>
+      <p class="note-local">Não há envio de respostas nem coleta de dados nesta atividade.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 3 · Análise estática e regras</h2></div>
+    <div class="lab projeto">
+      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 3 · Análise estática e regras</h3></div>
+      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
+      <ul class="check-list">
+        <li>Preservar a revisão manual antes de executar a primeira varredura.</li>
+        <li>Executar Semgrep conforme o roteiro liberado no Moodle; registrar configuração, versão e commit.</li>
+        <li>Classificar cada alerta como confirmado, não confirmado (FP com justificativa) ou pendente de evidência.</li>
+        <li>Elaborar uma regra personalizada com um caso que gera alerta e outro que não deve gerar.</li>
+        <li>Entregar a revisão manual parcial formal pelo Moodle, conforme o plano de ensino.</li>
+      </ul>
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Registro esperado</h3>
+        <p><code>entregas/03_semgrep.md</code> + regra YAML. <strong>Entrega parcial avaliativa da revisão manual.</strong></p>
+      </div>
+      <div class="lab-links">
+        <a class="btn" data-target="githubOrganization">Repositórios GitHub</a>
+        <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Referências" id="referencias">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Bibliografia da aula</p><h2>Continue o estudo pelas fontes indicadas</h2></div>
+    <ul class="fonte-lista">
+      <li><p><strong>Livro:</strong> CHESS, B.; WEST, J. <em>Secure Programming with Static Analysis</em>. Addison-Wesley, 2007. <a href="https://www.oreilly.com/library/view/secure-programming-with/9780321424778/">oreilly.com</a></p></li>
+      <li><p><strong>Documento técnico:</strong> BLACK, P. et al. <em>NIST IR 8397</em>. 2021. <a href="https://doi.org/10.6028/NIST.IR.8397">doi.org/10.6028/NIST.IR.8397</a></p></li>
+      <li><p><strong>Documentação:</strong> SEMGREP. <em>Rule Syntax</em>. <a href="https://semgrep.dev/docs/writing-rules/rule-syntax">semgrep.dev/docs</a></p></li>
+      <li><p><strong>Documentação:</strong> SEMGREP. <em>Taint Analysis</em>. <a href="https://semgrep.dev/docs/writing-rules/data-flow/taint-mode">semgrep.dev/docs/taint</a></p></li>
+      <li><p><strong>Artigo:</strong> SADOWSKI, C. et al. <em>Tricorder: Building a Program Analysis Ecosystem</em>. ICSE, 2015. <a href="https://doi.org/10.1109/ICSE.2015.76">doi.org/10.1109/ICSE.2015.76</a></p></li>
+      <li><p><strong>Taxonomia:</strong> MITRE. <em>CWE-78: OS Command Injection</em>. <a href="https://cwe.mitre.org/data/definitions/78.html">cwe.mitre.org/78</a></p></li>
+    </ul>
+    <p class="note-local">Consulte as fontes originais para aprofundar o conteúdo.</p>
+  </div>
+</section>
+
+<section class="cena fecho" data-nome="Encerramento" id="encerramento">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Síntese</p>
+      <h2>O conceito fica. A investigação continua.</h2>
+      <p class="lede" style="color:#E9DED2">Alerta não é vulnerabilidade confirmada. Registre triagem com justificativa. Entregue a revisão manual parcial conforme o plano e preserve os achados manuais para comparação nas etapas seguintes.</p>
+    </div>
+    <div class="actions-row">
+      <a class="btn prim" href="aula-04.html" style="color:white">Avançar ao encontro 04</a>
+      <a class="btn" href="../guia/">Guia de estudo</a>
+      <a class="btn" href="../index.html">Início</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div aria-label="Controles do modo aula" class="controles">
+  <button aria-label="Seção anterior" class="btn" id="antes" type="button">←</button>
+  <span class="cont num" id="contador"></span>
+  <button aria-label="Próxima seção" class="btn" id="depois" type="button">→</button>
+  <button class="btn" id="cheia" type="button">Tela cheia</button>
+</div>
+</body>
+</html>

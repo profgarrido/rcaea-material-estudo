@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml"/>
+  <title>Revisão de Código e Análise Estática Automatizada | CESAR School</title>
+  <meta name="description" content="Aulas interativas e guia de estudo da Especialização em Cibersegurança da CESAR School"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet"/>
+  <link href="assets/css/laura-home.css" rel="stylesheet"/>
+  <link href="assets/css/home-adaptacao.css" rel="stylesheet"/>
+  <script defer src="assets/js/config.js"></script>
+  <script defer src="assets/js/site.js"></script>
+  <style>
+    /* ── Melhorias visuais da home ── */
+
+    /* Progresso dos encontros: linha numerada */
+    .encontros-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 310px), 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+    .enc-card {
+      border: 1.5px solid var(--line, #E0D4C8);
+      border-radius: 14px;
+      background: var(--surface, #FFFCF8);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .enc-card:hover { border-color: var(--orange, #FF6002); box-shadow: 0 4px 16px rgba(255,96,2,.08); }
+    .enc-num {
+      font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      color: var(--muted, #7D7168);
+      text-transform: uppercase;
+    }
+    .enc-card h3 { font-family: "Barlow Condensed", sans-serif; font-size: 1.25rem; font-weight: 700; margin: 0; line-height: 1.1; }
+    .enc-card p  { font-size: .9rem; line-height: 1.55; color: var(--ink, #1C1C1C); margin: 0; }
+    .enc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: var(--orange-soft, #FFE7D6);
+      color: var(--orange-ink, #B84300);
+      margin-top: 4px;
+      width: fit-content;
+    }
+    .enc-tag.tag-entrega { background: var(--warn-soft, #FBEED6); color: var(--warn, #93600F); }
+    .enc-tag.tag-final   { background: var(--good-soft, #E2F1E7);  color: var(--good, #2E7A4C); }
+
+    /* Princípios transversais */
+    .principles-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .prin-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: var(--surface, #FFFCF8);
+      border: 1.5px solid var(--line, #E0D4C8);
+      border-radius: 11px;
+      padding: 14px 16px;
+    }
+    .prin-num {
+      font-family: "Barlow Condensed", sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--orange-ink, #B84300);
+      flex: none;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .prin-item p { font-size: .9rem; line-height: 1.52; margin: 0; color: var(--ink, #1C1C1C); }
+
+    /* Avaliação visual */
+    .aval-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .aval-card {
+      border-radius: 12px;
+      border: 1.5px solid var(--line, #E0D4C8);
+      background: var(--surface, #FFFCF8);
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .aval-card::after {
+      content: attr(data-peso);
+      position: absolute;
+      top: 14px; right: 16px;
+      font-family: "Barlow Condensed", sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--orange-ink, #B84300);
+      opacity: .18;
+    }
+    .aval-card h4 { font-family: "Barlow Condensed", sans-serif; font-size: 1.1rem; margin: 0 0 5px; }
+    .aval-card p  { font-size: .88rem; line-height: 1.5; color: var(--ink, #1C1C1C); margin: 0; }
+    .aval-peso { font-family: "Barlow Condensed", sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--orange-ink, #B84300); margin-top: 6px; }
+  </style>
+</head>
+
+<body>
+<header class="barra">
+  <nav aria-label="Navegação principal" class="wrap">
+    <a aria-label="Início" class="marca" href="./">
+      <span aria-label="CESAR School" class="logo" role="img"></span>
+      <span><b>Revisão de Código e Análise Estática</b></span>
+    </a>
+    <ul aria-label="Navegação do curso" class="menu">
+      <li><a href="#encontros">Encontros</a></li>
+      <li><a href="#principios">Princípios</a></li>
+      <li><a href="#avaliacao">Avaliação</a></li>
+      <li><a href="#como-usar">Como usar</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <div class="wrap topo">
+
+    <!-- INTRO -->
+    <section aria-labelledby="t-disciplina" class="intro">
+      <h1 id="t-disciplina">Revisão de Código e Análise Estática Automatizada</h1>
+      <p class="lead">Seis encontros para compreender o que a revisão manual, a análise estática e a IA conseguem identificar, e quais limites ainda exigem interpretação humana.</p>
+      <p class="home-inline">Acompanhe as aulas por seções no modo apresentação ou consulte o conteúdo completo no modo leitura. As entregas formais e os prazos ficam no Moodle.</p>
+      <div class="acoes">
+        <a class="btn" href="laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="link" href="https://github.com/appsec-labs-cesar-school" target="_blank" rel="noopener noreferrer">Abrir organização no GitHub</a>
+      </div>
+    </section>
+
+    <!-- ENCONTROS -->
+    <section id="encontros">
+      <h2>Seis encontros, uma progressão</h2>
+      <p style="max-width:68ch;margin-top:8px;line-height:1.6">Os registros de cada encontro formam um único projeto progressivo, não seis avaliações independentes. A entrega parcial formal ocorre no encontro 3 e a entrega final no encontro 6.</p>
+
+      <div class="encontros-grid">
+
+        <a class="enc-card" href="aulas/aula-01.html">
+          <span class="enc-num">Encontro 01</span>
+          <h3>Fundamentos de segurança e riscos</h3>
+          <p>Segurança como propriedade do software, autenticação vs. autorização, injeção, taxonomias e evidência.</p>
+        </a>
+
+        <a class="enc-card" href="aulas/aula-02.html">
+          <span class="enc-num">Encontro 02</span>
+          <h3>Revisão manual de código</h3>
+          <p>Percurso estruturado por camadas, autorização por objeto e papel, fronteiras de confiança e documentação de achados.</p>
+        </a>
+
+        <a class="enc-card" href="aulas/aula-03.html">
+          <span class="enc-num">Encontro 03</span>
+          <h3>SAST com Semgrep</h3>
+          <p>AST, padrões, alertas, falsos positivos, falsos negativos, triagem e regra personalizada.</p>
+          <span class="enc-tag tag-entrega">Entrega parcial</span>
+        </a>
+
+        <a class="enc-card" href="aulas/aula-04.html">
+          <span class="enc-num">Encontro 04</span>
+          <h3>Fluxo de dados, CodeQL e IA</h3>
+          <p>Source, sink, propagação, sanitização, análise intermodular e avaliação crítica de hipóteses de IA.</p>
+        </a>
+
+        <a class="enc-card" href="aulas/aula-05.html">
+          <span class="enc-num">Encontro 05</span>
+          <h3>Comparação de técnicas e CI/CD</h3>
+          <p>Deduplicação, priorização por risco, critérios de bloqueio em Pull Requests e pipeline de segurança.</p>
+        </a>
+
+        <a class="enc-card" href="aulas/aula-06.html">
+          <span class="enc-num">Encontro 06</span>
+          <h3>Auditoria integrada e validação</h3>
+          <p>Correção fundamentada, testes de regressão, risco residual e relatório técnico final.</p>
+          <span class="enc-tag tag-final">Entrega final</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- PRINCÍPIOS TRANSVERSAIS -->
+    <section id="principios" style="margin-top:48px">
+      <h2>Seis princípios que atravessam todas as aulas</h2>
+      <div class="principles-row">
+        <div class="prin-item"><span class="prin-num">1</span><p>Segurança é contextual: um alerta de ferramenta não comprova, por si só, uma vulnerabilidade explorável.</p></div>
+        <div class="prin-item"><span class="prin-num">2</span><p>Autenticação e autorização são diferentes: um usuário autenticado pode não ter autorização para acessar determinado recurso.</p></div>
+        <div class="prin-item"><span class="prin-num">3</span><p>Revisão manual e SAST são complementares: ambas apresentam lacunas, vieses e dependências de contexto.</p></div>
+        <div class="prin-item"><span class="prin-num">4</span><p>Evidências precisam ser rastreáveis: requisito, arquivo, função, versão do código, cenário, resultado e limitação.</p></div>
+        <div class="prin-item"><span class="prin-num">5</span><p>Correção exige validação: modificar o código não equivale automaticamente a remover o risco.</p></div>
+        <div class="prin-item"><span class="prin-num">6</span><p>IA é apoio crítico: hipóteses geradas por modelos precisam ser verificadas e seu uso deve ser declarado na entrega.</p></div>
+      </div>
+    </section>
+
+    <!-- AVALIAÇÃO -->
+    <section id="avaliacao" style="margin-top:48px">
+      <h2>Avaliação</h2>
+      <p style="max-width:68ch;margin-top:8px;line-height:1.6">A qualidade é avaliada pelo raciocínio e pelas evidências, não pela quantidade de alertas encontrados. Um resultado declarado como inconclusivo, com justificativa adequada, pode demonstrar análise tecnicamente correta.</p>
+      <div class="aval-grid">
+        <div class="aval-card" data-peso="30%">
+          <h4>Revisão manual</h4>
+          <p>Requisitos, hipóteses, localização, evidências, impacto e recomendações.</p>
+          <div class="aval-peso">30%</div>
+        </div>
+        <div class="aval-card" data-peso="25%">
+          <h4>Análise SAST</h4>
+          <p>Ferramentas, versões, configuração, resultados, triagem e regra personalizada.</p>
+          <div class="aval-peso">25%</div>
+        </div>
+        <div class="aval-card" data-peso="25%">
+          <h4>Comparação crítica</h4>
+          <p>Matriz manual/Semgrep/CodeQL/IA, limitações, alcance e justificativas.</p>
+          <div class="aval-peso">25%</div>
+        </div>
+        <div class="aval-card" data-peso="20%">
+          <h4>Correções e validação</h4>
+          <p>Priorização, mudanças, testes de regressão, reanálise e riscos residuais.</p>
+          <div class="aval-peso">20%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO USAR -->
+    <section id="como-usar" style="margin-top:48px">
+      <h2>Como usar o site</h2>
+      <div class="grade2" style="margin-top:24px">
+        <div class="cartao barra">
+          <h3>Modo aula</h3>
+          <p>Clique em <strong>Modo aula</strong> dentro de qualquer encontro para ver uma seção por vez, navegar com as setas do teclado e ativar tela cheia durante a apresentação presencial.</p>
+        </div>
+        <div class="cartao">
+          <h3>Modo leitura</h3>
+          <p>Percorra toda a página sem o modo aula ativado para revisar o conteúdo de forma contínua antes das entregas ou como estudo autônomo após os encontros.</p>
+        </div>
+        <div class="cartao">
+          <h3>Laboratório</h3>
+          <p>Cada encontro tem uma seção de orientações do laboratório. As entregas formais ficam no Moodle; o código e as evidências ficam nos repositórios privados das equipes.</p>
+        </div>
+        <div class="cartao">
+          <h3>Interações</h3>
+          <p>As questões ao longo das aulas são formativas e não têm caráter avaliativo. Não há envio de respostas nem coleta de dados pelo site.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACESSO AO LABORATÓRIO -->
+    <section class="secao" style="margin-top:40px">
+      <h2>Projeto integrador</h2>
+      <p>O projeto é uma API REST de pedidos corporativos intencionalmente vulnerável. Sua tarefa é compreender o comportamento esperado, inspecionar a implementação e fundamentar os achados com evidências rastreáveis.</p>
+      <div class="acoes" style="margin-top:16px">
+        <a class="btn" href="laboratorio/index.html">Orientações do projeto</a>
+        <a class="btn" href="guia/index.html">Guia de estudo</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+</body>
+</html>

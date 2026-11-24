@@ -1,0 +1,83 @@
+/* Ajustes pontuais para conteúdos de Segurança, sem alterar as variáveis, fontes ou padrões de Laura. */
+:root { --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace; }
+.section-text{max-width:76ch}
+.section-text p{margin:0 0 1rem;line-height:1.72}
+.section-text p:last-child{margin-bottom:0}
+.section-text h3{font-size:1.4rem;margin:1.1rem 0 .65rem}
+.section-text h4{font-size:1.1rem;margin:.9rem 0 .4rem}
+.section-text ul,.section-text ol{padding-left:1.45rem;margin:.4rem 0 1rem}
+.section-text li{margin-bottom:.48rem}
+.section-text pre,pre.codigo{background:#22201E;color:#F3EADF;border:1px solid #3e3831;border-radius:12px;padding:1.1rem 1.25rem;overflow:auto;font-size:.83rem;line-height:1.65;font-family:var(--f-mono)}
+.section-text code:not(pre code),.small-code{background:var(--sunk);color:var(--orange-ink);border-radius:5px;padding:.12rem .3rem;font-size:.89em}
+pre code{background:none!important;color:inherit!important;padding:0!important}
+.section-text blockquote{border-left:4px solid var(--orange);padding:.55rem 1rem;background:var(--sunk);margin:1rem 0}
+.section-text table{width:100%;border-collapse:collapse;display:block;overflow-x:auto;font-size:.86rem}
+.section-text th,.section-text td{border:1px solid var(--line);padding:.56rem .65rem;text-align:left}
+.section-text th{background:var(--sunk)}
+.ref-mini{color:var(--orange-ink);text-decoration:none;font-size:.8rem;font-weight:600}
+.fonte-lista{list-style:none;padding:0;display:grid;gap:12px;max-width:82ch;overflow-wrap:anywhere}
+.fonte-lista li{background:var(--surface);border:1px solid var(--line);padding:16px 18px;border-radius:12px;font-size:.92rem}
+.fonte-lista a{color:var(--orange-ink)}
+.lab.projeto{margin-top:12px}
+.choices{display:grid;gap:10px;margin:16px 0}
+.choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;cursor:pointer;transition:border-color .14s,background .14s}
+.choice:hover,.choice:focus-visible{border-color:var(--orange)}
+.choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.55}
+.feedback[data-state="correct"]{border-color:var(--good);background:var(--good-soft)}
+.feedback[data-state="incorrect"]{border-color:var(--warn);background:var(--warn-soft)}
+.feedback:empty{display:none}
+.quiz-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.quiz-actions .btn[disabled]{opacity:.55;cursor:not-allowed}
+.quiz-hint{font-size:.85rem;color:var(--muted)}
+.note-local{color:var(--muted);font-size:.84rem}
+.journal{width:100%;min-height:105px;font:inherit;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);padding:14px;border-radius:10px;resize:vertical}
+.lab .ref-nota{font-size:.85rem;color:var(--muted)}
+.actions-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.actions-row a{color:var(--ink);text-decoration:none}
+.callout{border:1.5px solid var(--line);background:var(--surface);border-radius:var(--r);padding:18px 22px}
+.callout.orange{border-left:7px solid var(--orange)}
+.callout h3{font-family:var(--f-body);font-size:1.08rem;margin:0 0 6px}
+.callout p{margin:0;color:var(--ink-2)}
+.flowline{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.flowline .passo{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface);font-weight:600}
+.flowline .seta{color:var(--orange);font-weight:700;font-size:1.15rem}
+.course-link{color:var(--orange-ink);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.place-link{border:1.5px dashed var(--line);background:var(--sunk);border-radius:10px;padding:10px 12px;color:var(--muted)}
+.lab-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.lab-links a{color:var(--ink);text-decoration:none}
+.lede,.intro-detail{max-width:75ch}
+.dados{display:flex;gap:10px;flex-wrap:wrap}
+.dados span{border-radius:999px;padding:4px 12px;background:var(--sunk);border:1px solid var(--line);font-size:.8rem}
+.section-number{font-family:var(--f-disp);color:var(--orange-ink);font-size:1.5rem}
+.warning-lite{background:var(--warn-soft);border-left:4px solid var(--warn);padding:10px 14px;border-radius:7px}
+/* Espaçamento interno dos cartões nas aulas */
+.cartao h3 { margin-bottom: 10px; }
+/* Listas dentro de study-cards */
+.study-card ul,.study-card ol{margin:8px 0 0;padding-left:1.4em;font-size:.93rem;line-height:1.6;color:var(--ink)}
+.study-card li{margin-bottom:4px}.study-card li:last-child{margin-bottom:0}
+/* Capa: h1 moderado + text-shadow no subtítulo para garantir contraste sobre qualquer elemento decorativo */
+.capa .wrap{margin-bottom:50px}
+.capa h1{font-size:clamp(2.4rem,5.5vw,4rem);min-width:70%}
+.capa .sub{text-shadow:0 1px 8px rgba(10,8,5,.7)}
+body.aula .section-text{max-width:92ch}
+body.aula .section-text p{line-height:1.54}
+body.aula .cena h2{font-size:clamp(2.1rem,4vw,3.2rem)}
+body.aula .section-text pre{font-size:.72rem}
+@media(max-width:800px){.flowline{align-items:stretch;flex-direction:column}.flowline .seta{transform:rotate(90deg);align-self:center}.cena{padding-block:42px}.section-text pre{font-size:.73rem}}
+@media print{.topo,.controles,.quiz-actions{display:none!important}.cena{break-inside:avoid;page-break-inside:avoid}.feedback{display:block!important}}
+
+/* Position fixes: accessible anchor targets, responsive content and truthful link states. */
+html{scroll-padding-top:110px}
+.cena,.cena [id]{scroll-margin-top:110px}
+.section-text,.pilha,.visual-panel,.lab,.cartao,.code-pane{min-width:0}
+.section-text p,.study-card,.visual-card,.cartao{overflow-wrap:break-word}
+.section-text pre,pre.codigo{max-width:100%;overflow-x:auto}
+.topo .wrap{min-width:0}.topo-acoes{flex:0 0 auto;min-width:0}
+.lab-links{align-items:center}.lab-links a{min-height:42px;display:inline-flex;align-items:center;justify-content:center}
+.place-link{border-style:solid;color:var(--orange-ink);background:var(--orange-soft);font-weight:700}
+.pending-destination{display:inline-flex;padding:12px 15px;border:1.5px dashed var(--line);color:var(--muted);background:var(--sunk);border-radius:10px;font-weight:600}
+.access-help{font-size:.92rem;color:var(--ink-2);background:var(--wash);border-left:4px solid var(--orange);padding:12px 14px;border-radius:8px}
+body.aula .cena.atual{padding-bottom:130px;overflow-wrap:anywhere}
+@media(max-width:920px){.topo .wrap{flex-wrap:wrap;row-gap:8px}.topo-acoes{margin-left:auto;flex-wrap:wrap;justify-content:flex-end}.topo select{max-width:min(48vw,220px)}}
+@media(max-width:540px){.topo .wrap{gap:8px}.topo .logo{width:32px;height:32px}.topo-acoes{width:100%;margin-left:0;justify-content:space-between}.topo select{max-width:min(46vw,220px)}.topo-acoes .btn{font-size:.84rem;padding:8px 10px}.cena{padding-block:40px}.lab{padding:20px 18px 20px 24px}.lab-cab h3{font-size:1.6rem}body.aula .cena.atual{padding-block:30px 120px}body.aula .controles{right:8px;bottom:8px}}

@@ -1,0 +1,1309 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <title>Guia de Estudos · Revisão de Código e Análise Estática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,400&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/laura-guia.css">
+  <link rel="stylesheet" href="../assets/css/guia-apostila.css">
+</head>
+<body>
+  <div class="topo-movel">
+    <span class="onde" id="onde-movel" aria-live="polite"></span>
+    <button class="menu-btn" aria-label="Abrir sumário" aria-expanded="false" aria-controls="sumario">☰</button>
+  </div>
+  <div class="livro">
+    <aside class="lateral" id="lateral" aria-label="Sumário">
+      <div class="lateral-header">
+        <a href="../index.html" class="voltar-inicio" aria-label="Voltar à página inicial">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h2v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414l-7-7z"/></svg>
+          Início
+        </a>
+      </div>
+      <strong class="lateral-titulo-bloco">Guia de Estudos</strong>
+      <nav id="sumario" aria-label="Sumário do guia">
+        <ul class="lat-nav">
+          <li><a href="#apresentacao">Apresentação</a></li>
+          <li><a href="#fundamentos-e-riscos">1. Fundamentos e riscos</a></li>
+          <li><a href="#revisao-manual">2. Revisão manual</a></li>
+          <li><a href="#sast-e-semgrep">3. SAST e Semgrep</a></li>
+          <li><a href="#fluxo-codeql-e-ia">4. Fluxo, CodeQL e IA</a></li>
+          <li><a href="#comparacao-e-cicd">5. Comparação e CI/CD</a></li>
+          <li><a href="#auditoria-e-validacao">6. Auditoria e validação</a></li>
+          <li><a href="#glossario">Glossário</a></li>
+          <li><a href="#referencias">Referências</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="conteudo" id="conteudo">
+
+      <section class="capa" id="capa">
+        <div class="forma f1"></div>
+        <div class="forma f2"></div>
+        <div class="forma f3"></div>
+        <div class="forma f4"></div>
+        <div class="capa-txt">
+          <h1>Revisão de Código<br>e Análise Estática<br>Automatizada</h1>
+          <p class="capa-sub">Guia de Estudos</p>
+          <p class="capa-desc">Fundamentos, técnicas e evidências para segurança de aplicações</p>
+        </div>
+      </section>
+
+      <section id="apresentacao" aria-labelledby="h-apresentacao">
+        <div class="abre">
+          <p class="eyebrow">Guia de Estudos</p>
+          <h2 id="h-apresentacao">Apresentação</h2>
+          <p class="enc">Uma introdução ao estudo da segurança de aplicações, revisão de código e análise estática.</p>
+        </div>
+        <div class="cap">
+          <p>A segurança de uma aplicação depende de decisões tomadas durante todo o seu desenvolvimento: como dados entram no sistema, como são validados, quais usuários podem executar operações, como bibliotecas e consultas são utilizadas e quais evidências sustentam a confiança no comportamento do software. Um código pode compilar, responder corretamente a uma requisição e passar em testes funcionais sem que todas as propriedades de segurança necessárias tenham sido verificadas.</p>
+          <p>Este guia apresenta duas perspectivas complementares. A <strong>revisão manual de código</strong> reconstrói as intenções, regras e limites de confiança da aplicação. A <strong>análise estática automatizada</strong> examina código sem executar os fluxos de uso da aplicação, procurando padrões ou caminhos de dados potencialmente perigosos. As duas técnicas possuem forças e limitações. A compreensão crítica dos resultados é tão importante quanto a capacidade de operar ferramentas.</p>
+          <p>Ao longo dos capítulos, utilizaremos exemplos independentes em TypeScript, Express, Node.js, Prisma e PostgreSQL. A arquitetura ilustrativa segue as camadas <code>Routes → Controllers → Services → Repositories</code>. Os exemplos incluem trechos deliberadamente vulneráveis para fins didáticos; eles não devem ser reutilizados em sistemas reais. A análise de segurança deve ocorrer exclusivamente em aplicações e ambientes cuja inspeção tenha sido autorizada.</p>
+          <h3>Como estudar com este guia</h3>
+          <p>A leitura pode ser sequencial ou orientada por dúvida. Cada capítulo contém fundamentação, exemplos, comparações, um resumo e exercícios de reflexão com análise comentada. Ao encontrar um trecho de código, procure responder quatro perguntas: <strong>o que ele pretende fazer, quais dados controla, que decisão de segurança está implícita e como seria possível demonstrar o comportamento?</strong></p>
+          <p>Um erro comum é interpretar todo código incomum como vulnerável. Outro erro é considerar uma função segura apenas porque não foi sinalizada por uma ferramenta. Este guia evita ambas as conclusões: a segurança deve ser argumentada com contexto, requisitos e evidências.</p>
+        </div>
+      </section>
+
+      <section id="fundamentos-e-riscos" aria-labelledby="h-cap1">
+        <div class="abre">
+          <div class="num">01</div>
+          <p class="eyebrow">Capítulo 1</p>
+          <h2 id="h-cap1">Fundamentos da segurança de aplicações e análise de riscos</h2>
+          <p class="enc">Conceitos centrais de segurança: funcionamento correto versus segurança, tríade CIA, modelagem de ameaças, autenticação, autorização e as principais classes de vulnerabilidade.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap1-1">1.1 Por que segurança não é sinônimo de funcionamento correto</h3>
+          <p>Os testes funcionais respondem a perguntas como "o usuário consegue criar um pedido?", "a API devolve a resposta esperada?" ou "o valor calculado está correto?". Já os requisitos de segurança fazem perguntas adicionais: "o usuário pode criar esse pedido em nome de outra pessoa?", "a resposta contém apenas dados que ele deveria visualizar?" e "uma entrada controlada por terceiros pode alterar a execução do sistema?".</p>
+          <p>Considere um endpoint <code>GET /documents/101</code>. Um teste funcional pode confirmar o status <code>200</code> e um objeto JSON válido. Porém, o fato de a resposta ser tecnicamente correta não comprova que o documento <code>101</code> pertence ao solicitante. Para avaliar segurança, é necessário verificar também a identidade, a propriedade do documento, o vínculo organizacional e as permissões aplicáveis.</p>
+          <p>O mesmo raciocínio vale para a qualidade interna do código. Um método bem nomeado, curto e com testes pode conter uma decisão de autorização incorreta. Inversamente, um método longo ou pouco elegante não constitui necessariamente uma vulnerabilidade. <strong>Qualidade, funcionalidade e segurança têm interseções, mas não são conceitos equivalentes</strong>.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Análise</th><th>Pergunta central</th><th>Exemplo de evidência</th></tr></thead>
+            <tbody>
+              <tr><td>Funcional</td><td>A operação produz o resultado esperado?</td><td>Teste de sucesso para criação de registro</td></tr>
+              <tr><td>Qualidade/manutenibilidade</td><td>A implementação é compreensível e evolutiva?</td><td>Duplicação, complexidade, dependência excessiva</td></tr>
+              <tr><td>Segurança</td><td>A operação respeita os limites e proteções necessários?</td><td>Teste de acesso negado a recurso de outro usuário</td></tr>
+              <tr><td>Operacional</td><td>O sistema mantém propriedades importantes em execução?</td><td>Logs, monitoração, política de atualização, recuperação</td></tr>
+            </tbody>
+          </table></div>
+          <p>A função abaixo pode retornar corretamente um documento pelo identificador, mas omite o contexto de autorização:</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">async function getDocument(id: number) {
+  return prisma.document.findUnique({ where: { id } });
+}</code></pre></div>
+          <p>O trecho sozinho não prova que o endpoint é vulnerável, pois a autorização pode ser realizada por uma camada anterior ou posterior. Ele, no entanto, gera uma pergunta objetiva para a revisão: <strong>onde ocorre a comparação entre o recurso solicitado e as permissões do usuário?</strong> Uma análise responsável acompanha o fluxo antes de concluir.</p>
+
+          <h3 id="cap1-2">1.2 Ativos, ameaças, fraquezas, vulnerabilidades e riscos</h3>
+          <p><strong>Ativo</strong> é algo que precisa ser protegido: documentos, dados de clientes, credenciais, serviços, integridade de transações e disponibilidade da aplicação. <strong>Ameaça</strong> é uma circunstância ou agente capaz de causar dano. <strong>Fraqueza</strong> é um tipo de erro ou condição que pode contribuir para uma falha. <strong>Vulnerabilidade</strong> é uma condição explorável em determinado contexto. <strong>Risco</strong> reúne cenário, probabilidade ou plausibilidade, impacto e condições de exposição.</p>
+          <div class="flow-mapa" aria-label="Fluxo de risco: do ativo ao impacto">
+            <div class="flow-step">Ativo a proteger</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Cenário de ameaça</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Fraqueza na implementação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step"><strong>Condições de exploração presentes?</strong><br><small>Sim: Vulnerabilidade demonstrável → Impacto e priorização</small><br><small>Não demonstrado: Hipótese ou risco a investigar</small></div>
+          </div>
+          <p>Nem toda fraqueza genérica corresponde a uma exploração confirmada naquele sistema. O revisor precisa investigar acessibilidade, pré-condições, controles compensatórios, dados envolvidos e consequências. Mesmo quando não é possível reproduzir o problema, uma hipótese bem fundamentada pode justificar testes adicionais.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Elemento</th><th>Cenário ilustrativo</th></tr></thead>
+            <tbody>
+              <tr><td>Ativo</td><td>Lista de transações corporativas</td></tr>
+              <tr><td>Ator legítimo</td><td>Analista financeiro da organização A</td></tr>
+              <tr><td>Ator não autorizado</td><td>Usuário autenticado da organização B</td></tr>
+              <tr><td>Ponto de entrada</td><td><code>GET /transactions/:id</code></td></tr>
+              <tr><td>Fronteira</td><td>Requisição externa para consulta interna</td></tr>
+              <tr><td>Controle esperado</td><td>Verificar organização do usuário e do recurso</td></tr>
+              <tr><td>Falha possível</td><td>Consulta filtra apenas <code>id</code></td></tr>
+              <tr><td>Evidência a obter</td><td>Resposta a usuário B com recurso da organização A</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap1-3">1.3 Confidencialidade, integridade e disponibilidade</h3>
+          <p>A tríade CIA organiza propriedades comuns de segurança. <strong>Confidencialidade</strong> impede que dados cheguem a destinatários não autorizados. <strong>Integridade</strong> protege contra alterações indevidas ou não detectadas. <strong>Disponibilidade</strong> assegura que serviços e dados permaneçam utilizáveis conforme necessidades definidas.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Exemplo</th><th>Propriedade em foco</th><th>Pergunta de inspeção</th></tr></thead>
+            <tbody>
+              <tr><td>Endpoint retorna e-mails de toda a organização</td><td>Confidencialidade</td><td>O usuário pode conhecer todos esses dados?</td></tr>
+              <tr><td>Cliente altera campo <code>approvedById</code></td><td>Integridade</td><td>Quem pode atribuir aprovação?</td></tr>
+              <tr><td>Exportação sem limite de volume</td><td>Disponibilidade</td><td>O consumo de recursos está controlado?</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap1-4">1.4 Modelagem de ameaças e fronteiras de confiança</h3>
+          <p>Modelagem de ameaças consiste em analisar um sistema de forma estruturada, identificando ativos, agentes, superfícies de ataque, fluxos e proteções. O primeiro passo é compreender o cenário: quem interage com o sistema, quais dados entram, por onde atravessam camadas e quais operações têm efeitos relevantes.</p>
+          <p><strong>Fronteira de confiança</strong> é o ponto em que dados ou solicitações passam entre contextos com níveis de confiança diferentes. O conteúdo de uma requisição HTTP não deve ser tratado como autorização. Um token JWT válido demonstra determinadas propriedades da autenticação, mas não atribui automaticamente ao usuário direito de operar qualquer recurso.</p>
+          <div class="flow-mapa" aria-label="Fluxo de camadas da aplicação">
+            <div class="flow-step">Cliente externo (HTTP não confiável)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Routes e middlewares</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Controller</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Service: autorização e regras de negócio</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Repository</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Banco de dados</div>
+          </div>
+          <p>A arquitetura não determina sozinha a segurança. Um repository pode aplicar filtros de isolamento de dados, enquanto o service verifica o direito de realizar uma ação. Em sistemas reais, a análise deve incluir dependências externas, filas, caches, logs e serviços de terceiros.</p>
+
+          <h3 id="cap1-5">1.5 Autenticação, autorização e accountability</h3>
+          <p><strong>Autenticação</strong> confirma uma identidade segundo os mecanismos adotados. <strong>Autorização</strong> decide quais operações são permitidas para aquela identidade, no contexto do recurso e da ação. <strong>Accountability/rastreabilidade</strong> permite atribuir ações relevantes a atores e compreender seu histórico por meio de registros apropriados.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// Exemplo ilustrativo de decisão contextual de acesso
+function canReadInvoice(actor: Actor, invoice: Invoice): boolean {
+  return actor.active &amp;&amp;
+    actor.organizationId === invoice.organizationId &amp;&amp;
+    (actor.role === "MANAGER" || invoice.ownerId === actor.id);
+}</code></pre></div>
+          <p>O direito de leitura depende de usuário ativo, organização e papel/propriedade. Não é correto supor que qualquer usuário com papel elevado tenha acesso global em todas as organizações.</p>
+          <p><strong>RBAC</strong> (Role-Based Access Control) toma decisões com base em papéis. <strong>ABAC</strong> (Attribute-Based Access Control) considera atributos como organização, titular do pedido, valor, estado e características do recurso. Muitos sistemas utilizam uma combinação.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Regra</th><th>Papel sozinho basta?</th><th>Explicação</th></tr></thead>
+            <tbody>
+              <tr><td>Acessar área administrativa</td><td>Às vezes</td><td>Depende do escopo do papel</td></tr>
+              <tr><td>Consultar pedido próprio</td><td>Não</td><td>Exige checar proprietário ou escopo</td></tr>
+              <tr><td>Aprovar pedido pendente da organização</td><td>Não</td><td>Envolve papel, organização e estado</td></tr>
+              <tr><td>Alterar nome de exibição do perfil</td><td>Não</td><td>Exige identidade e campos permitidos</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap1-6">1.6 Controle de acesso quebrado, IDOR e BOLA</h3>
+          <p>Uma falha IDOR (Insecure Direct Object Reference) ocorre quando uma referência direta a um recurso é exposta e o sistema não aplica o controle de acesso necessário. Em APIs, o OWASP API Security Top 10:2023 destaca <strong>BOLA</strong> (Broken Object Level Authorization): o identificador do objeto é utilizado sem verificar se o solicitante pode acessá-lo.</p>
+          <p>Um equívoco frequente é acreditar que trocar IDs sequenciais por UUIDs resolve BOLA. Identificadores menos previsíveis podem reduzir a facilidade de adivinhação, mas <strong>não substituem autorização no servidor</strong>.</p>
+          <p class="eyebrow">Padrão que merece investigação:</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">async function findInvoiceById(id: number) {
+  return prisma.invoice.findUnique({ where: { id } });
+}</code></pre></div>
+          <p class="eyebrow">Exemplo com escopo de organização:</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">async function findInvoiceForOrganization(
+  id: number,
+  organizationId: number
+) {
+  return prisma.invoice.findFirst({
+    where: { id, organizationId }
+  });
+}</code></pre></div>
+          <p>A segunda consulta aplica isolamento organizacional, mas pode não ser suficiente quando a política também exige que o usuário seja proprietário ou tenha papel específico.</p>
+
+          <h3 id="cap1-7">1.7 Injeção: dados tratados como comandos</h3>
+          <p>Injeção aparece quando informações não confiáveis são incorporadas a uma linguagem ou operação interpretada de forma perigosa. O problema não é "receber texto do usuário", mas permitir que esse texto altere uma estrutura de comando ou consulta em um contexto no qual deveria ser apenas um valor.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">SQL inseguro (didático, não reutilizar):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const sql = `SELECT id, email FROM users
+  WHERE email = '${email}'`;
+const result = await prisma.$queryRawUnsafe(sql);</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">Alternativa parametrizada:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const result = await prisma.$queryRaw`
+  SELECT id, email
+  FROM users WHERE email = ${email}
+`;</code></pre></div>
+            </div>
+          </div>
+          <p>O Prisma trata a interpolação de <strong>valores</strong> por parametrização. Atenção: essa proteção não permite inserir nomes arbitrários de tabelas ou colunas com a mesma técnica. Identificadores dinâmicos exigem uma lista de permissões (allowlist) de nomes autorizados.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">Execução de comando insegura:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// Inseguro caso filename seja controlável externamente
+exec(`convert ${filename} output.png`);</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">Separação de programa e argumentos:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">spawn("convert", [safeInputPath, "output.png"],
+  { shell: false });</code></pre></div>
+            </div>
+          </div>
+          <p>Não se deve concluir que toda chamada <code>exec</code> seja explorável. Uma chamada com comando constante e sem influência externa pode não apresentar injeção, embora ainda mereça avaliação de necessidade, permissões e ambiente.</p>
+
+          <h3 id="cap1-8">1.8 Exposição indevida de dados e propriedades de objetos</h3>
+          <p>Mesmo sem injeção ou acesso a outro usuário, uma API pode expor propriedades além do necessário. Retornar diretamente a entidade persistida costuma acoplar o contrato HTTP ao banco e facilitar vazamento acidental quando novos campos são adicionados.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">Resposta excessiva (pode incluir campos internos):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const user = await userRepository.findById(actor.id);
+res.json(user); // pode incluir passwordHash</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">DTO com campos explícitos:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">res.json({
+  id: user.id,
+  displayName: user.displayName,
+  email: user.email
+});</code></pre></div>
+            </div>
+          </div>
+          <p>O DTO controla quais dados deixam o servidor; a autorização ainda precisa decidir <strong>se o usuário pode receber esses dados</strong>. São controles complementares.</p>
+
+          <h3 id="cap1-9">1.9 Referenciais: OWASP, CWE, CVE, CVSS e ASVS</h3>
+          <p>As siglas não representam a mesma coisa. O <strong>OWASP Top 10</strong> comunica grupos relevantes de riscos. A <strong>CWE</strong> cataloga tipos de fraquezas. A <strong>CVE</strong> identifica vulnerabilidades divulgadas em produtos e versões específicos. O <strong>CVSS</strong> oferece um método padronizado para comunicar aspectos de severidade. O <strong>OWASP ASVS</strong> traz requisitos técnicos que orientam verificação e desenvolvimento seguro.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Referência</th><th>Unidade de análise</th><th>Exemplo de uso</th></tr></thead>
+            <tbody>
+              <tr><td>OWASP Top 10:2025</td><td>Categoria de risco</td><td>Discutir controle de acesso quebrado</td></tr>
+              <tr><td>CWE</td><td>Classe de fraqueza</td><td>Relacionar falha a uma categoria técnica</td></tr>
+              <tr><td>CVE</td><td>Vulnerabilidade registrada</td><td>Pesquisar falha conhecida em versão de software</td></tr>
+              <tr><td>CVSS</td><td>Pontuação/estrutura de severidade</td><td>Comunicar características de vulnerabilidade conhecida</td></tr>
+              <tr><td>ASVS 5.0</td><td>Requisito verificável</td><td>Elaborar critério de autorização e proteção de dados</td></tr>
+            </tbody>
+          </table></div>
+          <p>É possível identificar uma falha de autorização específica em uma aplicação própria sem que ela possua um identificador CVE. Também não é correto inferir que a posição de uma categoria no Top 10 represente a severidade de todo achado individual.</p>
+
+          <h3 id="cap1-10">1.10 Segurança no ciclo de desenvolvimento</h3>
+          <p>O Secure Software Development Framework (SSDF), do NIST, organiza práticas de desenvolvimento que podem ser incorporadas ao ciclo de vida de software. Seu valor está em reforçar que proteção do ambiente de desenvolvimento, produção de software seguro, resposta a vulnerabilidades e governança precisam ser processos contínuos.</p>
+          <div class="flow-mapa" aria-label="Ciclo de desenvolvimento seguro">
+            <div class="flow-step">Requisitos e ameaças</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Design</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Implementação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Revisão e verificação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Entrega</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Monitoração e resposta (aprendizado retroalimenta requisitos)</div>
+          </div>
+          <p>O fato de um estágio passar não dispensa os demais. Segurança exige contexto, autorização, análise de dados e evidências. Um scanner não compreende automaticamente todas as regras de negócio; uma pessoa também não consegue, em tempo razoável, inspecionar com consistência todos os padrões repetidos em grandes sistemas. As técnicas são complementares.</p>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Um teste comprova que <code>GET /orders/25</code> retorna <code>200</code>. O que ainda falta verificar?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>É preciso verificar autenticação, autorização do solicitante para o pedido, campos retornados, isolamento organizacional e comportamentos negativos previstos no contrato. O sucesso funcional isolado não cobre esses requisitos.</div></details>
+            <p><strong>Questão 2.</strong> Um ID foi substituído por UUID. A API está protegida contra BOLA?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não necessariamente. A opacidade do identificador não substitui verificação de acesso no servidor.</div></details>
+            <p><strong>Questão 3.</strong> Uma ferramenta identificou <code>$queryRawUnsafe</code>. Isso comprova SQL Injection?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não por si só. É necessário verificar como a consulta é formada, se dados externos alteram a estrutura SQL e quais controles existem. O alerta é um ponto de investigação.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>OWASP Top 10:2025; OWASP API Security Top 10:2023; ASVS 5.0; NIST SP 800-218; MITRE CWE. Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="revisao-manual" aria-labelledby="h-cap2">
+        <div class="abre">
+          <div class="num">02</div>
+          <p class="eyebrow">Capítulo 2</p>
+          <h2 id="h-cap2">Revisão manual de código com foco em segurança</h2>
+          <p class="enc">Uma revisão de segurança reconstrói o comportamento pretendido, identifica limites de confiança e avalia a distância entre políticas declaradas e implementação real.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap2-1">2.1 O que significa revisar código sob a perspectiva de segurança</h3>
+          <p>Revisar código não é apenas ler a sintaxe procurando instruções suspeitas. Uma revisão de segurança procura reconstruir <strong>o comportamento pretendido</strong>, identificar limites de confiança e avaliar a distância entre as políticas declaradas e a implementação real. O trabalho combina leitura de requisitos, análise da arquitetura, inspeção de funções e comparação com cenários de uso legítimos e indevidos.</p>
+          <p>Um revisor pode encontrar uma consulta perigosa sem conhecer todo o negócio. Em contrapartida, falhas de autorização e transições de estado frequentemente só fazem sentido quando o revisor entende quem são os atores e quais ações deveriam ser permitidas. Revisão por pares melhora a diversidade de perspectivas, mas não elimina erros, viés de confirmação ou lacunas de conhecimento (Braz et al., ICSE 2022).</p>
+          <div class="q">
+            <p class="eyebrow">Três perguntas orientadoras</p>
+            <ol>
+              <li><strong>Intenção:</strong> qual comportamento o sistema deveria oferecer?</li>
+              <li><strong>Implementação:</strong> quais caminhos, dados e verificações são efetivamente executados?</li>
+              <li><strong>Evidência:</strong> o que prova que a proteção existe, falha ou permanece incerta?</li>
+            </ol>
+          </div>
+          <p>Observar <code>findUnique({ where: { id } })</code> é diferente de demonstrar acesso indevido a um recurso. A observação pode sugerir um problema, mas a conclusão exige acompanhar a chamada e o contexto.</p>
+
+          <h3 id="cap2-2">2.2 Preparar uma revisão: escopo, atores, dados e operações</h3>
+          <p>Antes de abrir arquivos aleatórios, registre o escopo: repositório, branch/commit, módulos, endpoints e comportamento esperado. Em seguida, identifique atores, ativos, operações de leitura e alteração, e permissões associadas.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Operação</th><th>Ator esperado</th><th>Recurso</th><th>Controle necessário</th><th>Consequência se faltar</th></tr></thead>
+            <tbody>
+              <tr><td>Consultar pedido</td><td>Criador ou analista autorizado</td><td>Pedido</td><td>Identidade + organização + vínculo</td><td>Vazamento de dados</td></tr>
+              <tr><td>Aprovar pedido</td><td>Aprovador habilitado</td><td>Pedido pendente</td><td>Papel + organização + estado</td><td>Aprovação indevida</td></tr>
+              <tr><td>Alterar perfil</td><td>Proprietário da conta</td><td>Dados de perfil</td><td>Identidade + campos editáveis</td><td>Escalada de privilégios</td></tr>
+              <tr><td>Exportar relatório</td><td>Papel autorizado</td><td>Conjunto de pedidos</td><td>Papel + escopo + volume</td><td>Exposição em massa</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap2-3">2.3 Como seguir o fluxo Route → Controller → Service → Repository</h3>
+          <p><strong>Routes:</strong> indicam quais caminhos HTTP existem e quais middlewares são executados antes do controller. Um <code>authenticate</code> pode exigir token, mas o escopo por objeto e organização frequentemente exige verificação adicional.</p>
+          <p><strong>Controllers:</strong> recebem parâmetros já validados ou precisam garantir seu tratamento. Um controller não deveria implementar a política completa de um pedido, mas pode expor dados indevidos na resposta.</p>
+          <p><strong>Services:</strong> implementam regras de negócio e decisões de autorização contextual. Podem coordenar operações atômicas e tratamento de estados.</p>
+          <p><strong>Repositories:</strong> fazem consultas e persistência. Um filtro por organização no banco pode ser uma defesa importante, mas o repository não deve inventar a política do produto.</p>
+          <div class="flow-mapa" aria-label="Fluxo de camadas: route até banco">
+            <div class="flow-step">Route: GET /invoices/:id</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Middleware: autenticação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Controller: parâmetros e resposta</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Service: decisão de autorização (nega com 403/404 se necessário)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Repository: consulta com escopo</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">PostgreSQL</div>
+          </div>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// routes/invoice.routes.ts
+router.get("/:id", authenticate, invoiceController.show);
+
+// controllers/invoice.controller.ts
+async function show(req: AuthenticatedRequest, res: Response) {
+  const invoice = await invoiceService.getById(
+    Number(req.params.id), req.actor
+  );
+  res.json(invoice);
+}
+
+// services/invoice.service.ts
+async function getById(id: number, actor: Actor) {
+  const invoice = await invoiceRepository.findById(id);
+  if (!invoice) throw new AppError(404, "Recurso não encontrado");
+  if (invoice.organizationId !== actor.organizationId) {
+    throw new AppError(404, "Recurso não encontrado");
+  }
+  if (invoice.ownerId !== actor.id &amp;&amp; actor.role !== "ANALYST") {
+    throw new AppError(403, "Operação não autorizada");
+  }
+  return toInvoiceDTO(invoice);
+}</code></pre></div>
+          <p>Uma revisão deve ainda investigar a confiabilidade do <code>actor</code>, a política real do papel <code>ANALYST</code>, a consulta ao banco, o DTO e os testes negativos. Não basta encontrar uma condição <code>if</code> para concluir que o controle está correto.</p>
+
+          <h3 id="cap2-4">2.4 Estratégia de revisão orientada a pontos sensíveis</h3>
+          <p>Pontos de entrada incluem parâmetros de URL, query strings, body, cabeçalhos, cookies, eventos e filas. Operações sensíveis incluem consultas, escrita em arquivos, execução de comandos, autenticação, alteração de permissões, exportação de dados e chamadas a serviços externos.</p>
+          <p>O raciocínio pode ser feito em duas direções: <strong>da entrada para o efeito</strong> (seguir um valor recebido até onde ele é usado) ou <strong>do efeito para a origem</strong> (partir de uma operação perigosa e localizar quem consegue influenciar seus argumentos).</p>
+          <div class="tab"><table>
+            <thead><tr><th>Campo</th><th>Registro ilustrativo</th></tr></thead>
+            <tbody>
+              <tr><td>Entrada</td><td><code>req.params.name</code></td></tr>
+              <tr><td>Propagação</td><td>Controller → Service → utilitário de arquivo</td></tr>
+              <tr><td>Operação sensível</td><td>Leitura de arquivo</td></tr>
+              <tr><td>Política esperada</td><td>Ler apenas arquivos da pasta de relatórios do usuário</td></tr>
+              <tr><td>Hipótese</td><td>Caminho pode escapar da pasta autorizada</td></tr>
+              <tr><td>Verificação necessária</td><td>Normalização, caminho canônico, permissões, testes negativos</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap2-5">2.5 Autorização em quatro dimensões</h3>
+          <p>Para cada operação, investigue <strong>identidade, papel, objeto e contexto</strong>. Em determinadas aplicações, há ainda escopo organizacional/tenant e estado de negócio.</p>
+          <ul>
+            <li><strong>Identidade:</strong> quem é o solicitante e como essa informação foi verificada? Um campo <code>userId</code> no body não é confiável para representar o ator.</li>
+            <li><strong>Papel:</strong> o solicitante pertence a uma classe autorizada? Um papel <code>MANAGER</code> pode ser restrito à sua organização.</li>
+            <li><strong>Objeto:</strong> ele pode agir sobre este recurso específico? Um <code>GET /orders/:id</code> protegido por login pode continuar vulnerável a BOLA.</li>
+            <li><strong>Contexto:</strong> estado do recurso, limites de valor, associação organizacional e outras condições.</li>
+          </ul>
+          <div class="tab"><table>
+            <thead><tr><th>Cenário</th><th>Identidade</th><th>Papel</th><th>Objeto</th><th>Estado/contexto</th><th>Resultado esperado</th></tr></thead>
+            <tbody>
+              <tr><td>Proprietário consulta pedido</td><td>Válida</td><td>CUSTOMER</td><td>Próprio</td><td>Qualquer consultável</td><td>Permitir</td></tr>
+              <tr><td>Cliente consulta pedido alheio</td><td>Válida</td><td>CUSTOMER</td><td>Terceiro</td><td>Mesmo tenant</td><td>Negar</td></tr>
+              <tr><td>Aprovador aprova pedido</td><td>Válida</td><td>APPROVER</td><td>Tenant autorizado</td><td>Pendente</td><td>Permitir</td></tr>
+              <tr><td>Aprovador tenta reaprovar</td><td>Válida</td><td>APPROVER</td><td>Tenant autorizado</td><td>Já aprovado</td><td>Negar ou conflito</td></tr>
+              <tr><td>Gerente de outra empresa consulta pedido</td><td>Válida</td><td>MANAGER</td><td>Outro tenant</td><td>Qualquer</td><td>Negar</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap2-6">2.6 Propriedades de objetos e mass assignment</h3>
+          <p>Uma API pode aceitar um objeto do cliente e repassá-lo diretamente ao ORM. Esse padrão pode permitir alteração de atributos controlados pelo servidor, como <code>role</code>, <code>approvedById</code>, <code>organizationId</code> ou <code>status</code>.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">Atualização indiscriminada (vulnerável):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">async function updateProfile(userId: number, body: unknown) {
+  return prisma.user.update({
+    where: { id: userId },
+    data: body as any
+  });
+}</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">Schema restritivo com mapeamento explícito:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const updateProfileSchema = z.object({
+  displayName: z.string().trim().min(2).max(100),
+  phone: z.string().trim().max(30).optional()
+}).strict();
+
+async function updateProfile(actor: Actor, input: unknown) {
+  const data = updateProfileSchema.parse(input);
+  return prisma.user.update({
+    where: { id: actor.id },
+    data: { displayName: data.displayName, phone: data.phone }
+  });
+}</code></pre></div>
+            </div>
+          </div>
+          <p><strong>Validação de estrutura não é autorização.</strong> É necessário validar que <code>actor.id</code> veio de autenticação confiável.</p>
+
+          <h3 id="cap2-7">2.7 Regras de negócio e máquinas de estado</h3>
+          <p>Falhas de lógica de negócio muitas vezes escapam a regras de detecção genéricas. A aplicação pode validar tipos corretamente e executar consultas parametrizadas, mas permitir transições que violam o processo: aprovar um pedido cancelado, efetuar reembolso duplicado ou alterar um limite após aprovação.</p>
+          <p>Considere estados <code>PENDING</code>, <code>APPROVED</code> e <code>CANCELLED</code>. Uma transição de <code>PENDING</code> para <code>APPROVED</code> deve verificar quem provoca a transição, a partir de qual estado e com qual efeito colateral. A presença de um <code>enum</code> no schema não impede, por si só, uma atualização indevida.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">if (order.status !== "PENDING") {
+  throw new AppError(409, "O pedido não está pendente");
+}
+if (actor.role !== "APPROVER") {
+  throw new AppError(403, "Aprovação não permitida");
+}</code></pre></div>
+          <p>Em sistemas concorrentes, verificar estado e atualizar em operações separadas pode permitir uma corrida entre requisições. Conforme o requisito, o sistema deve usar transação e/ou atualização condicional que garanta a transição atômica.</p>
+
+          <h3 id="cap2-8">2.8 Revisão de validação e tratamento de erros</h3>
+          <p>Validação de entrada responde questões como tipo, formato, faixa e obrigatoriedade. Validar <code>amountCents</code> como inteiro positivo não comprova que o cliente pode modificar o valor de um pedido existente.</p>
+          <p>Também é importante não expor detalhes internos em respostas de erro. Um erro de banco com string de conexão, caminho do servidor ou stack trace pode divulgar informações úteis a um atacante. O middleware centralizado deve produzir respostas controladas.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">res.status(400).json({
+  code: "INVALID_INPUT",
+  message: "Os dados fornecidos são inválidos"
+});</code></pre></div>
+
+          <h3 id="cap2-9">2.9 Revisão de Pull Requests: leitura da mudança e do entorno</h3>
+          <p>Um diff pode esconder dependências importantes. Alterar uma linha no controller pode ter consequências em services e repositories que não aparecem no arquivo modificado. O revisor alterna entre mudança proposta, contexto existente e testes.</p>
+          <ol>
+            <li>Ler objetivo do PR, requisitos e contrato da operação.</li>
+            <li>Identificar arquivos alterados e pontos de entrada afetados.</li>
+            <li>Localizar verificações de identidade, autorização e validação.</li>
+            <li>Seguir os dados até consultas ou efeitos externos.</li>
+            <li>Inspecionar respostas, logs e dados expostos.</li>
+            <li>Procurar testes de cenários negativos, não apenas de sucesso.</li>
+            <li>Registrar achados com localização precisa, impacto, condição e recomendação.</li>
+            <li>Distinguir sugestões de estilo de problemas de segurança.</li>
+          </ol>
+          <div class="compare-grid">
+            <div class="aviso"><strong>Comentário fraco:</strong> "Isso parece inseguro."</div>
+            <div class="aviso" style="border-left-color:var(--good);background:var(--good-soft)"><strong style="color:var(--good)">Comentário fundamentado:</strong> "Nesta consulta, o identificador do documento é utilizado sem considerar a organização do usuário. Se o service não fizer uma verificação anterior, um usuário autenticado poderá solicitar documentos de outro tenant. Podemos confirmar a política esperada e adicionar um teste?"</div>
+          </div>
+
+          <h3 id="cap2-10">2.10 Evidências e níveis de confiança</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Campo</th><th>Exemplo</th></tr></thead>
+            <tbody>
+              <tr><td>ID</td><td>ACH-01</td></tr>
+              <tr><td>Título</td><td>Possível falta de autorização por organização</td></tr>
+              <tr><td>Requisito</td><td>Recurso acessível somente no tenant do usuário</td></tr>
+              <tr><td>Local</td><td><code>InvoiceService.getById</code>, commit analisado</td></tr>
+              <tr><td>Evidência</td><td>Consulta utiliza apenas <code>id</code>; nenhum filtro observado no fluxo revisado</td></tr>
+              <tr><td>Pré-condição</td><td>Usuário autenticado conhece identificador externo</td></tr>
+              <tr><td>Impacto possível</td><td>Exposição de dados entre organizações</td></tr>
+              <tr><td>Estado</td><td>Hipótese que exige teste negativo</td></tr>
+              <tr><td>Recomendação</td><td>Restringir consulta e validar política contextual</td></tr>
+              <tr><td>Validação</td><td>Requisição com duas identidades de tenants distintos</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap2-11">2.11 Viés de confirmação e revisão cruzada</h3>
+          <p>Quando o revisor espera encontrar SQL Injection, tende a prestar mais atenção a consultas SQL do que a transições de estado ou exposição de dados. Um checklist por categoria reduz lacunas, mas pode tornar a inspeção mecânica se usado como lista exaustiva. A revisão cruzada introduz outro olhar: uma pessoa questiona hipóteses, exige evidências e identifica possíveis explicações alternativas.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Área</th><th>Perguntas de inspeção</th></tr></thead>
+            <tbody>
+              <tr><td>Entrada</td><td>De onde vêm os valores? Existe validação suficiente?</td></tr>
+              <tr><td>Identidade</td><td>O ator é derivado de mecanismo confiável?</td></tr>
+              <tr><td>Autorização</td><td>Papel, recurso, tenant e estado são verificados?</td></tr>
+              <tr><td>Persistência</td><td>Filtros, parametrização, transações e escopo estão corretos?</td></tr>
+              <tr><td>Saída</td><td>O DTO expõe só o necessário?</td></tr>
+              <tr><td>Erros e logs</td><td>Há vazamento de detalhes internos ou dados sensíveis?</td></tr>
+              <tr><td>Dependências</td><td>Existem componentes externos relevantes e versões conhecidas?</td></tr>
+              <tr><td>Testes</td><td>Há cenários negativos e regressão?</td></tr>
+            </tbody>
+          </table></div>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Um controller passa <code>req.actor</code> ao service. Isso comprova que a autorização foi aplicada?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. É necessário verificar como o service utiliza a identidade, se o actor é confiável e se a política do recurso é implementada corretamente.</div></details>
+            <p><strong>Questão 2.</strong> Um schema Zod aceita apenas <code>status</code> com valores de enum. Por que ainda pode existir vulnerabilidade?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Porque a validação de valores não decide quem pode alterar o status nem quais transições de estado são permitidas.</div></details>
+            <p><strong>Questão 3.</strong> Qual a diferença entre "não encontrei a checagem" e "provei acesso indevido"?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>A primeira afirmação é observação limitada ao escopo revisado e pode gerar hipótese. A segunda exige demonstrar o comportamento e suas condições.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>OWASP Secure Code Review Cheat Sheet; OWASP ASVS; Braz et al. (ICSE, 2022); McGraw (2006). Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="sast-e-semgrep" aria-labelledby="h-cap3">
+        <div class="abre">
+          <div class="num">03</div>
+          <p class="eyebrow">Capítulo 3</p>
+          <h2 id="h-cap3">Análise estática automatizada e Semgrep</h2>
+          <p class="enc">A análise estática examina o código sem executar a aplicação. AST, regras Semgrep, métricas de detecção, análise de taint e interpretação responsável dos resultados.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap3-1">3.1 O que significa analisar código sem executar a aplicação</h3>
+          <p><strong>Análise estática</strong> estuda uma representação do programa sem executar os fluxos normais de entrada e resposta. As ferramentas podem inspecionar texto, sintaxe, tipos, relações entre variáveis, chamadas de função e caminhos de dados.</p>
+          <p>Na segurança, usa-se a sigla <strong>SAST</strong> (Static Application Security Testing). Um achado SAST pode indicar uma instrução potencialmente perigosa, um caminho de contaminação ou uma violação de regra. Ele não é automaticamente um laudo de explorabilidade: a ferramenta pode desconhecer requisitos de negócio, configurações de produção ou controles definidos fora do escopo.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Técnica</th><th>Objeto principal</th><th>Tipo de evidência</th><th>Limitação típica</th></tr></thead>
+            <tbody>
+              <tr><td>Revisão manual</td><td>Código + requisitos + contexto</td><td>Raciocínio e testes dirigidos</td><td>Tempo e variabilidade humana</td></tr>
+              <tr><td>SAST</td><td>Código e modelos estáticos</td><td>Padrões e caminhos suspeitos</td><td>Modelos incompletos ou ruído</td></tr>
+              <tr><td>DAST</td><td>Aplicação em execução</td><td>Comportamento observado</td><td>Cobertura dos caminhos exercitados</td></tr>
+              <tr><td>SCA</td><td>Dependências e versões</td><td>Inventário e vulnerabilidades conhecidas</td><td>Não prova que a falha é alcançável</td></tr>
+              <tr><td>Testes automatizados</td><td>Comportamentos especificados</td><td>Passagem/falha de cenário</td><td>Não cobrem o que não foi especificado</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap3-2">3.2 Dos caracteres à AST</h3>
+          <p>O código-fonte pode ser analisado em diferentes níveis. Uma busca textual procura sequências de caracteres. Uma análise sintática usa uma <strong>AST</strong> (Abstract Syntax Tree), que representa a estrutura gramatical do programa.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const total = price + tax;</code></pre></div>
+          <p>Uma representação conceitual de AST contém uma declaração de variável, um identificador <code>total</code> e uma expressão binária <code>+</code> cujos operandos são identificadores <code>price</code> e <code>tax</code>. A AST facilita perguntas como "há uma chamada a método com certo argumento?" sem depender do espaçamento da linha.</p>
+          <div class="flow-mapa" aria-label="Representação esquemática de AST">
+            <div class="flow-step">Declaração de variável</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Identificador: <code>total</code> | Expressão binária <code>+</code></div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Operandos: <code>price</code> e <code>tax</code></div>
+          </div>
+          <p>Uma expressão regular pode encontrar texto suspeito, mas confunde facilmente chamadas reais, comentários e estruturas equivalentes. Regras baseadas em sintaxe capturam padrões estruturais com maior precisão. Já um analisador de fluxo procura relações: um valor de entrada chegou até uma operação sensível?</p>
+
+          <h3 id="cap3-3">3.3 Precisão, revocação, falso positivo e falso negativo</h3>
+          <ul>
+            <li><strong>Verdadeiro positivo (VP):</strong> a ferramenta aponta corretamente um problema.</li>
+            <li><strong>Falso positivo (FP):</strong> a ferramenta alerta, mas a condição vulnerável não está presente.</li>
+            <li><strong>Falso negativo (FN):</strong> uma vulnerabilidade existente não é detectada.</li>
+            <li><strong>Verdadeiro negativo (VN):</strong> condição corretamente não sinalizada.</li>
+          </ul>
+          <p><strong>Precisão</strong> = VP / (VP + FP). <strong>Revocação</strong> = VP / (VP + FN). Ambas dependem de uma base de comparação confiável. Não se deve calcular revocação apenas com base nos alertas emitidos.</p>
+          <div class="q">
+            <p class="eyebrow">Exemplo numérico</p>
+            <p>Uma base de teste conhecida contém 30 ocorrências reais. A ferramenta sinaliza 40 trechos; após validação, 24 alertas são verdadeiros positivos e 16 são falsos positivos. Das 30 ocorrências reais, 6 não foram sinalizadas.</p>
+            <div class="tab"><table>
+              <thead><tr><th>Indicador</th><th>Cálculo</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td>VP</td><td>Dado de validação</td><td>24</td></tr>
+                <tr><td>FP</td><td>40 − 24</td><td>16</td></tr>
+                <tr><td>FN</td><td>30 − 24</td><td>6</td></tr>
+                <tr><td>Precisão</td><td>24 / (24 + 16)</td><td>60%</td></tr>
+                <tr><td>Revocação</td><td>24 / (24 + 6)</td><td>80%</td></tr>
+              </tbody>
+            </table></div>
+            <p>Os números são válidos <em>nessa base e para esse tipo de problema</em>. Não podem ser generalizados para outros repositórios, regras ou versões.</p>
+          </div>
+
+          <h3 id="cap3-4">3.4 Uma regra de detecção não é uma prova</h3>
+          <p>Se a regra busca qualquer chamada a <code>child_process.exec</code>, poderá sinalizar um comando constante sem entrada externa. A regra pode cumprir seu objetivo de inventariar usos da API, mas não prova command injection.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">Alerta genérico (sem injeção clara):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">exec("date");</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">Cenário com dados controláveis:</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const command = `convert ${filename} output.png`;
+exec(command);</code></pre></div>
+            </div>
+          </div>
+
+          <h3 id="cap3-5">3.5 Semgrep: conceitos e operação básica</h3>
+          <p>O <strong>Semgrep</strong> é uma ferramenta de análise estática que permite expressar padrões de código por meio de regras em YAML, com suporte a diversas linguagens.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-bash">semgrep scan --config rules/semgrep.yml src/</code></pre></div>
+          <p>Esse comando é ilustrativo. A disponibilidade e o comportamento exato de opções podem variar com a versão instalada. É recomendável registrar versão e configuração junto dos resultados.</p>
+          <p class="eyebrow">Anatomia de uma regra simples:</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-yaml">rules:
+  - id: node-exec-review
+    languages: [javascript, typescript]
+    severity: WARNING
+    message: "Revisar a execução de comando e a origem dos argumentos."
+    pattern: exec(...)</code></pre></div>
+          <p>O nível <code>WARNING</code> expressa uma escolha de configuração da regra, não a confirmação de risco real. A severidade de um achado exige análise contextual separada.</p>
+
+          <h3 id="cap3-6">3.6 Metavariáveis e generalização de padrões</h3>
+          <p>Uma metavariável representa uma parte variável da sintaxe que a regra pretende capturar, permitindo escrever padrões estruturais sem nomear cada variável ou função.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-yaml">rules:
+  - id: prisma-query-raw-unsafe
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: "Revisar a construção da consulta SQL e a origem dos valores."
+    pattern: $DB.$queryRawUnsafe(...)</code></pre></div>
+          <p>A regra aponta um local para inspeção, não um veredito. Para testar uma regra: crie um exemplo que ela deve detectar, outro que não deveria detectar e um caso limítrofe.</p>
+
+          <h3 id="cap3-7">3.7 Combinações de padrões e contexto</h3>
+          <p>Regras mais refinadas podem combinar condições com <code>pattern-either</code> ou <code>pattern-not</code>. Toda exclusão deve ser justificada. Uma abordagem didática:</p>
+          <ol>
+            <li>Detectar chamadas a API potencialmente sensível.</li>
+            <li>Analisar manualmente os alertas e classificar contextos.</li>
+            <li>Identificar padrões que produzem ruído repetitivo.</li>
+            <li>Adicionar restrições sintáticas justificadas.</li>
+            <li>Testar a regra revisada contra exemplos variados.</li>
+            <li>Documentar o que a regra <strong>não</strong> detecta.</li>
+          </ol>
+
+          <h3 id="cap3-8">3.8 Introdução à análise de contaminação (taint analysis)</h3>
+          <p>A análise de taint verifica se dados não confiáveis conseguem alcançar uma operação sensível. Distingue <strong>sources</strong> (origens), <strong>sinks</strong> (destinos sensíveis), <strong>propagadores</strong> e <strong>sanitizers</strong> (transformações que eliminam ou restringem o risco para um contexto específico).</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const filename = req.query.filename;   // source
+const command = `convert ${filename}`; // propagação
+exec(command);                          // sink</code></pre></div>
+          <div class="flow-mapa" aria-label="Fluxo de taint: source a sink">
+            <div class="flow-step">Source: entrada HTTP</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Transformação/propagação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step"><strong>Sanitização adequada?</strong><br><small>Sim: fluxo controlado para o contexto</small><br><small>Não: continua para o sink</small></div>
+            <div class="flow-arrow">↓ (sem sanitização)</div>
+            <div class="flow-step">Sink: operação sensível</div>
+          </div>
+          <div class="aviso"><strong>Atenção:</strong> Remover aspas de um valor pode não proteger uma operação de shell. Escapar HTML não protege contra SQL Injection. <strong>Proteção adequada depende da linguagem de destino e da forma como os dados serão interpretados.</strong></div>
+
+          <h3 id="cap3-9">3.9 Como realizar a triagem de um resultado Semgrep</h3>
+          <p>Triar significa decidir o significado técnico e a prioridade de um alerta. Uma sequência útil: identificar a regra e seu objetivo; ler a linha e o entorno; verificar origem dos valores; localizar proteções; avaliar alcançabilidade; comparar com requisitos; registrar estado e justificativa.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Campo</th><th>Exemplo</th></tr></thead>
+            <tbody>
+              <tr><td>Regra</td><td><code>prisma-query-raw-unsafe</code></td></tr>
+              <tr><td>Local</td><td><code>billing.repository.ts</code>, linha e commit</td></tr>
+              <tr><td>Padrão identificado</td><td>Uso de API de consulta bruta</td></tr>
+              <tr><td>Origem do dado</td><td>Ainda não rastreada</td></tr>
+              <tr><td>Controle conhecido</td><td>Não identificado no trecho isolado</td></tr>
+              <tr><td>Classificação</td><td>Requer investigação</td></tr>
+              <tr><td>Próximo passo</td><td>Seguir argumento até entrada e verificar parametrização</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Inconclusivo não é sinônimo de falso positivo.</strong> O relatório deve comunicar a limitação da investigação.</p>
+
+          <h3 id="cap3-10">3.10 Linha de base, repetibilidade e atualização das regras</h3>
+          <p>Em equipes que executam SAST continuamente, é útil estabelecer uma linha de base: conjunto de achados conhecido e classificado em determinado commit. Isso ajuda a diferenciar problemas existentes daqueles introduzidos recentemente.</p>
+          <p>Registre junto ao resultado: versão do Semgrep, regras utilizadas, caminhos analisados, exclusões, commit e eventuais erros de ferramenta. Uma varredura interrompida por erro não deve ser tratada como "zero vulnerabilidades".</p>
+
+          <h3 id="cap3-11">3.11 Limites metodológicos e próximos passos</h3>
+          <p>SAST é eficiente na aplicação repetível de regras e na identificação precoce de padrões. Seu desempenho diminui em cenários que dependem de política de negócio, estado externo, permissões distribuídas, código gerado dinamicamente ou bibliotecas não modeladas.</p>
+          <p>A experiência de engenharia relatada por Sadowski e colaboradores (2018) reforça a importância da integração das ferramentas ao fluxo dos desenvolvedores: resultados relevantes no momento correto tendem a apoiar ações concretas mais do que grandes listas descontextualizadas de avisos.</p>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Uma regra detectou 90 alertas e outra 20. Podemos afirmar que a primeira é melhor?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. É preciso examinar verdadeiros e falsos positivos, problemas não detectados, tipos de vulnerabilidade, escopo e custo de triagem.</div></details>
+            <p><strong>Questão 2.</strong> Um alerta de execução de comandos é automaticamente uma vulnerabilidade?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. É preciso investigar influência de entradas externas, forma de execução, permissões, sanitização contextual e alcance da função.</div></details>
+            <p><strong>Questão 3.</strong> A equipe excluiu um diretório do scanner para reduzir avisos. Qual informação precisa aparecer no relatório?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>O caminho excluído, o motivo, o efeito esperado na cobertura e a decisão de risco. Menos alertas não prova maior segurança.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>Semgrep Documentation; Sadowski et al. (2018); Chess e West (2007). Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="fluxo-codeql-e-ia" aria-labelledby="h-cap4">
+        <div class="abre">
+          <div class="num">04</div>
+          <p class="eyebrow">Capítulo 4</p>
+          <h2 id="h-cap4">Fluxo de dados, CodeQL e revisão assistida por IA</h2>
+          <p class="enc">A análise de fluxo acompanha relações entre valores ao longo do programa. CodeQL permite consultar código como dados. A IA generativa pode apoiar, mas não substitui, a verificação técnica.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap4-1">4.1 Da ocorrência isolada à relação entre operações</h3>
+          <p>Uma análise de fluxo de dados procura relações entre valores em pontos diferentes do programa. Em vez de "há uma chamada SQL bruta?", perguntamos "um valor controlado externamente pode alcançar uma instrução SQL de forma insegura?".</p>
+          <p>O <strong>grafo de fluxo de dados</strong> representa possíveis relações entre pontos do programa. É uma abstração: modela possibilidades relevantes, não uma gravação exata de todas as execuções reais. Para avaliá-lo, é necessário reconstruir a relação entre definições, atribuições, parâmetros, retornos e chamadas.</p>
+
+          <h3 id="cap4-2">4.2 Fluxo local, global e interprocedural</h3>
+          <p><strong>Fluxo local</strong> investiga relações dentro de um escopo limitado, como uma função. <strong>Fluxo global ou interprocedural</strong> acompanha caminhos através de chamadas e retornos de funções e, conforme os modelos disponíveis, de diferentes arquivos ou bibliotecas. O segundo costuma ser mais custoso.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// Fluxo local: retorno deriva de input
+function normalizeLabel(input: string) {
+  const trimmed = input.trim();
+  return trimmed.toLowerCase();
+}
+
+// Fluxo entre camadas (inseguro, didático):
+// controller
+async function search(req: Request, res: Response) {
+  const term = String(req.query.term ?? "");
+  const result = await searchService.find(term);
+  res.json(result);
+}
+// service
+async function find(term: string) {
+  return searchRepository.find(term);
+}
+// repository
+async function find(term: string) {
+  return prisma.$queryRawUnsafe(
+    `SELECT * FROM catalog WHERE title LIKE '%${term}%'`
+  );
+}</code></pre></div>
+          <p>Os dados passam do ponto de entrada ao repository sem proteção adequada à construção SQL. Uma análise interprocedural pode, conforme sua configuração, correlacionar a origem da requisição ao uso no sink.</p>
+
+          <h3 id="cap4-3">4.3 Source, sink e propagadores</h3>
+          <p>Uma <strong>source</strong> representa uma origem de dados não confiáveis, como <code>req.query</code>, <code>req.body</code>, cabeçalhos externos ou mensagens de filas. Um <strong>sink</strong> representa uma operação em que esses dados podem causar dano se utilizados sem controle. Um <strong>propagador</strong> conserva a influência da origem sobre outro valor. Um <strong>sanitizer</strong> elimina ou neutraliza um risco <em>para um contexto específico</em>.</p>
+          <div class="flow-mapa" aria-label="Fluxo source-sink">
+            <div class="flow-step">Source: <code>req.query.term</code></div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Controller (propagação)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Service (propagação)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Interpolação SQL</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Sink: consulta executada</div>
+          </div>
+          <p>Dados do banco também podem ser não confiáveis. Imagine que um usuário salvou uma descrição maliciosa e, horas depois, outro processo a utilizou para compor um comando. A origem imediata é o banco, mas a origem semântica pode ser controlável por terceiros. Esse fenômeno aparece em cenários de <em>second-order injection</em>.</p>
+
+          <h3 id="cap4-4">4.4 Sanitização, validação e parametrização são coisas diferentes</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Operação</th><th>Controle apropriado</th><th>O que não resolve</th></tr></thead>
+            <tbody>
+              <tr><td>Pesquisa SQL por e-mail</td><td>Query parametrizada</td><td>Autorização do usuário</td></tr>
+              <tr><td>Exibição de texto em HTML</td><td>Escaping contextual adequado</td><td>Uso posterior do mesmo valor em SQL</td></tr>
+              <tr><td>Campo monetário</td><td>Validação de inteiro/faixa</td><td>Direito de alterar o valor</td></tr>
+              <tr><td>Caminho de arquivo</td><td>Resolução segura + restrição de diretório</td><td>Permissão para ler qualquer documento</td></tr>
+              <tr><td>Comando externo</td><td>Evitar shell, argumentos separados, allowlist</td><td>Uso indevido por perfil não autorizado</td></tr>
+            </tbody>
+          </table></div>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// Consulta parametrizada correta
+const products = await prisma.$queryRaw`
+  SELECT id, title FROM products
+  WHERE title ILIKE ${`%${term}%`}
+`;</code></pre></div>
+          <p>A parametrização impede que <code>term</code> modifique a estrutura SQL. Não resolve automaticamente limite de resultados, autorização de acesso ao catálogo ou exposição dos dados retornados.</p>
+
+          <h3 id="cap4-5">4.5 Introdução ao CodeQL</h3>
+          <p>O <strong>CodeQL</strong> permite representar código como dados consultáveis. Para determinadas linguagens, cria uma base de informações sobre o programa e oferece bibliotecas para consultas sobre chamadas, classes, expressões e fluxo de dados. Isso não significa que a ferramenta "entende a aplicação" como um humano: ela opera sobre representações e modelos.</p>
+          <div class="flow-mapa" aria-label="Fluxo conceitual de investigação com CodeQL">
+            <div class="flow-step">Código JavaScript/TypeScript</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Base CodeQL (snapshot do código)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Consulta/regra (define source, sink, fluxo)</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Resultado com localização e possível caminho</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Validação técnica e de negócio</div>
+          </div>
+          <p>Um resultado de path query é um caminho estimado pela análise, não prova de que determinada requisição explorou a vulnerabilidade em produção.</p>
+
+          <h3 id="cap4-6">4.6 Como ler um resultado de fluxo sem conhecer toda a linguagem de consultas</h3>
+          <p>Ao receber um alerta CodeQL, identifique:</p>
+          <ol>
+            <li>Qual é a regra e que propriedade ela procura?</li>
+            <li>Onde o valor é considerado não confiável?</li>
+            <li>Por quais funções e expressões ele supostamente passa?</li>
+            <li>Qual operação está sendo tratada como sink?</li>
+            <li>A ferramenta reconheceu ou ignorou alguma proteção?</li>
+            <li>O caminho é alcançável no contexto analisado?</li>
+            <li>Que evidência adicional confirmaria ou descartaria a hipótese?</li>
+          </ol>
+          <div class="tab"><table>
+            <thead><tr><th>Passo</th><th>Componente</th><th>Observação</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><code>req.query.file</code></td><td>Entrada de parâmetro HTTP</td></tr>
+              <tr><td>2</td><td><code>reportController.download</code></td><td>Repasse do valor</td></tr>
+              <tr><td>3</td><td><code>reportService.buildPath</code></td><td>Construção de um caminho</td></tr>
+              <tr><td>4</td><td><code>fs.readFile</code></td><td>Acesso ao sistema de arquivos</td></tr>
+              <tr><td>5</td><td>Verificação adicional</td><td>Conferir se o caminho permanece dentro do diretório permitido</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap4-7">4.7 Por que diferentes ferramentas produzem resultados diferentes</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Cenário</th><th>Regra sintática</th><th>Análise de fluxo</th><th>Revisão contextual</th></tr></thead>
+            <tbody>
+              <tr><td>Uso de API desaconselhada</td><td>Boa para inventário</td><td>Não necessariamente exigida</td><td>Avalia necessidade e impacto</td></tr>
+              <tr><td>Entrada HTTP chega a SQL bruto</td><td>Pode encontrar sink</td><td>Pode seguir source → sink</td><td>Confirma construção e exploração</td></tr>
+              <tr><td>Usuário consulta recurso de outro tenant</td><td>Geralmente limitada</td><td>Pode localizar dados, não a política</td><td>Essencial para validar autorização</td></tr>
+              <tr><td>Mudança de estado inválida</td><td>Limitada</td><td>Limitada sem modelo do domínio</td><td>Essencial para regras de negócio</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap4-8">4.8 IA generativa na revisão de código</h3>
+          <p>Modelos de IA generativa podem explicar uma função, propor checklist, levantar hipóteses, sugerir testes negativos e discutir alternativas de correção. Entretanto, suas respostas são geradas a partir de padrões aprendidos e do contexto disponível; podem conter erros, extrapolações e vulnerabilidades inventadas. Uma resposta fluente não constitui evidência de segurança.</p>
+          <div class="compare-grid">
+            <div class="aviso perigo"><strong>Solicitação pouco útil:</strong> "Esse código é seguro? Responda sim ou não." — O modelo não recebe requisitos, fluxos anteriores, contratos e ambiente suficientes para sustentar uma conclusão.</div>
+            <div class="aviso"><strong>Solicitação mais adequada:</strong> "Analise somente o trecho abaixo, sem pressupor controles não apresentados. Separe observações comprováveis, hipóteses que dependem de contexto, dados adicionais necessários e sugestões de testes negativos. Não declare vulnerabilidade confirmada sem evidência."</div>
+          </div>
+          <div class="flow-mapa" aria-label="Fluxo responsável de análise assistida por IA">
+            <div class="flow-step">Revisão manual independente</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Hipóteses registradas</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Consulta delimitada à IA</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Confronto com código e requisitos</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Testes ou evidências adicionais</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Conclusão humana documentada</div>
+          </div>
+
+          <h3 id="cap4-9">4.9 Classificação de respostas de IA</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Categoria</th><th>Exemplo</th><th>Tratamento adequado</th></tr></thead>
+            <tbody>
+              <tr><td>Observação correta</td><td>Código usa SQL interpolado</td><td>Verificar influência externa e contexto</td></tr>
+              <tr><td>Hipótese válida, não confirmada</td><td>Pode faltar checagem de tenant</td><td>Rastrear fluxo e testar</td></tr>
+              <tr><td>Afirmação incorreta</td><td>"Prisma sempre previne SQL Injection"</td><td>Corrigir com documentação oficial</td></tr>
+              <tr><td>Recomendação incompleta</td><td>"Validar entrada resolve"</td><td>Especificar controle contextual</td></tr>
+              <tr><td>Alucinação</td><td>Cita arquivo ou função inexistente</td><td>Rejeitar e registrar erro</td></tr>
+            </tbody>
+          </table></div>
+          <p><strong>Não compartilhar dados sensíveis:</strong> use trechos sanitizados e ferramentas autorizadas pela organização. Dados de clientes, credenciais e código proprietário não devem ser enviados indiscriminadamente a serviços externos.</p>
+
+          <h3 id="cap4-10">4.10 Quando a ausência de alerta não significa ausência de risco</h3>
+          <p>Um scanner pode não reconhecer modelos de framework, chamada dinâmica, biblioteca proprietária, fluxo por cache, configuração externa ou semântica de negócio. O resultado "nenhum achado" significa, estritamente, <strong>nenhum achado detectado pelas verificações aplicadas no escopo analisado</strong>.</p>
+          <p>Uma conclusão precisa mencionar regras, versões, escopo e limitações. A frase "o sistema está seguro" é abrangente demais para ser justificada apenas por uma ferramenta.</p>
+
+          <h3 id="cap4-11">4.11 Segurança na utilização de ferramentas e resultados</h3>
+          <p>Relatórios podem conter trechos de código, caminhos de arquivos e nomes de serviços. Antes de compartilhá-los, verifique a sensibilidade das informações. Sempre que uma análise depender de serviço remoto ou repositório público, considere licenciamento e permissão organizacional.</p>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Uma consulta CodeQL mostra caminho de <code>req.query.name</code> a <code>fs.readFile</code>. O que falta para confirmar a vulnerabilidade?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Verificar construção e restrição do caminho, permissões, possíveis sanitizações, alcance da rota e comportamento do sistema para entradas relevantes.</div></details>
+            <p><strong>Questão 2.</strong> Uma IA afirma "não há risco, pois o valor foi validado com Zod". Qual o problema da conclusão?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Validação de tipo e formato não garante proteção contra todo contexto de injeção nem substitui autorização. É necessário examinar a regra de validação e o sink.</div></details>
+            <p><strong>Questão 3.</strong> Um caminho alcança uma função que parametriza SQL. A presença da source ainda implica SQL Injection?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. Se a parametrização é adequada para a operação, a origem não confiável pode ser tratada com segurança naquele sink específico. Outros riscos podem permanecer.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>Documentação oficial de CodeQL para JavaScript/TypeScript; documentação Semgrep para taint. Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="comparacao-e-cicd" aria-labelledby="h-cap5">
+        <div class="abre">
+          <div class="num">05</div>
+          <p class="eyebrow">Capítulo 5</p>
+          <h2 id="h-cap5">Comparação das abordagens, triagem e CI/CD</h2>
+          <p class="enc">Cada técnica encontra evidências de forma diferente. Comparação estruturada, triagem de alertas, critérios de risco e integração em pipelines de desenvolvimento.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap5-1">5.1 Por que comparar métodos de análise</h3>
+          <p>A revisão manual e o SAST não devem ser avaliados como se disputassem uma única medida de desempenho. Revisores humanos conseguem discutir intenção e política de negócio, mas precisam de tempo e contexto. Ferramentas automatizadas aplicam regras de maneira repetível e escalável, mas podem produzir ruído ou deixar lacunas em casos não modelados.</p>
+          <p>Uma comparação útil responde a perguntas delimitadas: quais problemas foram considerados? Quem identificou cada indício? Quais evidências foram usadas? Houve falso positivo? Quais problemas podem ter ficado sem cobertura?</p>
+
+          <h3 id="cap5-2">5.2 O que exatamente estamos comparando?</h3>
+          <p>É importante distinguir quatro objetos:</p>
+          <ol>
+            <li><strong>Ferramenta:</strong> Semgrep, CodeQL ou outro analisador.</li>
+            <li><strong>Regra:</strong> critério implementado na ferramenta para localizar determinado padrão.</li>
+            <li><strong>Alerta:</strong> ocorrência concreta da regra em arquivo e trecho analisado.</li>
+            <li><strong>Vulnerabilidade:</strong> problema de segurança cuja existência é sustentada por evidências e contexto.</li>
+          </ol>
+          <p>Somar alertas sem deduplicação distorce a avaliação. O mesmo vale para comparar hipóteses manuais com achados automatizados já confirmados: a unidade de análise precisa ser consistente.</p>
+          <div class="tab"><table>
+            <caption>Matriz de rastreabilidade (ilustrativa)</caption>
+            <thead><tr><th>ID</th><th>Evidência manual</th><th>Semgrep</th><th>CodeQL</th><th>IA</th><th>Estado final</th></tr></thead>
+            <tbody>
+              <tr><td>ACH-01</td><td>Encontrado</td><td>Não sinalizado</td><td>Não sinalizado</td><td>Hipótese correta</td><td>Confirmado por teste</td></tr>
+              <tr><td>ACH-02</td><td>Não encontrado inicialmente</td><td>Alerta</td><td>Alerta</td><td>Não citado</td><td>Confirmado por análise</td></tr>
+              <tr><td>ACH-03</td><td>Hipótese</td><td>Alerta</td><td>Não sinalizado</td><td>Alerta</td><td>Descartado após verificação</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap5-3">5.3 Falhas não detectadas e o problema da verdade de referência</h3>
+          <p>O termo <strong>ground truth</strong> descreve um conjunto de ocorrências validadas usado como referência. Na prática, construir esse conjunto é difícil. Vulnerabilidades ainda desconhecidas não aparecem na lista, e avaliações podem divergir sobre a exploração de certo fluxo.</p>
+          <p>Uma comparação responsável deve registrar: escopo, regras, versões, commit, casos de referência, critérios de confirmação, quantidade de alertas descartados e limitações do experimento.</p>
+
+          <h3 id="cap5-4">5.4 Triagem estruturada: da ocorrência à decisão</h3>
+          <p>O processo de triagem responde duas perguntas distintas: <strong>o alerta representa um problema de segurança real no contexto?</strong> e <strong>qual ação a equipe deverá tomar?</strong> A primeira depende de evidência técnica. A segunda considera impacto, exploração, exposição, criticidade do ativo e custo de mitigação.</p>
+          <div class="flow-mapa" aria-label="Fluxo de triagem estruturada">
+            <div class="flow-step">Alerta ou hipótese</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Confirmar escopo e ocorrência</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step"><strong>Há evidência suficiente?</strong><br><small>Não: Investigar e registrar incerteza</small><br><small>Sim: continua</small></div>
+            <div class="flow-arrow">↓ (com evidência)</div>
+            <div class="flow-step"><strong>Existe condição de vulnerabilidade?</strong><br><small>Não: Descartar com justificativa</small><br><small>Sim: continua</small></div>
+            <div class="flow-arrow">↓ (vulnerabilidade presente)</div>
+            <div class="flow-step">Analisar impacto e exposição</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Priorizar e definir ação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Corrigir, validar, reavaliar</div>
+          </div>
+
+          <h3 id="cap5-5">5.5 Severidade, prioridade e risco: conceitos distintos</h3>
+          <p><strong>Severidade</strong> descreve características técnicas de um problema. <strong>Prioridade</strong> indica a ordem em que a organização decide tratar ocorrências, considerando o contexto concreto. Um problema de severidade moderada em rota amplamente exposta pode exigir tratamento mais urgente que um problema teoricamente grave em funcionalidade isolada.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Situação ilustrativa</th><th>Avaliação possível</th><th>Justificativa</th></tr></thead>
+            <tbody>
+              <tr><td>Leitura entre tenants de dados financeiros</td><td>Alta prioridade</td><td>Impacto na confidencialidade e alcance amplo</td></tr>
+              <tr><td>Chamada de comando constante não explorável</td><td>Baixa prioridade ou melhoria</td><td>Não há injeção demonstrada</td></tr>
+              <tr><td>Dependência vulnerável em caminho inacessível</td><td>Investigar</td><td>Avaliar alcançabilidade e exposição real</td></tr>
+              <tr><td>Falha de autorização em operação crítica</td><td>Alta prioridade</td><td>Pode permitir ação indevida com impacto relevante</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap5-6">5.6 O papel de Pull Requests na segurança</h3>
+          <p>Pull Requests oferecem um ponto de revisão antes da integração de alterações. Sua utilidade é combinar descrição da mudança, diff, comentários, aprovação humana e execução de verificações. Um PR não é seguro apenas por ter recebido aprovação.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Pergunta</th><th>Evidência esperada</th></tr></thead>
+            <tbody>
+              <tr><td>A mudança introduziu endpoint ou permissão?</td><td>Contrato e papéis envolvidos</td></tr>
+              <tr><td>Algum dado novo sai pela API?</td><td>DTO e justificativa de exposição</td></tr>
+              <tr><td>Há consulta ou comando dinâmico?</td><td>Parametrização ou controle contextual</td></tr>
+              <tr><td>Estados de negócio foram alterados?</td><td>Testes de transições permitidas e negadas</td></tr>
+              <tr><td>Há alertas novos do scanner?</td><td>Triagem e decisão documentada</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap5-7">5.7 CI/CD: integrar verificações, não apenas executá-las</h3>
+          <p><strong>Integração contínua (CI)</strong> automatiza verificações quando alterações são propostas ou integradas. <strong>Entrega/implantação contínua (CD)</strong> automatiza etapas posteriores de disponibilização. No contexto de AppSec, os pipelines podem executar compilação, testes, SAST, análise de dependências e outras verificações.</p>
+          <div class="flow-mapa" aria-label="Fluxo de CI/CD com SAST">
+            <div class="flow-step">Pull Request</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Build e testes</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">SAST</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Triagem dos resultados</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step"><strong>Critérios de aprovação atendidos?</strong><br><small>Sim: Revisão e integração</small><br><small>Não: Correção ou decisão formal (retorna ao build)</small></div>
+          </div>
+
+          <h3 id="cap5-8">5.8 Exemplo de workflow para análise didática</h3>
+          <p>O fragmento abaixo ilustra um workflow que compila um projeto Node e executa uma regra Semgrep local. Ele é <strong>didático</strong>, precisa de ajuste ao repositório real e <strong>não foi executado como parte desta apostila</strong>.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-yaml">name: Verificacoes de codigo
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Semgrep local
+        run: |
+          python -m pip install semgrep
+          semgrep scan --config rules/semgrep.yml src/</code></pre></div>
+          <p>Em produção, recomenda-se avaliar atualizações de versões, fixação segura de actions, permissões mínimas e segurança de execução de código não confiável.</p>
+
+          <h3 id="cap5-9">5.9 Critérios de bloqueio e aceitação de risco</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Condição</th><th>Decisão recomendável</th><th>Motivo</th></tr></thead>
+            <tbody>
+              <tr><td>Teste negativo de autorização falhou</td><td>Bloquear</td><td>Violação reproduzida de requisito crítico</td></tr>
+              <tr><td>Novo alerta de SQL Injection com fluxo confirmado</td><td>Bloquear até correção/decisão formal</td><td>Evidência forte e impacto possível</td></tr>
+              <tr><td>Chamada constante sinalizada por regra genérica</td><td>Triar e documentar</td><td>O alerta sozinho não confirma injeção</td></tr>
+              <tr><td>Scanner não executou por erro de configuração</td><td>Não tratar como aprovação de segurança</td><td>Verificação ausente não é verificação aprovada</td></tr>
+              <tr><td>Exceção de risco formalmente autorizada</td><td>Seguir política organizacional</td><td>Exige justificativa, prazo e responsável</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap5-10">5.10 Segurança do próprio pipeline</h3>
+          <p>Pipelines executam código e lidam com credenciais, tornando-se também uma superfície de ataque. Boas práticas incluem permissões mínimas para o token de automação, cuidado com segredos, isolamento de código vindo de contribuições externas, dependências confiáveis, proteção de logs e validação de artefatos.</p>
+          <p>O uso de GitHub Actions em repositórios privados gratuitos está sujeito a cotas. Certos recursos de análise de segurança integrados, como CodeQL em repositórios privados, podem estar sujeitos a condições de licenciamento. Antes de escolher uma integração, verifique as condições atuais do provedor.</p>
+
+          <h3 id="cap5-11">5.11 Relatório comparativo: como escrever uma conclusão útil</h3>
+          <p>Em vez de "SAST detectou menos vulnerabilidades que o humano", prefira: "No conjunto de casos analisados, a revisão manual confirmou duas falhas de autorização contextual não sinalizadas pelas regras SAST utilizadas, enquanto a ferramenta identificou três padrões de uso de APIs sensíveis que não haviam sido registrados na revisão inicial."</p>
+          <p>Essa formulação informa o universo da comparação, o estado da detecção e o limite das conclusões. Não extrapola resultados de uma aplicação didática para todo o universo de software.</p>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Dois scanners produziram 50 e 12 alertas, respectivamente. Qual detectou mais vulnerabilidades?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não é possível concluir sem validar os alertas, deduplicar problemas e investigar ocorrências não detectadas.</div></details>
+            <p><strong>Questão 2.</strong> O pipeline de SAST falhou por timeout. É correto registrar "nenhum problema encontrado"?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. A execução foi inconclusiva; devem ser registrados o erro e a ausência de resultado válido.</div></details>
+            <p><strong>Questão 3.</strong> A equipe quer desabilitar uma regra porque gera falsos positivos. O que fazer?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Medir e analisar o ruído, ajustar a regra ou o escopo de modo justificado, preservar cobertura relevante e documentar a decisão; não suprimir automaticamente sem investigação.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>NIST SP 800-218 e IR 8397; GitHub Actions Documentation; Sadowski et al. (2018). Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="auditoria-e-validacao" aria-labelledby="h-cap6">
+        <div class="abre">
+          <div class="num">06</div>
+          <p class="eyebrow">Capítulo 6</p>
+          <h2 id="h-cap6">Auditoria integrada, correções e validação</h2>
+          <p class="enc">Uma auditoria efetiva combina métodos, documenta evidências e comunica o que foi verificado, corrigido e o que permanece incerto.</p>
+        </div>
+        <div class="cap">
+          <h3 id="cap6-1">6.1 O que uma auditoria de código efetivamente entrega</h3>
+          <p>Uma auditoria não deve ser reduzida a uma lista de alertas. Seu produto é uma <strong>avaliação fundamentada, delimitada por escopo e evidências</strong>, que permite a outras pessoas compreender os problemas encontrados, sua importância, o que foi corrigido e o que permanece incerto. Nenhuma técnica isolada demonstra segurança absoluta. A integração aumenta a diversidade de evidências e reduz lacunas, sem exagerar a confiança no resultado.</p>
+
+          <h3 id="cap6-2">6.2 Definição de escopo e rastreabilidade</h3>
+          <p>Um relatório de qualidade identifica <strong>qual versão</strong> foi analisada (o commit é mais preciso que "a versão atual") e registra módulos, endpoints, regras, arquivos e ambientes contemplados. Se determinados componentes não foram revisados, isso precisa aparecer de forma explícita.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Campo</th><th>Exemplo independente</th></tr></thead>
+            <tbody>
+              <tr><td>Sistema</td><td>API fictícia de faturamento</td></tr>
+              <tr><td>Versão</td><td>Commit <code>abc1234</code></td></tr>
+              <tr><td>Componentes</td><td>Módulos de faturas e usuários</td></tr>
+              <tr><td>Métodos</td><td>Revisão manual, Semgrep com regras declaradas, testes de autorização</td></tr>
+              <tr><td>Exclusões</td><td>Dependências de terceiros e infraestrutura de produção</td></tr>
+              <tr><td>Premissas</td><td>Dados fictícios; ambiente local isolado</td></tr>
+              <tr><td>Objetivo</td><td>Verificar autorização e padrões de injeção selecionados</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap6-3">6.3 Metodologia integrada de investigação</h3>
+          <div class="flow-mapa" aria-label="Metodologia integrada de auditoria">
+            <div class="flow-step">Escopo e requisitos</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Inventário e modelo de ameaça</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Revisão manual independente</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Registro da linha de base</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">SAST e demais verificações</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Triagem e comparação</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Correção priorizada</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Teste e reanálise</div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">Conclusão, limites e risco residual</div>
+          </div>
+          <p>Preservar uma linha de base manual antes das ferramentas é importante em exercícios comparativos. Caso o revisor leia os alertas antes, parte do resultado manual deixa de ser independente.</p>
+
+          <h3 id="cap6-4">6.4 Estrutura recomendada de um achado</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Campo</th><th>Conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td>Identificação</td><td>ID e título específico</td></tr>
+              <tr><td>Resumo</td><td>Qual requisito de segurança é violado</td></tr>
+              <tr><td>Localização</td><td>Arquivo, função, linha e commit</td></tr>
+              <tr><td>Pré-condições</td><td>Identidade, papel, estado e dados necessários</td></tr>
+              <tr><td>Evidência</td><td>Código, fluxo, logs ou teste verificável</td></tr>
+              <tr><td>Impacto</td><td>Consequências possíveis contextualizadas</td></tr>
+              <tr><td>Classificação</td><td>Categoria/CWE pertinente, se sustentada</td></tr>
+              <tr><td>Estado</td><td>Confirmado, hipótese, descartado, corrigido</td></tr>
+              <tr><td>Recomendação</td><td>Controle proposto e justificativa</td></tr>
+              <tr><td>Validação</td><td>Testes de regressão e reanálise</td></tr>
+              <tr><td>Risco residual</td><td>O que permanece não resolvido ou não testado</td></tr>
+            </tbody>
+          </table></div>
+          <p>Evite rótulos sem explicação como "Falha crítica". A classificação precisa derivar de fatores do cenário e da política de risco utilizada.</p>
+
+          <h3 id="cap6-5">6.5 Correção versus supressão de alerta</h3>
+          <p>Corrigir uma vulnerabilidade significa mudar o comportamento que viola um requisito de segurança. Suprimir o alerta pode ser legítimo quando a ocorrência é um falso positivo, mas não corrige o problema quando o comportamento inseguro permanece.</p>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">// Consulta com isolamento organizacional
+async function findReceipt(id: number, actor: Actor) {
+  const receipt = await prisma.receipt.findFirst({
+    where: { id, organizationId: actor.organizationId }
+  });
+  if (!receipt) throw new AppError(404, "Recurso não encontrado");
+  return toReceiptDTO(receipt);
+}</code></pre></div>
+          <p>A consulta evita retornar recibos de organizações externas. A política ainda pode exigir verificação adicional de titularidade, papéis ou status.</p>
+
+          <h3 id="cap6-6">6.6 Testes de segurança como comprovação de correção</h3>
+          <p>É especialmente importante incluir <strong>testes negativos</strong>, que tentam executar operações que deveriam ser negadas, além dos testes de sucesso.</p>
+          <div class="tab"><table>
+            <thead><tr><th>Cenário</th><th>Identidade</th><th>Recurso</th><th>Resultado esperado</th></tr></thead>
+            <tbody>
+              <tr><td>Ler recibo próprio</td><td>Proprietário ativo</td><td>Do mesmo tenant</td><td>Permitido</td></tr>
+              <tr><td>Ler recibo de outro usuário</td><td>Cliente ativo</td><td>De terceiro</td><td>Negado</td></tr>
+              <tr><td>Ler recibo de outra organização</td><td>Gerente do tenant A</td><td>Tenant B</td><td>Negado</td></tr>
+              <tr><td>Atualizar campo protegido</td><td>Cliente ativo</td><td>Campo <code>approvedById</code></td><td>Rejeitado/ignorado</td></tr>
+              <tr><td>Consultar com token inválido</td><td>Sem autenticação válida</td><td>Qualquer protegido</td><td>Não autorizado</td></tr>
+            </tbody>
+          </table></div>
+          <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">it("nega leitura de recibo de outra organização", async () => {
+  const response = await request(app)
+    .get(`/receipts/${otherOrganizationReceiptId}`)
+    .set("Authorization", `Bearer ${tokenFromOrganizationA}`);
+
+  expect([403, 404]).toContain(response.status);
+});</code></pre></div>
+
+          <h3 id="cap6-7">6.7 Correção de vulnerabilidades de injeção</h3>
+          <p>A forma de corrigir depende do sink e do fluxo. Não existe uma função universal <code>sanitize()</code> que torne todo valor seguro para todos os contextos.</p>
+          <div class="compare-grid">
+            <div>
+              <p class="eyebrow">Antes (didático, vulnerável):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">const sql = `SELECT * FROM items
+  WHERE sku = '${sku}'`;
+return prisma.$queryRawUnsafe(sql);</code></pre></div>
+            </div>
+            <div>
+              <p class="eyebrow">Depois (valor parametrizado):</p>
+              <div class="pre-wrap"><button class="copy-btn" aria-label="Copiar código">Copiar</button><pre><code class="language-typescript">return prisma.$queryRaw`
+  SELECT * FROM items
+  WHERE sku = ${sku}
+`;</code></pre></div>
+            </div>
+          </div>
+          <p>A reanálise deve confirmar que o padrão inseguro não permanece em outro caminho e que a alteração não removeu requisitos funcionais ou autorização.</p>
+
+          <h3 id="cap6-8">6.8 Testes antes e depois: o que torna a evidência forte</h3>
+          <div class="tab"><table>
+            <thead><tr><th>Elemento</th><th>Antes</th><th>Depois</th></tr></thead>
+            <tbody>
+              <tr><td>Condição inicial</td><td>Usuário A autenticado</td><td>Mesmo usuário A</td></tr>
+              <tr><td>Recurso</td><td>Registro pertencente a B</td><td>Mesmo registro</td></tr>
+              <tr><td>Comportamento</td><td>Conteúdo de B retornado</td><td>Acesso negado</td></tr>
+              <tr><td>Evidência</td><td>Requisição e resposta preservadas</td><td>Requisição e resposta preservadas</td></tr>
+              <tr><td>Outras verificações</td><td>Teste de sucesso de A</td><td>Teste de sucesso de A preservado</td></tr>
+            </tbody>
+          </table></div>
+
+          <h3 id="cap6-9">6.9 Segurança de autenticação e identidade confiável</h3>
+          <p>Headers arbitrários como <code>x-user-id</code> não demonstram autenticação segura. O servidor deve validar token assinado e suas claims, verificar o usuário e associar permissões de forma adequada.</p>
+          <p>O JWT não deve ser tratado como prova universal de autorização. Mesmo uma assinatura válida e token dentro da validade não garantem que o usuário permaneça ativo ou que seu papel permita determinada operação. Senhas devem ser armazenadas por funções de hash apropriadas (como Argon2id, conforme orientações da OWASP), não por texto simples ou hash criptográfico rápido sem estratégia adequada.</p>
+
+          <h3 id="cap6-10">6.10 Risco residual e cobertura limitada</h3>
+          <p>Mesmo após corrigir os achados conhecidos, uma auditoria pode deixar lacunas. O <strong>risco residual</strong> é o risco que permanece após controles e medidas adotadas. Pode decorrer de áreas não analisadas, dependências, políticas não validadas, incerteza sobre execução em produção ou limitações das ferramentas.</p>
+          <div class="cit"><p>"No escopo dos endpoints de faturamento revisados e no commit indicado, foram confirmadas duas falhas de autorização contextual. Após as alterações, os testes negativos definidos passaram, e a reanálise das regras selecionadas não reproduziu os alertas relacionados. A conclusão não abrange os serviços externos nem configurações de produção, que permanecem fora do escopo."</p></div>
+
+          <h3 id="cap6-11">6.11 Organização completa de um relatório técnico</h3>
+          <ol>
+            <li><strong>Objetivo e escopo:</strong> sistema analisado, componentes, objetivo, versão/commit, limitações e autorização.</li>
+            <li><strong>Contexto e requisitos de segurança:</strong> atores, ativos, permissões e fluxos considerados.</li>
+            <li><strong>Metodologia:</strong> sequência de revisão manual, regras de SAST, ferramentas, versões, ambiente, testes e critérios.</li>
+            <li><strong>Inventário de achados:</strong> visão consolidada com ID, título, estado, impacto e localização.</li>
+            <li><strong>Evidências detalhadas:</strong> trecho de código, fluxo, condição, impacto possível e grau de confiança.</li>
+            <li><strong>Comparação entre métodos:</strong> quais abordagens identificaram cada problema e por que resultados foram diferentes.</li>
+            <li><strong>Correções e validação:</strong> commits/PRs, alterações, testes de regressão, reanálises.</li>
+            <li><strong>Limitações e riscos residuais:</strong> áreas não revisadas, pressupostos e limitações das ferramentas.</li>
+            <li><strong>Conclusão técnica:</strong> síntese do que as evidências permitem afirmar e recomendações para continuidade.</li>
+            <li><strong>Referências:</strong> normas, documentações e trabalhos que sustentam critérios e classificações.</li>
+          </ol>
+
+          <h3 id="cap6-12">6.12 Comunicação para diferentes públicos</h3>
+          <p>O mesmo achado pode ser comunicado de formas distintas conforme o público. A equipe desenvolvedora precisa de arquivos, condições, correção e testes. A coordenação técnica precisa compreender risco, prioridade e impacto no produto. Gestores podem necessitar de síntese de decisões e riscos residuais, sem exposição de detalhes exploráveis.</p>
+          <p>Um bom relatório mantém consistência entre esses níveis: a síntese nunca deve afirmar algo mais forte do que a seção de evidências permite.</p>
+
+          <div class="exercicios">
+            <h3>Exercícios de reflexão</h3>
+            <p><strong>Questão 1.</strong> Um alerta desapareceu após renomear uma função, mas a consulta insegura continua. O problema foi corrigido?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. A ausência de alerta não demonstra que o comportamento inseguro foi removido.</div></details>
+            <p><strong>Questão 2.</strong> Um teste negativo retorna <code>404</code>. Isso comprova automaticamente autorização correta?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. É necessário controlar os dados de teste e assegurar que o recurso existia e o resultado derivou da política, não de erro ou ausência de fixture.</div></details>
+            <p><strong>Questão 3.</strong> Após SAST sem alertas e testes aprovados, o relatório pode concluir "nenhuma vulnerabilidade existe"?</p>
+            <details class="exerc"><summary>Ver análise</summary><div>Não. Deve concluir sobre verificações executadas, escopo, cenários cobertos e limitações.</div></details>
+            <p class="eyebrow">Para aprofundar</p>
+            <p>NIST SP 800-218; NIST IR 8397; OWASP ASVS; OWASP Password Storage Cheat Sheet. Links na seção de <a href="#referencias">Referências</a>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="glossario" aria-labelledby="h-glossario">
+        <div class="abre">
+          <p class="eyebrow">Consulta rápida</p>
+          <h2 id="h-glossario">Glossário técnico</h2>
+        </div>
+        <div class="cap">
+          <div class="glossario">
+            <dl>
+              <dt>AppSec</dt><dd>Práticas de segurança aplicadas ao desenvolvimento e funcionamento de aplicações.</dd>
+              <dt>Ativo</dt><dd>Recurso ou propriedade que precisa ser protegido.</dd>
+              <dt>Ameaça</dt><dd>Circunstância ou agente capaz de causar dano.</dd>
+              <dt>Vulnerabilidade</dt><dd>Condição explorável que viola uma propriedade de segurança.</dd>
+              <dt>CWE</dt><dd>Catálogo de tipos de fraquezas de software.</dd>
+              <dt>CVE</dt><dd>Identificador de vulnerabilidade divulgada em produto/versão específico.</dd>
+              <dt>CVSS</dt><dd>Framework para comunicar características e severidade de vulnerabilidades.</dd>
+              <dt>OWASP Top 10</dt><dd>Documento de conscientização sobre categorias de risco em aplicações.</dd>
+              <dt>ASVS</dt><dd>Conjunto estruturado de requisitos verificáveis de segurança de aplicações.</dd>
+              <dt>IDOR/BOLA</dt><dd>Falha de autorização sobre objeto identificado diretamente.</dd>
+              <dt>RBAC</dt><dd>Controle de acesso baseado em papéis.</dd>
+              <dt>ABAC</dt><dd>Controle de acesso baseado em atributos.</dd>
+              <dt>Tenant</dt><dd>Contexto organizacional ou lógico de isolamento de dados.</dd>
+              <dt>DTO</dt><dd>Estrutura destinada a transportar dados segundo contrato explícito.</dd>
+              <dt>SAST</dt><dd>Teste de segurança por análise estática de código.</dd>
+              <dt>DAST</dt><dd>Teste dinâmico da aplicação em execução.</dd>
+              <dt>SCA</dt><dd>Análise de componentes e dependências de software.</dd>
+              <dt>AST</dt><dd>Representação em árvore da sintaxe do programa.</dd>
+              <dt>Source</dt><dd>Origem de dados considerada não confiável para certo modelo de ameaça.</dd>
+              <dt>Sink</dt><dd>Operação sensível afetada por dados não confiáveis.</dd>
+              <dt>Taint tracking</dt><dd>Rastreamento de influência de dados potencialmente contaminados ao longo do programa.</dd>
+              <dt>Sanitizer</dt><dd>Proteção que neutraliza um risco para contexto definido.</dd>
+              <dt>Falso positivo</dt><dd>Alerta sem condição vulnerável confirmada no contexto avaliado.</dd>
+              <dt>Falso negativo</dt><dd>Problema real não encontrado por determinada análise.</dd>
+              <dt>Ground truth</dt><dd>Conjunto de referência utilizado para avaliar a detecção de vulnerabilidades.</dd>
+              <dt>Triagem</dt><dd>Investigação e classificação técnica de alertas de segurança.</dd>
+              <dt>Risco residual</dt><dd>Risco restante após medidas de tratamento adotadas.</dd>
+              <dt>Teste negativo</dt><dd>Teste de operação que deve ser rejeitada ou controlada pelo sistema.</dd>
+              <dt>Pull Request</dt><dd>Proposta de alteração submetida à revisão e verificações antes da integração.</dd>
+              <dt>CI/CD</dt><dd>Integração e entrega/implantação contínuas, conforme processo adotado.</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <section id="referencias" aria-labelledby="h-referencias">
+        <div class="abre">
+          <p class="eyebrow">Leituras complementares</p>
+          <h2 id="h-referencias">Referências e leituras complementares</h2>
+        </div>
+        <div class="cap">
+          <div class="recursos">
+            <h3>Referências básicas e obras de fundamentação</h3>
+            <ol>
+              <li><strong>CHESS, Brian; WEST, Jacob.</strong> <em>Secure Programming with Static Analysis</em>. Addison-Wesley Professional, 2007. Fundamentação histórica de análise estática aplicada à segurança.</li>
+              <li><strong>MCGRAW, Gary.</strong> <em>Software Security: Building Security In</em>. Addison-Wesley Professional, 2006. Integração de segurança ao ciclo de desenvolvimento.</li>
+              <li><strong>NIST.</strong> <em>Secure Software Development Framework (SSDF) Version 1.1</em>. NIST SP 800-218, 2022. <a href="https://csrc.nist.gov/pubs/sp/800/218/final" target="_blank" rel="noopener">csrc.nist.gov/pubs/sp/800/218/final</a></li>
+              <li><strong>NIST.</strong> <em>Guidelines on Minimum Standards for Developer Verification of Software</em>. NIST IR 8397, 2021. <a href="https://csrc.nist.gov/pubs/ir/8397/final" target="_blank" rel="noopener">csrc.nist.gov/pubs/ir/8397/final</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>Application Security Verification Standard (ASVS)</em>, versão 5.0.0. 2025. <a href="https://asvs.owasp.org/" target="_blank" rel="noopener">asvs.owasp.org</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>OWASP Top 10:2025</em>. <a href="https://top10.owasp.org/2025/pt-BR/" target="_blank" rel="noopener">top10.owasp.org/2025/pt-BR</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>OWASP API Security Top 10:2023</em>. <a href="https://api-security.owasp.org/editions/2023/en/0x00-header/" target="_blank" rel="noopener">api-security.owasp.org</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>Secure Code Review Cheat Sheet</em>. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html" target="_blank" rel="noopener">cheatsheetseries.owasp.org</a></li>
+            </ol>
+            <h3>Artigos científicos e pesquisas</h3>
+            <ol start="9">
+              <li><strong>BRAZ, Larissa; AEBERHARD, Christian; ÇALIKLI, Gül; BACCHELLI, Alberto.</strong> <em>Less is More: Supporting Developers in Vulnerability Detection during Code Review</em>. ICSE, 2022. <a href="https://doi.org/10.1145/3510003.3511560" target="_blank" rel="noopener">doi.org/10.1145/3510003.3511560</a></li>
+              <li><strong>SADOWSKI, Caitlin; AFTANDILIAN, Edward; EAGLE, Alex; MILLER-CUSHON, Liam; JASPAN, Ciera.</strong> <em>Lessons from Building Static Analysis Tools at Google</em>. <em>Communications of the ACM</em>, v. 61, n. 4, 2018. <a href="https://doi.org/10.1145/3188720" target="_blank" rel="noopener">doi.org/10.1145/3188720</a></li>
+            </ol>
+            <h3>Classificação e critérios de risco</h3>
+            <ol start="11">
+              <li><strong>MITRE.</strong> <em>Common Weakness Enumeration (CWE)</em>. <a href="https://cwe.mitre.org/" target="_blank" rel="noopener">cwe.mitre.org</a></li>
+              <li><strong>CVE Program.</strong> <a href="https://www.cve.org/" target="_blank" rel="noopener">cve.org</a></li>
+              <li><strong>FIRST.</strong> <em>Common Vulnerability Scoring System, Version 4.0</em>. <a href="https://www.first.org/cvss/v4.0/specification-document" target="_blank" rel="noopener">first.org/cvss/v4.0</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>Password Storage Cheat Sheet</em>. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" target="_blank" rel="noopener">cheatsheetseries.owasp.org</a></li>
+              <li><strong>OWASP FOUNDATION.</strong> <em>Authentication Cheat Sheet</em>. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener">cheatsheetseries.owasp.org</a></li>
+            </ol>
+            <h3>Ferramentas e implementação</h3>
+            <ol start="16">
+              <li><strong>SEMGREP.</strong> <em>Semgrep Documentation</em>. <a href="https://semgrep.dev/docs/" target="_blank" rel="noopener">semgrep.dev/docs</a></li>
+              <li><strong>SEMGREP.</strong> <em>Rule Syntax</em>. <a href="https://semgrep.dev/docs/writing-rules/rule-syntax" target="_blank" rel="noopener">semgrep.dev/docs/writing-rules/rule-syntax</a></li>
+              <li><strong>GITHUB.</strong> <em>CodeQL for JavaScript and TypeScript</em>. <a href="https://codeql.github.com/docs/codeql-language-guides/codeql-for-javascript/" target="_blank" rel="noopener">codeql.github.com</a></li>
+              <li><strong>GITHUB.</strong> <em>Analyzing Data Flow in JavaScript and TypeScript</em>. <a href="https://codeql.github.com/docs/codeql-language-guides/analyzing-data-flow-in-javascript-and-typescript/" target="_blank" rel="noopener">codeql.github.com</a></li>
+              <li><strong>GITHUB.</strong> <em>GitHub Actions Documentation</em>. <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">docs.github.com/en/actions</a></li>
+              <li><strong>GITHUB.</strong> <em>Secure Use of GitHub Actions</em>. <a href="https://docs.github.com/en/actions/how-tos/security-for-github-actions/security-guides/security-hardening-for-github-actions" target="_blank" rel="noopener">docs.github.com/en/actions (security hardening)</a></li>
+              <li><strong>PRISMA.</strong> <em>Raw Queries</em>. <a href="https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries" target="_blank" rel="noopener">prisma.io/docs</a></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script>
+    (function () {
+      // IntersectionObserver: highlight current section in sidebar
+      const sections = document.querySelectorAll('main.conteudo > section[id]');
+      const lis = document.querySelectorAll('#sumario li');
+      const onde = document.getElementById('onde-movel');
+
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            lis.forEach(li => li.classList.remove('ativo'));
+            const a = document.querySelector('#sumario a[href="#' + e.target.id + '"]');
+            if (a) { const li = a.closest('li'); if (li) li.classList.add('ativo'); if (onde) onde.textContent = a.textContent; }
+          }
+        });
+      }, { rootMargin: '-15% 0px -75% 0px', threshold: 0 });
+
+      sections.forEach(s => obs.observe(s));
+
+      // Mobile menu toggle
+      const btn = document.querySelector('.menu-btn');
+      const lat = document.getElementById('lateral');
+      if (btn && lat) {
+        btn.addEventListener('click', () => {
+          const open = lat.classList.toggle('aberto');
+          btn.setAttribute('aria-expanded', String(open));
+        });
+        lat.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+          lat.classList.remove('aberto');
+          btn.setAttribute('aria-expanded', 'false');
+        }));
+      }
+
+      // Copy buttons
+      document.querySelectorAll('.copy-btn').forEach(b => {
+        b.addEventListener('click', async () => {
+          const code = b.closest('.pre-wrap')?.querySelector('code');
+          if (!code) return;
+          try {
+            await navigator.clipboard.writeText(code.textContent || '');
+            b.textContent = 'Copiado!';
+          } catch {
+            b.textContent = 'Selecione manualmente';
+          }
+          setTimeout(() => { b.textContent = 'Copiar'; }, 1800);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

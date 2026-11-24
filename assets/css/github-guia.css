@@ -1,0 +1,106 @@
+/* Este arquivo é exclusivo de laboratorio/github.html */
+
+/* Reduz a entrelinha global herdada do laura-guia.css (body:1.7) */
+body { line-height: 1.55; }
+
+section[id] { scroll-margin-top: 5rem; }
+
+/* Parágrafos e listas com espaçamento compacto */
+.conteudo p, .conteudo li { line-height: 1.55; margin-bottom: .6rem; }
+.conteudo p:last-child { margin-bottom: 0; }
+.conteudo ul, .conteudo ol { margin-block: .4rem .8rem; padding-left: 1.4rem; }
+.conteudo li + li { margin-top: .15rem; }
+
+/* Títulos das seções */
+.conteudo h2 { margin-top: 2rem; margin-bottom: .5rem; }
+.conteudo h3 { margin-top: 1.2rem; margin-bottom: .3rem; }
+
+/* Código inline: evita que a fonte mono distorça a entrelinha do parágrafo */
+.conteudo p code, .conteudo li code, .faq-corpo code {
+  font-size: .84em;
+  vertical-align: baseline;
+  line-height: 1;
+  padding: 1px 5px;
+  background: var(--code-bg);
+  border-radius: 3px;
+  font-family: var(--f-mono);
+}
+
+.breadcrumb { font-size: .82rem; color: var(--muted); margin-bottom: 1.5rem; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--orange); }
+
+.pagina-header { margin-bottom: 2.5rem; }
+.pagina-header h1 { font-family: var(--f-disp); font-weight: 700; font-style: italic; text-transform: uppercase; font-size: 1.9rem; line-height: 1.1; color: var(--ink); margin-bottom: .5rem; }
+.pagina-header .lead { color: var(--ink-2); font-size: 1rem; max-width: 60ch; }
+
+.tabela { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 1rem 0 1.5rem; }
+.tabela th, .tabela td { padding: 8px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+.tabela th { background: var(--sunk); font-weight: 600; color: var(--ink-2); }
+.tabela tr:nth-child(even) td { background: var(--surface); }
+
+pre.bloco-cmd, pre.bloco-bash, pre.diagrama, pre.arvore {
+  background: var(--code-bg); border: 1px solid var(--line-soft); border-radius: 8px;
+  padding: 14px 16px; overflow-x: auto; font-family: var(--f-mono); font-size: .82rem;
+  line-height: 1.5; margin: .75rem 0 1.25rem; position: relative;
+}
+pre.diagrama, pre.arvore { font-size: .78rem; }
+code.bloco-cmd { background: none; padding: 0; font-family: inherit; font-size: inherit; }
+
+.copiar-btn {
+  position: absolute; top: 8px; right: 8px; padding: 3px 10px;
+  font-size: .75rem; font-family: var(--f-body); font-weight: 600;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 5px;
+  cursor: pointer; color: var(--muted); transition: color .15s, background .15s;
+}
+.copiar-btn:hover { background: var(--sunk); color: var(--orange); }
+
+details.faq { border: 1px solid var(--line-soft); border-radius: 8px; margin-bottom: .75rem; overflow: hidden; }
+details.faq summary { padding: 11px 44px 11px 16px; font-weight: 600; cursor: pointer; color: var(--ink); background: var(--surface); list-style: none; position: relative; line-height: 1.4; }
+details.faq summary::-webkit-details-marker { display: none; }
+details.faq summary::after { content: '+'; font-size: 1.1rem; color: var(--muted); position: absolute; right: 16px; top: 50%; transform: translateY(-50%); }
+details.faq[open] summary::after { content: '-'; }
+details.faq .faq-corpo { padding: 12px 16px; background: var(--sunk); font-size: .9rem; line-height: 1.5; }
+details.faq .faq-corpo p { margin: 0 0 .4rem; line-height: 1.5; }
+details.faq .faq-corpo p:last-child { margin-bottom: 0; }
+details.faq .faq-corpo pre { margin: .4rem 0; }
+details.faq .faq-corpo ul, details.faq .faq-corpo ol { margin: .3rem 0 .4rem; padding-left: 1.2rem; }
+details.faq .faq-corpo li { line-height: 1.5; margin-bottom: .15rem; }
+
+.checklist-local { list-style: none; padding: 0; margin: 1rem 0; display: flex; flex-direction: column; gap: 8px; }
+.checklist-local li { display: flex; align-items: flex-start; gap: 10px; }
+.checklist-local input[type="checkbox"] { margin-top: 3px; accent-color: var(--orange); width: 16px; height: 16px; flex-shrink: 0; }
+.checklist-local label { font-size: .9rem; color: var(--ink); line-height: 1.5; cursor: pointer; }
+
+.aviso { background: var(--orange-soft); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 1rem 0; font-size: .88rem; color: var(--ink-2); }
+.aviso strong { color: var(--orange-ink); }
+
+.tres-ambientes { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin: 1.25rem 0; }
+.amb-card { background: var(--surface); border: 1px solid var(--line-soft); border-radius: 10px; padding: 16px; }
+.amb-card h4 { font-family: var(--f-disp); font-weight: 700; font-size: 1rem; color: var(--orange-ink); margin-bottom: 6px; }
+.amb-card p { font-size: .85rem; color: var(--ink-2); line-height: 1.4; margin: 0; }
+
+.conceito-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 1rem 0 1.5rem; }
+.conceito-card { background: var(--sunk); border: 1px solid var(--line-soft); border-radius: 8px; padding: 14px 16px; }
+.conceito-card .termo { font-family: var(--f-disp); font-weight: 700; font-size: 1rem; color: var(--orange-ink); margin-bottom: 4px; }
+.conceito-card p { font-size: .84rem; color: var(--ink-2); line-height: 1.45; margin: 0; }
+
+.situacoes-table { overflow-x: auto; }
+
+.refs-lista { list-style: none; padding: 0; margin: 1rem 0; display: flex; flex-direction: column; gap: 8px; }
+.refs-lista li { font-size: .9rem; }
+.refs-lista a { color: var(--orange-ink); font-weight: 600; text-decoration: none; }
+.refs-lista a:hover { text-decoration: underline; }
+
+@media (max-width: 700px) {
+  .tabela { font-size: .78rem; }
+  .tabela th, .tabela td { padding: 6px 8px; }
+  pre.bloco-cmd, pre.bloco-bash { font-size: .75rem; padding: 10px 12px; }
+  .tres-ambientes { grid-template-columns: 1fr; }
+}
+
+@media print {
+  details.faq { border: none; }
+  details.faq .faq-corpo { display: block !important; }
+  details.faq summary::after { display: none; }
+}

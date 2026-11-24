@@ -1,0 +1,594 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#FEF7EE" name="theme-color"/>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="Leitura estruturada de código, autorização por objeto e papel, fronteiras de confiança e documentação de achados."/>
+  <title>Encontro 02 · Revisão manual de código | CESAR School</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="../assets/css/laura-aulas.css" rel="stylesheet"/>
+  <link href="../assets/css/adaptacao.css" rel="stylesheet"/>
+  <link href="../assets/css/pedagogia-visual.css" rel="stylesheet"/>
+  <link href="../assets/css/melhorias.css" rel="stylesheet"/>
+  <script defer src="../assets/js/config.js"></script>
+  <script defer src="../assets/js/site.js"></script>
+</head>
+<body>
+<header class="topo"><div class="wrap">
+  <a aria-label="Início" href="../index.html" style="color:inherit;display:block"><span aria-label="CESAR School" class="logo" role="img"></span></a>
+  <div class="topo-titulo">Encontro 02 · Revisão manual de código<small>Revisão de Código e Análise Estática · Especialização em Cibersegurança</small></div>
+  <div class="topo-acoes">
+    <a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Início</a>
+    <select aria-label="Ir diretamente a uma seção" id="irpara"></select>
+    <button aria-pressed="false" class="btn" id="btnAula" type="button">Modo aula</button>
+  </div>
+</div></header>
+
+<main>
+
+<section class="cena capa" data-nome="Capa" id="capa">
+  <div class="forma f1"></div><div class="forma f2"></div><div class="forma f3"></div><div class="forma f4"></div><div class="forma f5"></div>
+  <div class="wrap">
+    <span aria-label="CESAR School" class="logo" role="img"></span>
+    <h1>Revisão de código e análise estática automatizada</h1>
+    <p class="sub">Encontro 02 · Revisão manual de código</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WARM-UP 02 ═══════════════════════ -->
+<section class="cena" data-nome="Warm-up" id="warmup">
+<style>
+.wu-provoc{background:var(--sunk);border-left:5px solid var(--orange);border-radius:0 12px 12px 0;padding:22px 26px;margin:0 0 6px}
+.wu-provoc p{margin:0 0 10px;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.wu-provoc p:last-child{margin:0}
+.wu-provoc strong{color:var(--orange-ink)}
+.wu-caso{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px}
+.wu-caso .eyebrow{margin-bottom:6px}
+.wu-caso p{margin:0 0 8px;font-size:.93rem;color:var(--ink-2);line-height:1.6}
+.wu-caso p:last-child{margin:0}
+.wu-choices{display:grid;gap:10px;margin:16px 0 0}
+.wu-choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .14s,background .14s;line-height:1.5}
+.wu-choice:hover,.wu-choice:focus-visible{border-color:var(--orange)}
+.wu-choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.wu-choice[data-correct="true"][aria-pressed="true"]{border-color:var(--good);box-shadow:inset 5px 0 0 var(--good);background:var(--good-soft)}
+.wu-feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.6;font-size:.95rem;color:var(--ink)}
+.wu-feedback[hidden]{display:none}
+.wu-fechamento{background:var(--sunk);border-radius:14px;padding:20px 24px}
+.wu-fechamento p{margin:0;font-size:1rem;line-height:1.65;color:var(--ink)}
+.wu-fechamento strong{color:var(--orange-ink)}
+/* Simulador */
+.sim-portal{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;max-width:500px}
+.sim-header{background:var(--sunk);padding:12px 16px;border-bottom:1.5px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.sim-header .sim-title{font-family:var(--f-disp);font-weight:700;font-size:1rem}
+.sim-badge{background:var(--warn-soft);color:var(--warn);font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;border:1px solid var(--warn)}
+.sim-user{font-size:.85rem;color:var(--ink-2)}
+.sim-body{padding:18px 20px;background:var(--surface)}
+.sim-id-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.sim-id-btn{font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:7px 16px;cursor:pointer;font-size:.9rem;transition:border-color .14s}
+.sim-id-btn:hover{border-color:var(--orange)}
+.sim-id-btn.active{border-color:var(--orange);background:var(--orange-soft);font-weight:600}
+.sim-path{font-family:var(--f-mono);font-size:.82rem;color:var(--muted);margin-bottom:12px}
+.sim-doc-card{background:var(--sunk);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.9rem;line-height:1.5;color:var(--ink-2)}
+.sim-doc-card strong{display:block;font-weight:700;color:var(--ink);margin-bottom:3px}
+.sim-consult-btn{font:inherit;background:var(--orange);color:#fff;border:none;border-radius:10px;padding:10px 20px;cursor:pointer;font-weight:700;font-size:.92rem}
+.sim-consult-btn:hover{filter:brightness(.9)}
+.sim-result{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.88rem;line-height:1.6;font-weight:600}
+.sim-result[hidden]{display:none}
+.sim-result.ok{background:var(--good-soft);color:var(--good);border:1.5px solid var(--good)}
+.sim-result.vuln{background:var(--warn-soft);color:var(--warn);border:1.5px solid var(--warn)}
+/* Camadas */
+.layer-stack{display:flex;flex-direction:column;gap:0;max-width:360px}
+.ls-row{border:1.5px solid var(--line);border-radius:0;background:var(--surface);cursor:pointer;padding:12px 18px;position:relative;transition:background .14s,border-color .14s}
+.ls-row:first-child{border-radius:12px 12px 0 0}
+.ls-row:last-child{border-radius:0 0 12px 12px;border-top:none}
+.ls-row:not(:last-child){border-bottom:none}
+.ls-row:hover{background:var(--sunk)}
+.ls-row.active{background:var(--orange-soft);border-color:var(--orange);z-index:1}
+.ls-row.highlight{background:var(--good-soft);border-color:var(--good)}
+.ls-name{font-weight:700;font-size:.95rem;font-family:var(--f-disp)}
+.ls-desc{font-size:.83rem;color:var(--ink-2);margin-top:4px}
+.ls-detail{font-size:.88rem;line-height:1.6;padding:12px 16px;background:var(--sunk);border:1.5px solid var(--line);border-top:none;border-radius:0 0 12px 12px;color:var(--ink)}
+.ls-detail[hidden]{display:none}
+</style>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Warm-up · 12 minutos</p>
+      <h2>Estar autenticado significa estar autorizado?</h2>
+    </div>
+
+    <div class="wu-caso">
+      <p class="eyebrow">Referência histórica · First American Financial, 2019</p>
+      <p>Um problema de controle de acesso no sistema de documentos da First American Financial permitia acesso a documentos por URLs com identificadores previsíveis. A situação foi objeto de procedimentos da autoridade financeira de Nova York (NYDFS).</p>
+      <p style="font-size:.82rem;color:var(--muted)">Atenção: exposição potencial não equivale a confirmação de que todos os documentos foram efetivamente acessados.</p>
+    </div>
+
+    <div class="wu-provoc">
+      <p>Você recebeu um link legítimo para consultar um documento. Ao modificar um número da URL, consegue visualizar um documento de outra pessoa.</p>
+      <p><strong>O problema está no usuário que alterou o endereço, ou na aplicação que permitiu o acesso?</strong></p>
+    </div>
+
+    <!-- Interação 1: Simulador -->
+    <div class="cartao">
+      <p class="eyebrow">Simulador fictício</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Explore o simulador. Selecione um identificador e consulte o documento. O comportamento da API é <strong>deliberadamente vulnerável</strong> nesta simulação.</p>
+      <div class="sim-portal">
+        <div class="sim-header">
+          <span class="sim-title">Portal de documentos</span>
+          <span class="sim-badge">Simulação</span>
+          <span class="sim-user">Usuário autenticado: Ana</span>
+        </div>
+        <div class="sim-body">
+          <p style="margin:0 0 8px;font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">Identificador do documento</p>
+          <div class="sim-id-row">
+            <button class="sim-id-btn active" data-id="1001">1001</button>
+            <button class="sim-id-btn" data-id="1002">1002</button>
+            <button class="sim-id-btn" data-id="1003">1003</button>
+          </div>
+          <div class="sim-path" id="sim-path">/documentos/1001</div>
+          <div class="sim-doc-card" id="sim-doc-card">
+            <strong id="sim-doc-title">Documento financeiro de Ana</strong>
+            <span id="sim-doc-owner">Proprietário: Ana</span>
+          </div>
+          <button class="sim-consult-btn" id="sim-consult-btn">Consultar documento</button>
+          <div class="sim-result" id="sim-result" hidden></div>
+        </div>
+      </div>
+
+      <div class="wu-choices" id="wu-sim-q" style="margin-top:20px">
+        <p style="font-weight:700;margin-bottom:0">O que faltou verificar na API?</p>
+      </div>
+      <div class="wu-choices" id="wu-sim-choices">
+        <button class="wu-choice" data-idx="0">A identidade do usuário (autenticação).</button>
+        <button class="wu-choice" data-idx="1" data-correct="true">Se o usuário tem permissão para acessar aquele documento específico.</button>
+        <button class="wu-choice" data-idx="2">Se o formato do identificador é numérico.</button>
+      </div>
+      <div class="quiz-actions" style="margin-top:14px">
+        <button class="btn" id="wu-sim-btn" disabled>Ver análise</button>
+      </div>
+      <div class="wu-feedback" id="wu-sim-feedback" hidden>
+        O sistema conhece Ana (autenticação), mas não verifica se Ana tem relação com o documento 1002 ou 1003 (autorização). A API deveria checar: <em>este usuário pode acessar este recurso específico?</em>, não apenas se está autenticado.
+      </div>
+    </div>
+
+    <!-- Interação 2: Camadas -->
+    <div class="cartao">
+      <p class="eyebrow">Em qual camada a decisão deve ser tomada?</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">O JWT foi validado. Clique em cada camada para ver sua responsabilidade.</p>
+      <div class="layer-stack" id="layer-stack">
+        <div class="ls-row" data-layer="route" tabindex="0">
+          <div class="ls-name">Route</div>
+        </div>
+        <div class="ls-row" data-layer="controller" tabindex="0">
+          <div class="ls-name">Controller</div>
+        </div>
+        <div class="ls-row ls-row-service highlight" data-layer="service" tabindex="0">
+          <div class="ls-name">Service ★</div>
+        </div>
+        <div class="ls-row" data-layer="repository" tabindex="0">
+          <div class="ls-name">Repository</div>
+        </div>
+        <div class="ls-row" data-layer="db" tabindex="0">
+          <div class="ls-name">Banco de dados</div>
+        </div>
+      </div>
+      <div class="ls-detail" id="ls-detail" hidden></div>
+      <div class="wu-feedback" style="margin-top:14px;border-left-color:var(--good);background:var(--good-soft)">
+        Autenticação no middleware não substitui autorização contextual. O service é o lugar típico para coordenar a regra de negócio; o repository pode reforçar com consultas corretamente restritas ao escopo autorizado.
+      </div>
+    </div>
+
+    <div class="wu-fechamento">
+      <p><strong>Uma aplicação não é segura apenas porque sabe quem você é. Ela também precisa verificar o que você pode fazer.</strong> A partir daqui: revisão manual estruturada, IDOR/BOLA, fronteiras de confiança e regras de negócio.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var DOCS={
+    '1001':{title:'Documento financeiro de Ana',owner:'Ana',ok:true},
+    '1002':{title:'Documento financeiro de Bruno',owner:'Bruno',ok:false},
+    '1003':{title:'Documento financeiro de Carla',owner:'Carla',ok:false}
+  };
+  var selId='1001';
+  document.querySelectorAll('.sim-id-btn').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.sim-id-btn').forEach(function(x){x.classList.remove('active')});
+      b.classList.add('active');
+      selId=b.dataset.id;
+      document.getElementById('sim-path').textContent='/documentos/'+selId;
+      var d=DOCS[selId];
+      document.getElementById('sim-doc-title').textContent=d.title;
+      document.getElementById('sim-doc-owner').textContent='Proprietário: '+d.owner;
+      document.getElementById('sim-result').setAttribute('hidden','');
+    });
+  });
+  document.getElementById('sim-consult-btn').addEventListener('click',function(){
+    var d=DOCS[selId];
+    var el=document.getElementById('sim-result');
+    el.removeAttribute('hidden');
+    if(d.ok){
+      el.className='sim-result ok';
+      el.textContent='Acesso permitido (200). Ana consultou um documento que lhe pertence.';
+    } else {
+      el.className='sim-result vuln';
+      el.textContent='Acesso indevido simulado (200). Neste sistema fictício, a API permitiu a consulta sem verificar o proprietário. O comportamento esperado seria negar o acesso.';
+    }
+  });
+  /* Votação simulador */
+  var cs=document.querySelectorAll('#wu-sim-choices .wu-choice'),bs=document.getElementById('wu-sim-btn'),fs=document.getElementById('wu-sim-feedback');
+  cs.forEach(function(b){b.addEventListener('click',function(){cs.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');bs.disabled=false});});
+  bs.addEventListener('click',function(){fs.removeAttribute('hidden');var s=document.querySelector('#wu-sim-choices .wu-choice[aria-pressed="true"]');if(s&&s.dataset.correct){fs.style.borderLeftColor='var(--good)';fs.style.background='var(--good-soft)'}});
+  /* Camadas */
+  var LAYERS={
+    route:'Mapeia o endpoint e aplica middlewares gerais. Não verifica relação entre usuário e recurso específico.',
+    controller:'Extrai dados da requisição e delega a operação ao service. Não decide autorização contextual.',
+    service:'<strong>Lugar típico para autorização contextual.</strong> É aqui que a aplicação verifica se Ana pode consultar o documento com aquele identificador, não apenas se está autenticada.',
+    repository:'Consulta dados. Pode aplicar filtros que restrinjam resultados ao escopo autorizado, reforçando a decisão do service.',
+    db:'Persiste os recursos. Não assume por si só a regra de acesso da aplicação.'
+  };
+  var detail=document.getElementById('ls-detail');
+  document.querySelectorAll('.ls-row').forEach(function(r){
+    function activate(){
+      document.querySelectorAll('.ls-row').forEach(function(x){x.classList.remove('active')});
+      r.classList.add('active');
+      detail.innerHTML=LAYERS[r.dataset.layer];
+      detail.removeAttribute('hidden');
+    }
+    r.addEventListener('click',activate);
+    r.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' ')activate()});
+  });
+})();
+</script>
+
+<section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Antes de começar</p>
+      <h2>Ler o código como quem busca o que pode dar errado</h2>
+    </div>
+    <p class="lede">Leitura estruturada de código, autorização por objeto e papel, fronteiras de confiança e documentação de achados.</p>
+    <div class="obj-grid">
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <p>Conduzir uma revisão orientada a requisitos seguindo o percurso Route → Controller → Service → Repository</p>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <p>Distinguir autorização por função (papel) de autorização por objeto (propriedade do recurso)</p>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <p>Identificar fronteiras de confiança e verificar onde entradas externas cruzam para o sistema interno</p>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <p>Documentar achados com localização, condição de reprodução e impacto antes de propor correção</p>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <p>Executar revisão cruzada entre equipes, distinguindo evidências de suposições</p>
+      </div>
+      <div class="obj-item">
+        <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <p>Analisar transições de estado válidas e regras de negócio que não aparecem em linters</p>
+      </div>
+    </div>
+    <div class="cartao" style="margin-top:14px">
+      <h3>Como participar</h3>
+      <p>Explore os exemplos, responda às questões e consulte as explicações. Use o <strong>Modo aula</strong> para navegar por seções. As entregas oficiais ficam no Moodle e nos repositórios privados das equipes.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Revisar código significa reconstruir sua intenção" id="conceito-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 1</p><h2>Revisar código significa reconstruir sua intenção</h2></div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card"><span class="study-card-no">01</span><p>O revisor de segurança procura compreender como dados, privilégios e estados atravessam componentes. A leitura começa no contexto da funcionalidade: requisitos, ativos, perfis de usuários e decisões de acesso.</p></article>
+        <article class="study-card"><span class="study-card-no">02</span><p>Em seguida identifica pontos de entrada, chamadas críticas e saídas observáveis. Uma implementação não pode ser considerada segura apenas por compilar, passar em testes funcionais ou retornar o HTTP esperado.</p></article>
+        <article class="study-card"><span class="study-card-no">03</span><p>A OWASP recomenda que o escopo da revisão manual inclua arquitetura, autenticação, autorização, tratamento de erros, lógica de negócio e fluxo de dados.</p></article>
+        <article class="study-card"><span class="study-card-no">04</span><p><strong>Baseline review:</strong> avalia a aplicação de modo abrangente; serve para onboarding, auditoria e conhecimento de legado. <strong>Diff-based review:</strong> concentra-se nas linhas alteradas e na repercussão sobre controles existentes.</p></article>
+        <article class="study-card"><span class="study-card-no">05</span><p>Em um Pull Request, o risco pode estar em uma função modificada ou no contrato de uma função que não foi alterada. Revisar apenas o diff verde sem conhecer suas chamadas pode deixar uma vulnerabilidade passar.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 1: Percurso em camadas" id="visual-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Percurso estruturado da leitura</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Da rota ao banco: seis perguntas por camada</h3></div>
+      <div class="hypo-flow" aria-label="Percurso de revisão por camada">
+        <div class="hypo-step"><div class="hypo-num">01</div><h4>Rota</h4><p>Qual endpoint? Quais middlewares são aplicados? Autenticação obrigatória?</p></div>
+        <div class="hypo-step"><div class="hypo-num">02</div><h4>Controller</h4><p>Como a entrada é extraída? O body é validado pelo schema Zod antes de prosseguir?</p></div>
+        <div class="hypo-step"><div class="hypo-num">03</div><h4>Service</h4><p>Onde está a autorização? O recurso é verificado contra o usuário autenticado?</p></div>
+        <div class="hypo-step"><div class="hypo-num">04</div><h4>Repository</h4><p>A consulta é parametrizada? Retorna só os campos necessários?</p></div>
+        <div class="hypo-step"><div class="hypo-num">05</div><h4>Resposta</h4><p>O que é exposto? Dados de outros usuários? Campos sensíveis desnecessários?</p></div>
+      </div>
+      <p class="viz-caption">Percorra esse caminho para cada operação antes de registrar hipóteses.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Autorização por objeto" id="interacao-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 1</p><h2>E agora, como você decidiria?</h2></div>
+    <div aria-label="Atividade de reforço conceitual" class="lab quiz" data-correct="2" data-explanation="Verificar identidade, organização, relação com o pedido e permissão aplicável são os quatro vetores da autorização em uma API multiempresa.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Autorização por objeto</h3></div>
+      <p class="instrucao">Em uma API multiempresa, qual é a condição adequada para retornar um pedido?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Existir um pedido com esse ID</button>
+        <button class="choice" data-value="1" type="button">O token ser válido e o pedido existir</button>
+        <button class="choice" data-value="2" type="button">Verificar identidade, organização, relação com o pedido e permissão aplicável</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Autorização em três dimensões" id="conceito-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Autorização em três dimensões</h2></div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card"><span class="study-card-no">01</span><p>Analisar apenas <code>if (user)</code> é insuficiente. Para cada operação, perguntar: sujeito (quem age?), objeto (sobre o quê?) e ação/condição (o que pode realizar e em qual estado?).</p></article>
+        <article class="study-card"><span class="study-card-no">02</span><p>Um endpoint pode negar acesso anônimo e ainda permitir acesso horizontal a outro titular ou acesso vertical a uma função administrativa. A CWE-639 descreve autorização contornável pelo uso de uma chave controlada pelo usuário.</p></article>
+        <article class="study-card"><span class="study-card-no">03</span><p>Condição insegura ilustrativa: <code>const order = orders.find(o =&gt; o.id === Number(req.params.id)); return res.json(order);</code>: retorna o pedido sem verificar a quem pertence.</p></article>
+        <article class="study-card"><span class="study-card-no">04</span><p>Uma correção exige verificar <code>order.ownerId === currentUser.id</code> e ainda que ambos pertençam à mesma organização. O código correto depende da política de segurança explicitada nos requisitos.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 2: Autorização em camadas" id="visual-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Autorização em camadas: cinco dimensões</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">MATRIZ</span><h3>A consulta de um pedido exige múltiplas condições</h3></div>
+      <div class="vtable-scroll">
+        <table class="visual-table">
+          <thead><tr><th>Dimensão</th><th>Pergunta que deve ser feita</th><th>Teste negativo a executar</th></tr></thead>
+          <tbody>
+            <tr><td>Identidade</td><td>O token pertence a usuário ativo?</td><td>Token inválido ou expirado</td></tr>
+            <tr><td>Organização</td><td>O pedido pertence ao tenant do sujeito?</td><td>Conta de outra organização</td></tr>
+            <tr><td>Propriedade</td><td>O sujeito pode ver este recurso específico?</td><td>Pedido de outro comprador</td></tr>
+            <tr><td>Papel</td><td>Este perfil pode executar a ação?</td><td>CUSTOMER tentando aprovar pedido</td></tr>
+            <tr><td>Estado</td><td>A transição de status é válida agora?</td><td>Aprovar pedido já cancelado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="viz-caption">Uma verificação de role isolada não representa política completa de autorização.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Regras de negócio e estados" id="conceito-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Regras de negócio e estados de um pedido</h2></div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card"><span class="study-card-no">01</span><p>Considere o endpoint de aprovação de pedido. Não basta ter uma rota POST e um status <code>approved</code> válido. Deve existir um conjunto de transições possíveis: apenas <code>pending → approved</code>, apenas por um aprovador autorizado, com trilha de auditoria.</p></article>
+        <article class="study-card"><span class="study-card-no">02</span><p>Uma rota que aprova qualquer pedido sem consultar a identidade e o estado permite alteração indevida mesmo sem injeção ou erro sintático.</p></article>
+        <article class="study-card"><span class="study-card-no">03</span><p>A revisão manual tem vantagem quando o controle depende de política de domínio que não está codificada em anotações ou regras externas.</p></article>
+        <article class="study-card"><span class="study-card-no">04</span><p>O estudo de Braz et al. sugere que a atenção dirigida à segurança durante a revisão influencia a detecção, reforçando a necessidade de perguntas específicas em vez de listas genéricas.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 3: Ciclo do pedido" id="visual-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Máquina de estados: quais transições são válidas?</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Estados e transições precisam de regras explícitas</h3></div>
+      <div class="taint-flow" aria-label="Ciclo de estados do pedido">
+        <div class="tf-step tf-source"><div class="tf-label">Estado inicial</div><h4>Pendente</h4><p>Criado; editável pelo criador dentro das regras</p></div>
+        <div class="tf-step tf-prop"><div class="tf-label">Transição</div><h4>Em análise</h4><p>Aguardando decisão de aprovador autorizado</p></div>
+        <div class="tf-step tf-barrier"><div class="tf-label">Transição controlada</div><h4>Aprovado</h4><p>Mudança registrada com responsável e data</p></div>
+        <div class="tf-step tf-sink"><div class="tf-label">Estado final</div><h4>Finalizado</h4><p>Não deve retornar arbitrariamente a estado anterior</p></div>
+      </div>
+      <p class="viz-caption">Exemplo conceitual; confira os requisitos reais antes de concluir quais transições são válidas na API do laboratório.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Estados do pedido" id="interacao-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="0" data-explanation="Além do papel, a operação deve respeitar o estado permitido pela regra de negócio.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Estados do pedido</h3></div>
+      <p class="instrucao">Uma pessoa autorizada tenta aprovar um pedido que já foi cancelado. O que a revisão deve investigar?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Se existe uma regra válida de transição de estado</button>
+        <button class="choice" data-value="1" type="button">Se a variável local se chama status</button>
+        <button class="choice" data-value="2" type="button">Se o controller usa async</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Checklists são apoio, não substituição de raciocínio" id="conceito-5">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Checklists são apoio, não substituição de raciocínio</h2></div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card"><span class="study-card-no">01</span><p>Uma lista de checagem evita esquecer classes de falha recorrentes. No entanto, ela deve ser complementada pelo conhecimento da aplicação e do cenário de ameaça.</p></article>
+        <article class="study-card"><span class="study-card-no">02</span><p>Utilize o OWASP ASVS 5.0.0 para derivar requisitos verificáveis, registrando edição e identificador quando for usado um requisito específico. Não atribuir números de requisitos de memória.</p></article>
+        <article class="study-card"><span class="study-card-no">03</span><p>O OWASP Top 10:2025 serve para contextualizar categorias de riscos, não para afirmar que a aplicação passou por verificação integral.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 4: Checklist por camada" id="visual-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Checklist por camada para o laboratório</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">CHECKLIST</span><h3>Pontos a verificar em cada nível da arquitetura</h3></div>
+      <div class="vtable-scroll">
+        <table class="visual-table">
+          <thead><tr><th>Camada</th><th>O que verificar</th></tr></thead>
+          <tbody>
+            <tr><td>Rota / middleware</td><td>Autenticação obrigatória? Validação do schema aplicada antes do controller?</td></tr>
+            <tr><td>Controller</td><td>Extrai apenas campos esperados? Propaga o usuário autenticado ao service?</td></tr>
+            <tr><td>Service</td><td>Verifica papel, organização e propriedade antes de agir? Regra de transição de estado presente?</td></tr>
+            <tr><td>Repository</td><td>Consultas parametrizadas? Retorna só os campos necessários? Filtra por tenant?</td></tr>
+            <tr><td>Resposta HTTP</td><td>Expõe somente dados autorizados? Inclui campos sensíveis desnecessários?</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="viz-caption">Use como guia, não como garantia. A ausência de alerta em cada linha não equivale à ausência de vulnerabilidade.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Anatomia de um achado" id="conceito-6">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 5</p><h2>Anatomia de um achado bem documentado</h2></div>
+    <div class="section-text">
+      <div class="learning-grid">
+        <article class="study-card"><span class="study-card-no">01</span><p><strong>Localização:</strong> arquivo, função, linha e commit analisado. Sem isso o achado não pode ser reproduzido.</p></article>
+        <article class="study-card"><span class="study-card-no">02</span><p><strong>Condição:</strong> qual perfil, qual entrada e qual estado tornam o problema observável. Um IDOR exige saber com qual token e qual ID testar.</p></article>
+        <article class="study-card"><span class="study-card-no">03</span><p><strong>Impacto:</strong> o que acontece se a condição for satisfeita. Acesso a dados de outro tenant? Aprovação indevida? Qual a consequência de negócio?</p></article>
+        <article class="study-card"><span class="study-card-no">04</span><p><strong>Classificação:</strong> CWE relevante, nível de confiança (confirmado, hipótese, investigar) e indicação de requisito ASVS violado quando aplicável.</p></article>
+        <article class="study-card"><span class="study-card-no">05</span><p><strong>Recomendação:</strong> correção proposta e teste negativo que demonstra a ausência do problema após a correção.</p></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Qualidade do registro" id="interacao-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 3</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="1" data-explanation="A localização, a condição e o impacto precisam estar documentados para que o achado possa ser verificado por outro revisor.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Qualidade do registro</h3></div>
+      <p class="instrucao">Um revisor documenta apenas "o endpoint de pedidos tem problema de autorização". O que falta?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Nada; a descrição é suficiente</button>
+        <button class="choice" data-value="1" type="button">Arquivo, condição reproduzível e impacto concreto</button>
+        <button class="choice" data-value="2" type="button">Apenas o número da linha</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Caso para discussão" id="estudo-caso">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Exemplo comentado</p><h2>Leia, formule hipótese, depois analise</h2></div>
+    <div class="lab">
+      <div class="lab-cab"><p class="eyebrow">Estudo de caso independente</p><h3>Exemplo isolado: consulta de pedido</h3></div>
+      <p class="instrucao">Leia o trecho, formule uma hipótese e só então abra a análise comentada.</p>
+      <pre class="codigo"><code>// OrderService: exemplo didático independente da API real
+async getOrder(orderId: number, requestingUser: User) {
+  const order = await this.orderRepo.findById(orderId);
+  if (!order) throw new NotFoundException();
+  return order;
+}</code></pre>
+      <details class="conta">
+        <summary>Mostrar discussão orientadora</summary>
+        <div class="corpo">
+          <p>O método verifica a existência do pedido, mas não verifica se <code>requestingUser</code> tem relação com ele. Qual informação faltaria para decidir se isso é vulnerabilidade confirmada ou hipótese?</p>
+          <ul style="margin:.6rem 0 0;padding-left:1.3rem;line-height:1.65">
+            <li>Quem chama esse método e com qual contexto de usuário?</li>
+            <li>Existe verificação de organização e propriedade em outro ponto da cadeia?</li>
+            <li>O endpoint que usa esse serviço exige papel específico?</li>
+          </ul>
+          <p class="ref-nota">Este exemplo é independente da API avaliada no projeto.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Registro de ideias" id="anotacoes">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Reflexão individual ou em dupla</p><h2>Explique antes de concluir</h2></div>
+    <div class="lab" data-journal="">
+      <div class="lab-cab"><p class="eyebrow">Pausa para discussão</p><h3>Registre uma hipótese em suas palavras</h3></div>
+      <p class="instrucao">Escreva uma justificativa breve sobre o conceito da aula. A anotação é local e opcional.</p>
+      <textarea aria-label="Seu rascunho" class="journal" placeholder="Qual hipótese você levantaria? Que evidência faltaria para confirmá-la?"></textarea>
+      <div class="actions-row">
+        <button class="btn prim" data-copy type="button">Copiar meu rascunho</button>
+        <button class="btn" data-clear type="button">Limpar</button>
+        <span class="note-local" role="status"></span>
+      </div>
+      <p class="note-local">Não há envio de respostas nem coleta de dados nesta atividade.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 2 · Revisão manual independente</h2></div>
+    <div class="lab projeto">
+      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 2 · Revisão manual independente</h3></div>
+      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
+      <ul class="check-list">
+        <li>Percorrer cada rota listada no inventário seguindo o fluxo Route → Controller → Service → Repository.</li>
+        <li>Verificar autorização por objeto em cada endpoint que recebe um ID de recurso como parâmetro.</li>
+        <li>Registrar hipóteses com localização, condição e impacto antes de classificar como confirmado ou pendente.</li>
+        <li>Não consultar resultados de SAST ou IA nesta etapa; preservar a independência da revisão manual.</li>
+        <li>Realizar revisão cruzada com outra equipe usando o modelo de registro acordado.</li>
+      </ul>
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Registro esperado</h3>
+        <p><code>entregas/02_revisao_manual.md</code> com achados e referência ao commit inspecionado. Registre também o resultado da revisão cruzada.</p>
+      </div>
+      <div class="lab-links">
+        <a class="btn" data-target="githubOrganization">Repositórios GitHub</a>
+        <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Referências" id="referencias">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Bibliografia da aula</p><h2>Continue o estudo pelas fontes indicadas</h2></div>
+    <ul class="fonte-lista">
+      <li><p><strong>Guia técnico:</strong> OWASP. <em>Secure Code Review Cheat Sheet</em>. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html">cheatsheetseries.owasp.org</a></p></li>
+      <li><p><strong>Padrão de verificação:</strong> OWASP. <em>ASVS 5.0.0</em>. <a href="https://asvs.owasp.org/">asvs.owasp.org</a></p></li>
+      <li><p><strong>Taxonomia:</strong> MITRE. <em>CWE-639: Authorization Bypass Through User-Controlled Key</em>. <a href="https://cwe.mitre.org/data/definitions/639.html">cwe.mitre.org/639</a></p></li>
+      <li><p><strong>Artigo científico:</strong> BRAZ, L.; BACCHELLI, A. <em>Software Security during Modern Code Review</em>. ACM FSE, 2022. <a href="https://doi.org/10.1145/3540250.3549135">doi.org/10.1145/3540250.3549135</a></p></li>
+      <li><p><strong>Referência de riscos:</strong> OWASP. <em>Top 10:2025</em>. <a href="https://top10.owasp.org/2025/pt-BR/">top10.owasp.org</a></p></li>
+    </ul>
+    <p class="note-local">Consulte as fontes originais para aprofundar o conteúdo.</p>
+  </div>
+</section>
+
+<section class="cena fecho" data-nome="Encerramento" id="encerramento">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Síntese</p>
+      <h2>O conceito fica. A investigação continua.</h2>
+      <p class="lede" style="color:#E9DED2">Registre os achados com evidências rastreáveis antes de usar qualquer ferramenta automatizada. A revisão manual independente é a base para comparações futuras.</p>
+    </div>
+    <div class="actions-row">
+      <a class="btn prim" href="aula-03.html" style="color:white">Avançar ao encontro 03</a>
+      <a class="btn" href="../guia/">Guia de estudo</a>
+      <a class="btn" href="../index.html">Início</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div aria-label="Controles do modo aula" class="controles">
+  <button aria-label="Seção anterior" class="btn" id="antes" type="button">←</button>
+  <span class="cont num" id="contador"></span>
+  <button aria-label="Próxima seção" class="btn" id="depois" type="button">→</button>
+  <button class="btn" id="cheia" type="button">Tela cheia</button>
+</div>
+</body>
+</html>

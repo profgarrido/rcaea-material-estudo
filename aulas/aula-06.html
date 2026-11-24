@@ -1,0 +1,547 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#FEF7EE" name="theme-color"/>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml"/>
+  <meta name="description" content="Correção fundamentada, testes de regressão, reavaliação de riscos e comunicação executiva dos resultados."/>
+  <title>Encontro 06 · Auditoria integrada e validação | CESAR School</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;1,700&family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="../assets/css/laura-aulas.css" rel="stylesheet"/>
+  <link href="../assets/css/adaptacao.css" rel="stylesheet"/>
+  <link href="../assets/css/pedagogia-visual.css" rel="stylesheet"/>
+  <link href="../assets/css/melhorias.css" rel="stylesheet"/>
+  <script defer src="../assets/js/config.js"></script>
+  <script defer src="../assets/js/site.js"></script>
+</head>
+<body>
+<header class="topo"><div class="wrap">
+  <a aria-label="Início" href="../index.html" style="color:inherit;display:block"><span aria-label="CESAR School" class="logo" role="img"></span></a>
+  <div class="topo-titulo">Encontro 06 · Auditoria integrada e validação<small>Revisão de Código e Análise Estática · Especialização em Cibersegurança</small></div>
+  <div class="topo-acoes">
+    <a class="btn" href="../index.html" style="text-decoration:none;display:inline-flex;align-items:center;color:inherit">Início</a>
+    <select aria-label="Ir diretamente a uma seção" id="irpara"></select>
+    <button aria-pressed="false" class="btn" id="btnAula" type="button">Modo aula</button>
+  </div>
+</div></header>
+<main>
+
+<section class="cena capa" data-nome="Capa" id="capa">
+  <div class="forma f1"></div><div class="forma f2"></div><div class="forma f3"></div><div class="forma f4"></div><div class="forma f5"></div>
+  <div class="wrap"><span aria-label="CESAR School" class="logo" role="img"></span>
+    <h1>Revisão de código e análise estática automatizada</h1>
+    <p class="sub">Encontro 06 · Auditoria integrada e validação</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WARM-UP 06 ═══════════════════════ -->
+<section class="cena" data-nome="Warm-up" id="warmup">
+<style>
+.wu-provoc{background:var(--sunk);border-left:5px solid var(--orange);border-radius:0 12px 12px 0;padding:22px 26px;margin:0 0 6px}
+.wu-provoc p{margin:0 0 10px;font-size:1.05rem;line-height:1.6;color:var(--ink)}
+.wu-provoc p:last-child{margin:0}
+.wu-provoc strong{color:var(--orange-ink)}
+.wu-caso{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px}
+.wu-caso .eyebrow{margin-bottom:6px}
+.wu-caso p{margin:0 0 8px;font-size:.93rem;color:var(--ink-2);line-height:1.6}
+.wu-caso p:last-child{margin:0}
+.wu-choices{display:grid;gap:10px;margin:16px 0 0}
+.wu-choice{display:block;width:100%;text-align:left;font:inherit;background:var(--paper);color:var(--ink);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .14s,background .14s;line-height:1.5}
+.wu-choice:hover,.wu-choice:focus-visible{border-color:var(--orange)}
+.wu-choice[aria-pressed="true"]{border-color:var(--orange);box-shadow:inset 5px 0 0 var(--orange);background:var(--orange-soft)}
+.wu-choice[data-correct="true"][aria-pressed="true"]{border-color:var(--good);box-shadow:inset 5px 0 0 var(--good);background:var(--good-soft)}
+.wu-feedback{border-left:5px solid var(--orange);border-radius:8px;padding:14px 16px;background:var(--sunk);margin-top:14px;line-height:1.6;font-size:.95rem;color:var(--ink)}
+.wu-feedback[hidden]{display:none}
+.wu-fechamento{background:var(--sunk);border-radius:14px;padding:20px 24px}
+.wu-fechamento p{margin:0;font-size:1rem;line-height:1.65;color:var(--ink)}
+.wu-fechamento strong{color:var(--orange-ink)}
+/* Seleção de evidências */
+.evid-grid{display:grid;gap:10px;margin:14px 0}
+.evid-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1.5px solid var(--line);border-radius:10px;cursor:pointer;background:var(--paper);transition:border-color .14s,background .14s;font-size:.93rem;line-height:1.5;text-align:left;width:100%;font:inherit;color:var(--ink)}
+.evid-item:hover{border-color:var(--orange)}
+.evid-item[aria-pressed="true"]{border-color:var(--orange);background:var(--orange-soft)}
+.evid-cb{width:18px;height:18px;border:1.5px solid var(--line);border-radius:5px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:background .14s}
+.evid-item[aria-pressed="true"] .evid-cb{background:var(--orange);border-color:var(--orange);color:#fff}
+/* Ordenação */
+.order-list{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.order-item{display:flex;align-items:center;gap:10px;padding:12px 16px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);cursor:pointer;font-size:.93rem;line-height:1.4;user-select:none}
+.order-item.selected{border-color:var(--orange);background:var(--orange-soft)}
+.order-num{font-family:var(--f-disp);font-weight:700;font-size:1.1rem;color:var(--muted);min-width:24px;text-align:center}
+.order-item.correct .order-num{color:var(--good)}
+.order-item.wrong .order-num{color:var(--warn)}
+.order-move{display:flex;flex-direction:column;gap:4px}
+.order-move button{font:inherit;background:none;border:1.5px solid var(--line);border-radius:6px;padding:1px 7px;cursor:pointer;line-height:1.4;font-size:.8rem}
+.order-move button:hover{border-color:var(--orange)}
+/* Conclusão */
+.concl-cards{display:grid;gap:12px;margin:14px 0}
+.concl-card{border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;cursor:pointer;background:var(--paper);font-size:.93rem;line-height:1.6;text-align:left;width:100%;font:inherit;color:var(--ink);transition:border-color .14s,background .14s}
+.concl-card:hover{border-color:var(--orange)}
+.concl-card[aria-pressed="true"]{border-color:var(--orange);background:var(--orange-soft)}
+.concl-card[data-correct="true"][aria-pressed="true"]{border-color:var(--good);background:var(--good-soft)}
+.concl-card strong{display:block;font-weight:700;margin-bottom:4px}
+</style>
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Warm-up · 15 minutos</p>
+      <h2>A vulnerabilidade foi corrigida. Podemos encerrar a auditoria?</h2>
+    </div>
+
+    <div class="wu-caso">
+      <p class="eyebrow">Referência histórica · Equifax, 2017</p>
+      <p>Em 2017, a Equifax sofreu uma violação relacionada à exploração de uma vulnerabilidade conhecida no Apache Struts. Relatórios do GAO (U.S. Government Accountability Office) discutiram falhas em comunicação, aplicação de correções e verificações que não identificaram a vulnerabilidade no ambiente afetado.</p>
+    </div>
+
+    <div class="wu-provoc">
+      <p>A equipe de desenvolvimento informa que uma vulnerabilidade foi corrigida.</p>
+      <p><strong>O responsável pela segurança pode encerrar o incidente apenas com essa informação?</strong></p>
+    </div>
+
+    <!-- Interação 1: Seleção de evidências -->
+    <div class="cartao">
+      <p class="eyebrow">Painel fictício de auditoria</p>
+      <div style="background:var(--sunk);border-radius:10px;padding:12px 16px;margin-bottom:14px;font-size:.88rem;line-height:1.5">
+        <strong>Auditoria de segurança: Em análise</strong><br>
+        Achado: Controle de acesso inadequado.<br>
+        Descrição: Um usuário consegue consultar recursos pertencentes a outro usuário.
+      </div>
+      <p style="font-weight:700;margin:0 0 4px">Quais evidências devem ser verificadas antes de declarar o achado resolvido?</p>
+      <p style="font-size:.85rem;color:var(--muted);margin:0 0 4px">Selecione todas que considerar necessárias.</p>
+      <div class="evid-grid" id="evid-grid">
+        <button class="evid-item" aria-pressed="false" data-idx="0">
+          <span class="evid-cb"></span>Pull Request de correção aprovado.
+        </button>
+        <button class="evid-item" aria-pressed="false" data-idx="1" data-needed="true">
+          <span class="evid-cb"></span>Teste negativo reproduzido após a correção.
+        </button>
+        <button class="evid-item" aria-pressed="false" data-idx="2" data-needed="true">
+          <span class="evid-cb"></span>Versão corrigida confirmada no ambiente afetado.
+        </button>
+        <button class="evid-item" aria-pressed="false" data-idx="3" data-needed="true">
+          <span class="evid-cb"></span>Reanálise e registro de risco residual.
+        </button>
+      </div>
+      <div class="quiz-actions" style="margin-top:14px">
+        <button class="btn" id="evid-btn">Avaliar evidências</button>
+      </div>
+      <div class="wu-feedback" id="evid-feedback" hidden></div>
+    </div>
+
+    <!-- Interação 2: Ordenação -->
+    <div class="cartao">
+      <p class="eyebrow">Do achado ao encerramento</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Use os botões ↑ ↓ para ordenar as etapas e depois compare com a sequência de referência.</p>
+      <div class="order-list" id="order-list">
+        <div class="order-item" data-correct="3" tabindex="0">
+          <div class="order-num" id="on-0">·</div>
+          <div>Executar testes de regressão e reanálises pertinentes</div>
+          <div class="order-move">
+            <button aria-label="Mover para cima" onclick="moveOrder(this,-1)">↑</button>
+            <button aria-label="Mover para baixo" onclick="moveOrder(this,1)">↓</button>
+          </div>
+        </div>
+        <div class="order-item" data-correct="5" tabindex="0">
+          <div class="order-num" id="on-1">·</div>
+          <div>Avaliar riscos residuais e documentar a conclusão</div>
+          <div class="order-move">
+            <button aria-label="Mover para cima" onclick="moveOrder(this,-1)">↑</button>
+            <button aria-label="Mover para baixo" onclick="moveOrder(this,1)">↓</button>
+          </div>
+        </div>
+        <div class="order-item" data-correct="1" tabindex="0">
+          <div class="order-num" id="on-2">·</div>
+          <div>Confirmar o problema e registrar o comportamento vulnerável</div>
+          <div class="order-move">
+            <button aria-label="Mover para cima" onclick="moveOrder(this,-1)">↑</button>
+            <button aria-label="Mover para baixo" onclick="moveOrder(this,1)">↓</button>
+          </div>
+        </div>
+        <div class="order-item" data-correct="4" tabindex="0">
+          <div class="order-num" id="on-3">·</div>
+          <div>Confirmar a implantação no ambiente afetado</div>
+          <div class="order-move">
+            <button aria-label="Mover para cima" onclick="moveOrder(this,-1)">↑</button>
+            <button aria-label="Mover para baixo" onclick="moveOrder(this,1)">↓</button>
+          </div>
+        </div>
+        <div class="order-item" data-correct="2" tabindex="0">
+          <div class="order-num" id="on-4">·</div>
+          <div>Implementar e revisar a correção</div>
+          <div class="order-move">
+            <button aria-label="Mover para cima" onclick="moveOrder(this,-1)">↑</button>
+            <button aria-label="Mover para baixo" onclick="moveOrder(this,1)">↓</button>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn" id="order-compare-btn">Comparar sequência</button>
+      </div>
+      <div class="wu-feedback" id="order-feedback" hidden>
+        Sequência de referência: (1) Confirmar e registrar → (2) Implementar e revisar → (3) Testar e reanalisar → (4) Confirmar implantação → (5) Avaliar riscos residuais e documentar. Em projetos reais, algumas atividades podem ocorrer em paralelo ou se repetir.
+      </div>
+    </div>
+
+    <!-- Interação 3: Conclusão -->
+    <div class="cartao">
+      <p class="eyebrow">Qual conclusão o relatório suporta?</p>
+      <p style="margin:0 0 14px;font-size:.93rem;color:var(--ink-2)">Selecione a afirmação mais adequada para encerrar um relatório de auditoria.</p>
+      <div class="concl-cards" id="concl-cards">
+        <button class="concl-card" aria-pressed="false" data-idx="0">
+          <strong>A.</strong> "A vulnerabilidade foi eliminada porque o desenvolvedor informou que corrigiu o código."
+        </button>
+        <button class="concl-card" aria-pressed="false" data-idx="1" data-correct="true">
+          <strong>B.</strong> "A correção foi implementada e validada nos cenários testados; permanecem limitações de cobertura documentadas."
+        </button>
+        <button class="concl-card" aria-pressed="false" data-idx="2">
+          <strong>C.</strong> "A aplicação está completamente segura porque a análise SAST não apresentou novos alertas."
+        </button>
+      </div>
+      <div class="quiz-actions" style="margin-top:14px">
+        <button class="btn" id="concl-btn" disabled>Ver análise</button>
+      </div>
+      <div class="wu-feedback" id="concl-feedback" hidden></div>
+    </div>
+
+    <div class="wu-fechamento">
+      <p><strong>Uma auditoria não termina quando alguém diz que corrigiu um problema. Ela termina quando existe uma conclusão sustentada pelas evidências disponíveis e pelos limites da verificação.</strong> A partir daqui: validação, testes de regressão, riscos residuais e comunicação técnica.</p>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  /* Evidências */
+  document.querySelectorAll('#evid-grid .evid-item').forEach(function(b){
+    b.addEventListener('click',function(){
+      var on=b.getAttribute('aria-pressed')==='true';
+      b.setAttribute('aria-pressed',on?'false':'true');
+      b.querySelector('.evid-cb').textContent=on?'':'✓';
+    });
+  });
+  document.getElementById('evid-btn').addEventListener('click',function(){
+    var sel=Array.from(document.querySelectorAll('#evid-grid .evid-item[aria-pressed="true"]'));
+    var selIdx=sel.map(function(x){return parseInt(x.dataset.idx)});
+    var fb=document.getElementById('evid-feedback');fb.removeAttribute('hidden');
+    var hasPR=selIdx.includes(0),has1=selIdx.includes(1),has2=selIdx.includes(2),has3=selIdx.includes(3);
+    if(has1&&has2&&has3&&!hasPR){
+      fb.textContent='Você reuniu evidências relevantes de teste, implantação e reanálise. Ainda é necessário avaliar se elas cobrem os cenários e riscos pertinentes.';
+      fb.style.borderLeftColor='var(--good)';fb.style.background='var(--good-soft)';
+    } else if(hasPR&&!has1&&!has2&&!has3){
+      fb.textContent='Um Pull Request aprovado, isoladamente, não comprova correção efetiva. Procure evidências de testes, implantação no ambiente pertinente e avaliação do risco remanescente.';
+    } else {
+      fb.textContent='Revise a seleção: o PR aprovado, isoladamente, não é suficiente. As evidências de teste, implantação confirmada e risco residual são as mais relevantes.';
+    }
+    this.disabled=true;
+  });
+
+  /* Ordenação */
+  window.moveOrder=function(btn,dir){
+    var item=btn.closest('.order-item');
+    var list=document.getElementById('order-list');
+    var items=Array.from(list.children);
+    var idx=items.indexOf(item);
+    var target=idx+dir;
+    if(target<0||target>=items.length)return;
+    if(dir===-1)list.insertBefore(item,items[target]);
+    else list.insertBefore(items[target],item);
+  };
+  document.getElementById('order-compare-btn').addEventListener('click',function(){
+    var items=Array.from(document.getElementById('order-list').children);
+    items.forEach(function(item,i){
+      var num=item.querySelector('.order-num');
+      num.textContent=i+1;
+      var correct=parseInt(item.dataset.correct);
+      item.classList.remove('correct','wrong');
+      if(i+1===correct)item.classList.add('correct');
+      else item.classList.add('wrong');
+    });
+    document.getElementById('order-feedback').removeAttribute('hidden');
+    this.disabled=true;
+  });
+
+  /* Conclusão */
+  var cc=document.querySelectorAll('#concl-cards .concl-card'),bc=document.getElementById('concl-btn'),fc=document.getElementById('concl-feedback');
+  cc.forEach(function(b){b.addEventListener('click',function(){cc.forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');bc.disabled=false})});
+  bc.addEventListener('click',function(){
+    fc.removeAttribute('hidden');
+    var s=document.querySelector('#concl-cards .concl-card[aria-pressed="true"]');
+    if(s&&s.dataset.correct){
+      fc.textContent='Correto. O relatório deve comunicar o que foi demonstrado pelas evidências, sem afirmar mais do que os testes e análises realmente cobrem.';
+      fc.style.borderLeftColor='var(--good)';fc.style.background='var(--good-soft)';
+    } else if(s&&s.dataset.idx==='0'){
+      fc.textContent='A declaração do desenvolvedor não é evidência de correção: é uma afirmação a ser verificada. Um relatório precisa de evidências de teste e validação.';
+    } else {
+      fc.textContent='A ausência de novos alertas SAST não é demonstração de segurança completa. Ferramentas têm cobertura limitada e podem não detectar todos os cenários de exploração.';
+    }
+    this.disabled=true;
+  });
+})();
+</script>
+
+<section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Antes de começar</p><h2>Fechar o ciclo: corrigir, testar e comunicar</h2></div>
+    <p class="lede">Correção fundamentada, testes de regressão, reavaliação de riscos e comunicação executiva dos resultados.</p>
+    <div class="obj-grid">
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><p>Delimitar o escopo de uma auditoria e comunicar conclusões sem extrapolações</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><p>Corrigir vulnerabilidades selecionadas preservando o contrato e os testes funcionais da API</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div><p>Escrever testes negativos que demonstrem a ausência do problema após a correção</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>Estruturar o relatório técnico final com escopo, achados, correções e risco residual</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6"/><path d="M9 12h6"/><path d="M9 15h4"/></svg></div><p>Declarar risco residual e limitações da análise com honestidade técnica</p></div>
+      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><p>Apresentar resultados de forma concisa para audiência técnica e não técnica</p></div>
+    </div>
+    <div class="cartao" style="margin-top:14px"><h3>Como participar</h3><p>Explore os exemplos, responda às questões e consulte as explicações. As entregas oficiais ficam no Moodle.</p></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: A auditoria responde a uma pergunta delimitada" id="conceito-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 1</p><h2>A auditoria responde a uma pergunta delimitada</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>A pergunta desta disciplina: quais vulnerabilidades e padrões de risco foram identificados por revisão manual e por análise automatizada na aplicação de estudo, e o que cada técnica deixou de identificar na configuração utilizada?</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>"O código é seguro" é uma afirmação muito mais forte do que "não encontramos novos alertas sob estas regras e nesta versão". A segunda é uma conclusão honesta e técnica; a primeira geralmente não.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Escopo mínimo a declarar: commit identificado, rotas analisadas, arquivos cobertos, regras e versões das ferramentas, requisitos de autorização examinados, critérios de classificação e limitações explícitas.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>O NIST SSDF recomenda práticas integradas de prevenção, verificação e tratamento. A OWASP destaca lacunas que exigem entendimento humano. Nenhum framework substitui o escopo explícito da auditoria.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 1: Cadeia de evidências" id="visual-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Auditoria como argumento: a cadeia de evidências</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Cada etapa sustenta a conclusão da próxima</h3></div>
+      <div class="hypo-flow">
+        <div class="hypo-step"><div class="hypo-num">01</div><h4>Escopo</h4><p>O que foi analisado, commit, rotas e ferramentas</p></div>
+        <div class="hypo-step"><div class="hypo-num">02</div><h4>Método</h4><p>Como investigamos: manual, SAST, fluxo e IA</p></div>
+        <div class="hypo-step"><div class="hypo-num">03</div><h4>Achados</h4><p>Quais falhas foram demonstradas com evidências</p></div>
+        <div class="hypo-step"><div class="hypo-num">04</div><h4>Correções</h4><p>O que foi alterado e por quê</p></div>
+        <div class="hypo-step"><div class="hypo-num">05</div><h4>Validação</h4><p>O que os testes comprovaram antes e depois</p></div>
+      </div>
+      <p class="viz-caption">Conclusões só podem alcançar o escopo e as condições efetivamente examinados.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Correção e validação" id="conceito-3">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Correção exige validação independente</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Modificar o código não equivale automaticamente a remover o risco. Uma correção precisa ser validada por testes que reproduzam a condição original e demonstrem o comportamento corrigido.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Testes negativos verificam que o acesso indevido é negado. Testes positivos verificam que o acesso legítimo ainda funciona. Ambos são necessários: corrigir um IDOR sem quebrar o fluxo autorizado.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Após a correção, reexecutar as verificações usadas nas etapas anteriores (Semgrep, CodeQL se disponível) para confirmar que o padrão detectado foi eliminado ou deixou de ser alcançável.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>Risco residual deve ser declarado: o que ainda não foi coberto pela análise, o que foi deliberadamente não corrigido e por quê, e quais controles compensatórios existem.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena viz-scene" data-nome="Visual 2: Teste negativo e positivo" id="visual-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Validar uma correção exige os dois lados</h2></div>
+    <div class="visual-panel">
+      <div class="viz-heading"><span class="viz-mark">CÓDIGO COMENTADO</span><h3>Teste negativo e teste positivo para o mesmo controle</h3></div>
+      <div class="case-split">
+        <div class="case-panel">
+          <div class="case-panel-head head-warn">Teste negativo (acesso indevido)</div>
+          <div class="case-panel-body">
+            <pre class="codigo"><code>it('deve negar acesso a pedido de outro tenant', async () => {
+  const response = await request(app)
+    .get('/orders/200')
+    .set('Authorization', `Bearer ${tokenOfAlice}`);
+  expect(response.status).toBe(403);
+});</code></pre>
+            <p style="font-size:.88rem;color:var(--warn);margin-top:8px">Verifica que o acesso indevido é bloqueado.</p>
+          </div>
+        </div>
+        <div class="case-panel">
+          <div class="case-panel-head head-safe">Teste positivo (acesso legítimo)</div>
+          <div class="case-panel-body">
+            <pre class="codigo"><code>it('deve retornar pedido do próprio tenant', async () => {
+  const response = await request(app)
+    .get('/orders/100')
+    .set('Authorization', `Bearer ${tokenOfAlice}`);
+  expect(response.status).toBe(200);
+});</code></pre>
+            <p style="font-size:.88rem;color:var(--good);margin-top:8px">Verifica que o acesso legítimo ainda funciona.</p>
+          </div>
+        </div>
+      </div>
+      <p class="viz-caption">Exemplos independentes da API avaliada no projeto. Uma correção que bloqueia tudo (incluindo o acesso legítimo) não é uma correção adequada.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Escopo da auditoria" id="interacao-1">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 1</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="0" data-explanation="Conclusões devem respeitar o escopo, as técnicas e os cenários realmente avaliados.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Escopo da auditoria</h3></div>
+      <p class="instrucao">Um relatório conclui que a API inteira está segura após testar três endpoints. Qual problema existe?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Escopo declarado é limitado e não permite essa conclusão universal</button>
+        <button class="choice" data-value="1" type="button">Nenhum, porque três testes são suficientes</button>
+        <button class="choice" data-value="2" type="button">O problema é apenas estético</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Estrutura do relatório" id="conceito-4">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Estrutura recomendada do relatório técnico final</h2></div>
+    <div class="section-text">
+      <div class="report-structure" aria-label="Nove seções do relatório técnico">
+        <div class="rs-row"><div class="rs-num">01</div><div><h4>Objetivo e escopo</h4><p>Qual pergunta foi respondida, commit analisado, rotas e arquivos cobertos.</p></div></div>
+        <div class="rs-row"><div class="rs-num">02</div><div><h4>Sistema e ambiente</h4><p>Stack, versões, dependências e ambiente de execução dos testes.</p></div></div>
+        <div class="rs-row"><div class="rs-num">03</div><div><h4>Requisitos e metodologia</h4><p>Requisitos de negócio examinados, métodos utilizados e ordem de aplicação.</p></div></div>
+        <div class="rs-row"><div class="rs-num">04</div><div><h4>Achados individualizados</h4><p>Localização, condição, impacto, classificação e evidências de cada achado.</p></div></div>
+        <div class="rs-row"><div class="rs-num">05</div><div><h4>Matriz comparativa</h4><p>Coberturas e lacunas de cada método; achados exclusivos e compartilhados.</p></div></div>
+        <div class="rs-row"><div class="rs-num">06</div><div><h4>Priorização e correções</h4><p>Critério de prioridade, mudanças realizadas e rastreabilidade por commit.</p></div></div>
+        <div class="rs-row"><div class="rs-num">07</div><div><h4>Testes de validação</h4><p>Resultados antes e depois das correções; testes negativos e positivos.</p></div></div>
+        <div class="rs-row"><div class="rs-num">08</div><div><h4>Riscos residuais e limitações</h4><p>O que não foi coberto, o que foi aceito e por quê.</p></div></div>
+        <div class="rs-row"><div class="rs-num">09</div><div><h4>Conclusão técnica e referências</h4><p>Síntese honesta dentro do escopo; fontes utilizadas.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Conceito: Reprodutibilidade e validade" id="conceito-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Reprodutibilidade e validade do laboratório</h2></div>
+    <div class="section-text"><div class="learning-grid">
+      <article class="study-card"><span class="study-card-no">01</span><p>Dois grupos podem obter números diferentes porque analisaram commits distintos, instalaram versões diferentes, utilizaram configurações diferentes ou selecionaram áreas diferentes do projeto.</p></article>
+      <article class="study-card"><span class="study-card-no">02</span><p>Para comparar resultados, registrar: artefato, ambiente, ferramenta/versão, configuração, data, unidade do achado e método de validação.</p></article>
+      <article class="study-card"><span class="study-card-no">03</span><p>Nosso laboratório é propositalmente pequeno, com vulnerabilidades inseridas e sem amostragem representativa. Há validade pedagógica, não generalização científica sobre performance de ferramentas no mercado.</p></article>
+      <article class="study-card"><span class="study-card-no">04</span><p>A pesquisa de Braz et al. sobre revisão com foco explícito em segurança ajuda a justificar a comparação de técnicas humanas e automatizadas, mas não permite concluir que uma técnica é universalmente superior.</p></article>
+    </div></div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Validação de correção" id="interacao-2">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>E agora, como você decidiria?</h2></div>
+    <div class="lab quiz" data-correct="0" data-explanation="Modificar o código é condição necessária, mas não suficiente. Testes negativos demonstram que o problema foi eliminado.">
+      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Validação de correção</h3></div>
+      <p class="instrucao">Uma equipe corrigiu um IDOR mas não escreveu teste negativo. A correção está completa?</p>
+      <div class="choices" role="group">
+        <button class="choice" data-value="0" type="button">Não; sem teste negativo, não há evidência de que o problema foi eliminado</button>
+        <button class="choice" data-value="1" type="button">Sim; a mudança no código é suficiente</button>
+        <button class="choice" data-value="2" type="button">Depende do número de linhas alteradas</button>
+      </div>
+      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
+      <div aria-live="polite" class="feedback" role="status"></div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Caso para discussão" id="estudo-caso">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Exemplo comentado</p><h2>Leia, formule hipótese, depois analise</h2></div>
+    <div class="lab">
+      <div class="lab-cab"><p class="eyebrow">Estudo de caso independente</p><h3>Exemplo isolado: teste negativo</h3></div>
+      <p class="instrucao">Leia o trecho, formule uma hipótese e só então abra a análise comentada.</p>
+      <pre class="codigo"><code>it('deve negar acesso a fatura de outro usuário', async () => {
+  const response = await request(app)
+    .get('/invoices/200')
+    .set('Authorization', `Bearer ${tokenOfAlice}`);
+  expect(response.status).toBe(403);
+});</code></pre>
+      <details class="conta">
+        <summary>Mostrar discussão orientadora</summary>
+        <div class="corpo">
+          <p>Um teste negativo deve ser acompanhado de teste positivo para garantir que o acesso legítimo permaneça possível. O que mais seria necessário verificar?</p>
+          <ul style="margin:.6rem 0 0;padding-left:1.3rem;line-height:1.65">
+            <li>O teste usa um token real de Alice ou um mock?</li>
+            <li>O ID 200 pertence realmente a outro usuário no ambiente de teste?</li>
+            <li>Existe um teste correspondente que verifica que Alice acessa suas próprias faturas com 200?</li>
+          </ul>
+          <p class="ref-nota">Este exemplo é independente da API avaliada no projeto.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Registro de ideias" id="anotacoes">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Reflexão individual ou em dupla</p><h2>Explique antes de concluir</h2></div>
+    <div class="lab" data-journal="">
+      <div class="lab-cab"><p class="eyebrow">Pausa para discussão</p><h3>Registre uma hipótese em suas palavras</h3></div>
+      <p class="instrucao">Escreva uma justificativa breve sobre o conceito da aula. A anotação é local e opcional.</p>
+      <textarea aria-label="Seu rascunho" class="journal" placeholder="Qual hipótese você levantaria? Que evidência faltaria para confirmá-la?"></textarea>
+      <div class="actions-row">
+        <button class="btn prim" data-copy type="button">Copiar meu rascunho</button>
+        <button class="btn" data-clear type="button">Limpar</button>
+        <span class="note-local" role="status"></span>
+      </div>
+      <p class="note-local">Não há envio de respostas nem coleta de dados nesta atividade.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 6 · Auditoria e entrega final</h2></div>
+    <div class="lab projeto">
+      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 6 · Auditoria e entrega final</h3></div>
+      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
+      <ul class="check-list">
+        <li>Congelar o estado anterior às correções e selecionar os riscos prioritários com base na matriz da etapa 5.</li>
+        <li>Corrigir vulnerabilidades selecionadas preservando o contrato da API e os testes funcionais existentes.</li>
+        <li>Escrever testes negativos e positivos para cada correção realizada.</li>
+        <li>Reexecutar verificações aplicáveis; registrar resultados antes e depois das correções e declarar riscos residuais.</li>
+        <li>Consolidar relatório técnico e repositório; preparar síntese de dois minutos por equipe e entregar no Moodle.</li>
+      </ul>
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Entrega final no Moodle</h3>
+        <p>Relatório técnico (PDF ou Markdown) + link do repositório com commits de correção, testes e evidências rastreáveis.</p>
+      </div>
+      <div class="lab-links">
+        <a class="btn" data-target="githubOrganization">Repositórios GitHub</a>
+        <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
+        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cena" data-nome="Referências" id="referencias">
+  <div class="wrap pilha">
+    <div><p class="eyebrow">Bibliografia da aula</p><h2>Continue o estudo pelas fontes indicadas</h2></div>
+    <ul class="fonte-lista">
+      <li><p><strong>Guia técnico:</strong> OWASP. <em>Secure Code Review Cheat Sheet</em>. <a href="https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html">cheatsheetseries.owasp.org</a></p></li>
+      <li><p><strong>Padrão técnico:</strong> SOUPPAYA, M. et al. <em>NIST SP 800-218, SSDF v1.1</em>. 2022. <a href="https://doi.org/10.6028/NIST.SP.800-218">doi.org/10.6028/NIST.SP.800-218</a></p></li>
+      <li><p><strong>Artigo:</strong> SADOWSKI, C. et al. <em>Tricorder</em>. ICSE, 2015. <a href="https://doi.org/10.1109/ICSE.2015.76">doi.org/10.1109/ICSE.2015.76</a></p></li>
+      <li><p><strong>Artigo:</strong> BRAZ, L. et al. <em>Less is More</em>. ICSE, 2022. <a href="https://doi.org/10.1145/3510003.3511560">doi.org/10.1145/3510003.3511560</a></p></li>
+      <li><p><strong>Taxonomia:</strong> MITRE. <em>CWE-639</em>. <a href="https://cwe.mitre.org/data/definitions/639.html">cwe.mitre.org/639</a></p></li>
+      <li><p><strong>Padrão:</strong> OWASP. <em>ASVS 5.0.0</em>. <a href="https://asvs.owasp.org/">asvs.owasp.org</a></p></li>
+      <li><p><strong>Livro:</strong> MCGRAW, Gary. <em>Software Security: Building Security In</em>. Addison-Wesley, 2006. <a href="https://www.oreilly.com/library/view/software-security-building/0321356705/">oreilly.com</a></p></li>
+    </ul>
+    <p class="note-local">Consulte as fontes originais para aprofundar o conteúdo.</p>
+  </div>
+</section>
+
+<section class="cena fecho" data-nome="Encerramento" id="encerramento">
+  <div class="wrap pilha">
+    <div>
+      <p class="eyebrow">Síntese</p>
+      <h2>O ciclo da auditoria está completo.</h2>
+      <p class="lede" style="color:#E9DED2">Escopo, método, achados, correções, validação e risco residual: cada elemento sustenta o próximo. Conclusões honestas valem mais do que afirmações amplas sem evidência.</p>
+    </div>
+    <div class="actions-row">
+      <a class="btn prim" href="../index.html" style="color:white">Voltar ao início do curso</a>
+      <a class="btn" href="../guia/">Guia de estudo</a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div aria-label="Controles do modo aula" class="controles">
+  <button aria-label="Seção anterior" class="btn" id="antes" type="button">←</button>
+  <span class="cont num" id="contador"></span>
+  <button aria-label="Próxima seção" class="btn" id="depois" type="button">→</button>
+  <button class="btn" id="cheia" type="button">Tela cheia</button>
+</div>
+</body>
+</html>

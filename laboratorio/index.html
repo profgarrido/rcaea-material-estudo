@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <title>Laboratório de Auditoria — Revisão de Código e Análise Estática</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,700&family=Barlow:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/laura-guia.css">
+  <style>
+    .destinos { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .destino-card { border-radius: .5rem; padding: 1.25rem 1.5rem; }
+    .destino-card.primario { background: var(--orange); color: #fff; }
+    .destino-card.primario h3 { color: #fff; }
+    .destino-card.secundario { background: var(--sunk); border: 1px solid var(--line); }
+    .destino-card h3 { font-family: var(--f-disp); font-size: 1.1rem; font-weight: 700; margin: 0 0 .4rem; }
+    .destino-card p { margin: 0 0 .75rem; font-size: .9rem; }
+    .destino-card a { font-weight: 600; font-size: .9rem; }
+    .destino-card.primario a { color: #fff; }
+    .etapas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+    .etapa-card { background: var(--sunk); border: 1px solid var(--line); border-radius: .5rem; padding: 1rem 1.25rem; text-decoration: none; color: inherit; display: block; transition: border-color .15s; }
+    .etapa-card:hover { border-color: var(--orange); }
+    .etapa-card .num-etapa { font-family: var(--f-disp); font-size: 2rem; font-weight: 700; color: var(--orange); line-height: 1; }
+    .etapa-card h3 { font-family: var(--f-disp); font-size: 1rem; font-weight: 600; margin: .3rem 0 .4rem; }
+    .etapa-card p { font-size: .85rem; color: var(--muted); margin: 0; }
+    .passos { counter-reset: passo; padding: 0; }
+    .passos > li { counter-increment: passo; list-style: none; padding: .5rem 0 .5rem 2.5rem; position: relative; }
+    .passos > li::before { content: counter(passo); position: absolute; left: 0; top: .4rem; width: 1.6rem; height: 1.6rem; background: var(--orange); color: #fff; border-radius: 50%; font-family: var(--f-disp); font-weight: 700; font-size: .85rem; display: flex; align-items: center; justify-content: center; }
+    .duvidas-lista { list-style: none; padding: 0; }
+    .duvidas-lista details { border: 1px solid var(--line); border-radius: .4rem; margin-bottom: .5rem; }
+    .duvidas-lista summary { font-weight: 600; padding: .85rem 1rem; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    .duvidas-lista summary::-webkit-details-marker { display: none; }
+    .duvidas-lista summary::after { content: '+'; font-size: 1.2rem; color: var(--orange); font-weight: 700; flex-shrink: 0; }
+    .duvidas-lista details[open] summary::after { content: '−'; }
+    .duvidas-lista details > *:not(summary) { padding: 0 1rem 1rem; }
+    .rubrica-total { background: var(--orange-soft); font-weight: 700; }
+    .entregas-duas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+    @media (max-width: 700px) { .entregas-duas { grid-template-columns: 1fr; } }
+    .entrega-card { border: 2px solid var(--line); border-radius: .5rem; padding: 1.5rem; }
+    .entrega-card.destaque-entrega { border-color: var(--orange); }
+    .entrega-card h3 { font-family: var(--f-disp); font-size: 1.15rem; margin: 0 0 .75rem; }
+    .entrega-card ol { padding-left: 1.25rem; }
+    .entrega-card li { margin-bottom: .4rem; font-size: .9rem; }
+    .fluxo-projeto { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; margin: 1rem 0; font-size: .88rem; }
+    .fluxo-projeto span { background: var(--sunk); border: 1px solid var(--line); border-radius: .3rem; padding: .2rem .6rem; white-space: nowrap; }
+    .fluxo-projeto .seta { color: var(--orange); font-weight: 700; }
+    .tipos-evidencia { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    @media (max-width: 600px) { .tipos-evidencia { grid-template-columns: 1fr; } }
+  </style>
+  <script>
+  window.CIBERSAST_CONFIG = window.CIBERSAST_CONFIG || {};
+  </script>
+  <script src="../assets/js/config.js" defer></script>
+</head>
+<body>
+<div class="livro">
+
+  <!-- SIDEBAR -->
+  <nav class="lateral" aria-label="Índice do laboratório">
+    <div class="lateral-header">
+      <a href="../index.html" class="voltar-inicio" aria-label="Voltar à página inicial">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h2v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414l-7-7z"/></svg>
+        Início
+      </a>
+    </div>
+    <strong class="lateral-titulo-bloco">Laboratório</strong>
+    <ul class="lat-nav">
+      <li><a href="#visao-geral">O desafio de auditoria</a></li>
+      <li><a href="#sistema">Sistema analisado</a></li>
+      <li><a href="#requisitos">Requisitos da análise</a></li>
+      <li><a href="#ambiente">Preparação e execução</a></li>
+      <li><a href="#metodo">Investigar e registrar</a></li>
+      <li><a href="#etapas">Percurso das etapas</a></li>
+      <li><a href="#etapa-1">Etapa 1: reconhecimento</a></li>
+      <li><a href="#etapa-2">Etapa 2: revisão manual</a></li>
+      <li><a href="#etapa-3">Etapa 3: Semgrep e SAST</a></li>
+      <li><a href="#etapa-4">Etapa 4: CodeQL e IA</a></li>
+      <li><a href="#etapa-5">Etapa 5: matriz e CI/CD</a></li>
+      <li><a href="#etapa-6">Etapa 6: correção e auditoria</a></li>
+      <li><a href="#entregas">Entregas formais</a></li>
+      <li><a href="#avaliacao">Como será avaliado</a></li>
+      <li><a href="#modelos">Modelos de evidência</a></li>
+      <li><a href="#duvidas">Dúvidas frequentes</a></li>
+      <li><a href="#referencias">Documentação e fontes</a></li>
+    </ul>
+  </nav>
+
+  <!-- MOBILE NAV -->
+  <div class="topo-movel">
+    <span class="topo-titulo">Laboratório de Auditoria</span>
+    <details class="topo-menu">
+      <summary>Seções</summary>
+      <ul>
+        <li><a href="#visao-geral">O desafio de auditoria</a></li>
+        <li><a href="#sistema">Sistema analisado</a></li>
+        <li><a href="#requisitos">Requisitos da análise</a></li>
+        <li><a href="#ambiente">Preparação e execução</a></li>
+        <li><a href="#metodo">Investigar e registrar</a></li>
+        <li><a href="#etapas">Percurso das etapas</a></li>
+        <li><a href="#etapa-1">Etapa 1</a></li>
+        <li><a href="#etapa-2">Etapa 2</a></li>
+        <li><a href="#etapa-3">Etapa 3</a></li>
+        <li><a href="#etapa-4">Etapa 4</a></li>
+        <li><a href="#etapa-5">Etapa 5</a></li>
+        <li><a href="#etapa-6">Etapa 6</a></li>
+        <li><a href="#entregas">Entregas formais</a></li>
+        <li><a href="#avaliacao">Como será avaliado</a></li>
+        <li><a href="#modelos">Modelos de evidência</a></li>
+        <li><a href="#duvidas">Dúvidas frequentes</a></li>
+        <li><a href="#referencias">Documentação e fontes</a></li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="conteudo">
+
+    <!-- CAPA -->
+    <div class="capa">
+      <div class="forma f1"></div>
+      <div class="forma f2"></div>
+      <div class="forma f3"></div>
+      <div class="capa-texto">
+        <p class="eyebrow">Revisão de Código e Análise Estática Automatizada</p>
+        <h1>Laboratório de<br>Auditoria de Segurança</h1>
+        <p class="enc">Projeto integrado da disciplina de Revisão de Código e Análise Estática Automatizada</p>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 1: VISÃO GERAL -->
+    <section id="visao-geral">
+      <div class="abre">
+        <p class="eyebrow">Introdução</p>
+        <h2>O desafio de auditoria</h2>
+        <p class="enc">Do código à evidência: como investigar, comparar e comunicar resultados de segurança.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>Do código à evidência</h3>
+          <p>Você participará de uma auditoria de segurança de uma API REST utilizada por empresas fictícias para registrar, consultar, alterar e aprovar pedidos. O sistema já existe, possui funcionalidades implementadas e uma arquitetura organizada. Seu desafio não é desenvolver uma aplicação do zero, mas <strong>investigar como o código aplica as regras de segurança</strong>, identificar problemas ou hipóteses, comparar métodos de análise e demonstrar a efetividade de correções selecionadas.</p>
+
+          <p>A investigação acontecerá progressivamente. Você começará pela leitura humana do código, passará por ferramentas de análise estática, examinará fluxos de dados e respostas assistidas por IA e terminará com uma auditoria integrada. Ao longo do caminho, será necessário justificar suas conclusões com evidências. Um alerta de ferramenta pode indicar uma pista, mas não substitui a compreensão do contexto nem comprova, sozinho, que houve uma exploração.</p>
+
+          <div class="tab">
+            <table>
+              <caption>Onde cada atividade acontece</caption>
+              <thead>
+                <tr><th>Ambiente</th><th>Finalidade</th><th>O que você faz nele</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Esta página</strong></td><td>Orientação e consulta</td><td>Entende as etapas, consulta exemplos, modelos, requisitos e critérios</td></tr>
+                <tr><td><strong>GitHub da equipe</strong></td><td>Trabalho técnico</td><td>Lê código, registra arquivos, cria branches, commits e Pull Requests</td></tr>
+                <tr><td><strong>Moodle</strong></td><td>Organização e avaliação</td><td>Consulta enunciados oficiais, prazos e rubricas; entrega as atividades formais</td></tr>
+                <tr><td><strong>Seu computador, quando disponível</strong></td><td>Execução e experimentação</td><td>Executa a API localmente, reproduz cenários e verifica alterações</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="q cuidado">
+            <p class="rot">Atenção</p>
+            <p>O projeto é um <strong>caso de treinamento deliberadamente vulnerável</strong>, com dados fictícios. Utilize apenas ambiente local e isolado. Não disponibilize a API publicamente, não introduza dados pessoais reais e não publique segredos nos repositórios.</p>
+          </div>
+
+          <h3>O que você deverá ser capaz de demonstrar</h3>
+          <p>Ao final do percurso, espera-se que você consiga explicar uma regra de segurança, localizar os componentes de código responsáveis por ela, indicar se existe evidência de descumprimento, comparar resultados entre técnicas manuais e automatizadas e comunicar uma correção com seus testes e limitações. A qualidade do trabalho é medida pela coerência do raciocínio e pela rastreabilidade da análise, não pela quantidade de alertas encontrados.</p>
+
+          <p><strong>Fluxo do projeto:</strong></p>
+          <div class="fluxo-projeto">
+            <span>compreender o sistema</span><span class="seta">→</span>
+            <span>registrar hipóteses</span><span class="seta">→</span>
+            <span>revisar manualmente</span><span class="seta">→</span>
+            <span>executar/interpretar SAST</span><span class="seta">→</span>
+            <span>analisar fluxo e IA</span><span class="seta">→</span>
+            <span>comparar técnicas</span><span class="seta">→</span>
+            <span>corrigir e validar</span><span class="seta">→</span>
+            <span>comunicar resultados</span>
+          </div>
+
+          <div class="destinos">
+            <div class="destino-card primario">
+              <h3>Estudar aqui</h3>
+              <p>Esta página tem as orientações, requisitos, modelos e exemplos.</p>
+              <a href="#etapas">Ver as etapas</a>
+            </div>
+            <div class="destino-card secundario">
+              <h3>Trabalhar no GitHub</h3>
+              <p>Repositório privado da equipe, commits e Pull Requests.</p>
+              <a class="btn" href="github.html">Como acessar o GitHub</a>
+              <a href="https://github.com/appsec-labs-cesar-school" target="_blank" rel="noopener noreferrer">Abrir organização</a>
+            </div>
+            <div class="destino-card secundario">
+              <h3>Entregar no Moodle</h3>
+              <p>Enunciados oficiais, prazos e submissão das atividades formais.</p>
+            </div>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 2: SISTEMA -->
+    <section id="sistema">
+      <div class="abre">
+        <p class="eyebrow">Contexto técnico</p>
+        <h2>Sistema que será analisado</h2>
+        <p class="enc">Uma API REST multi-tenant para gerenciamento de pedidos, construída com Node.js, TypeScript, Express, Prisma e PostgreSQL.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>Contexto de negócio</h3>
+          <p>Duas organizações fictícias utilizam a mesma API para gerenciar solicitações de compra. Cada pessoa tem identidade própria, pertence a uma organização e recebe um papel de acesso. Alguns usuários criam pedidos; outros podem consultá-los ou aprová-los. Há também relatórios e exportações de dados.</p>
+          <p>Esse cenário é comum em sistemas corporativos: compartilhar uma infraestrutura não significa compartilhar todos os dados. É necessário controlar não apenas <strong>quem fez login</strong>, mas também <strong>o que essa pessoa pode executar</strong>, <strong>em qual organização</strong> e <strong>sobre qual recurso específico</strong>.</p>
+
+          <h3>Arquitetura em camadas</h3>
+          <p>O projeto utiliza <strong>Node.js, TypeScript, Express, Prisma, PostgreSQL, JWT e Zod</strong>. O código está organizado por funcionalidade em <code>auth</code>, <code>users</code>, <code>orders</code> e <code>reports</code>, e cada módulo separa responsabilidades.</p>
+
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code>REQUISIÇÃO HTTP
+      │
+      ▼
+Routes + middlewares (autenticação, validação, autorização geral)
+      │
+      ▼
+Controller (adapta entrada e resposta HTTP)
+      │
+      ▼
+Service (decide as regras de negócio e políticas contextuais)
+      │
+      ▼
+Repository (consulta e altera dados persistidos)
+      │
+      ▼
+Prisma ORM  →  PostgreSQL</code></pre>
+          </div>
+
+          <p><strong>Routes</strong> definem verbos e caminhos e conectam middlewares aos controllers. <strong>Controllers</strong> recebem dados da requisição e produzem respostas HTTP; não devem concentrar regras de negócio nem consultar o Prisma diretamente. <strong>Services</strong> coordenam os comportamentos de negócio, como validação de estado do pedido, autorização contextual e limites entre organizações. <strong>Repositories</strong> encapsulam consultas, filtros e alterações na base de dados. <strong>Schemas Zod</strong> verificam formatos e campos permitidos em entradas, mas não substituem autorização. <strong>Middlewares</strong> autenticam e aplicam controles transversais.</p>
+
+          <p>O sistema utiliza <strong>JWT real</strong>. Após autenticar por e-mail e senha, o cliente recebe um token e o envia nas requisições privadas no header <code>Authorization: Bearer &lt;token&gt;</code>. A existência de um token válido comprova que houve autenticação nos termos aceitos pela API, mas não significa permissão para consultar qualquer registro.</p>
+
+          <h3>Papéis presentes no caso</h3>
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Papel</th><th>O que pode fazer, respeitando as regras do negócio</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>CUSTOMER</code></td><td>Criar pedidos e consultar ou atualizar pedidos próprios dentro de sua organização, com restrições</td></tr>
+                <tr><td><code>APPROVER</code></td><td>Consultar pedidos e aprovar quando autorizado, sempre dentro da própria organização</td></tr>
+                <tr><td><code>MANAGER</code></td><td>Consultar pedidos e relatórios e aprovar de acordo com as regras, dentro da própria organização</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="q confere">
+            <p class="rot">Ponto de atenção</p>
+            <p><strong>Papel</strong>, <strong>organização</strong>, <strong>titularidade do pedido</strong> e <strong>estado</strong> são dimensões diferentes da autorização. Uma análise que se limita a procurar <code>authenticate</code> nas rotas pode deixar de avaliar as regras mais importantes.</p>
+          </div>
+
+          <h3>Rotas para reconhecimento</h3>
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Método</th><th>Caminho</th><th>Finalidade</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>POST</code></td><td><code>/auth/login</code></td><td>Login e emissão de JWT</td></tr>
+                <tr><td><code>GET</code></td><td><code>/users/me</code></td><td>Consultar dados do usuário autenticado</td></tr>
+                <tr><td><code>PATCH</code></td><td><code>/users/me</code></td><td>Atualizar dados permitidos do perfil</td></tr>
+                <tr><td><code>GET</code></td><td><code>/orders</code></td><td>Listar pedidos visíveis ao usuário</td></tr>
+                <tr><td><code>POST</code></td><td><code>/orders</code></td><td>Criar pedido</td></tr>
+                <tr><td><code>GET</code></td><td><code>/orders/:id</code></td><td>Consultar um pedido específico</td></tr>
+                <tr><td><code>PATCH</code></td><td><code>/orders/:id</code></td><td>Alterar campos permitidos de um pedido</td></tr>
+                <tr><td><code>POST</code></td><td><code>/orders/:id/approve</code></td><td>Aprovar pedido</td></tr>
+                <tr><td><code>GET</code></td><td><code>/reports/orders</code></td><td>Consultar resumo de pedidos</td></tr>
+                <tr><td><code>GET</code></td><td><code>/reports/orders/search?q=...</code></td><td>Buscar pedidos em relatórios</td></tr>
+                <tr><td><code>GET</code></td><td><code>/reports/orders/export</code></td><td>Exportar relatório CSV</td></tr>
+                <tr><td><code>GET</code></td><td><code>/health</code></td><td>Verificar se a API local responde</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A existência de uma rota na tabela não garante que ela esteja segura. Você deverá comparar a implementação ao comportamento exigido.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 3: REQUISITOS -->
+    <section id="requisitos">
+      <div class="abre">
+        <p class="eyebrow">Regras de negócio</p>
+        <h2>Requisitos que orientam a análise</h2>
+        <p class="enc">O documento de requisitos define como o sistema deveria funcionar. O código é o objeto da investigação.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>Regras esperadas, não respostas da auditoria</h3>
+          <p>O documento de requisitos define como o sistema <strong>deveria funcionar</strong>. O código é o objeto da investigação. Não presuma que um requisito esteja correto ou violado antes de localizar o fluxo de execução e reunir evidências.</p>
+
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Código</th><th>Comportamento esperado</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>RN-01</strong></td><td>Login por e-mail e senha emite JWT válido; rotas privadas exigem autenticação</td></tr>
+                <tr><td><strong>RN-02</strong></td><td><code>CUSTOMER</code> acessa somente pedidos próprios e de sua organização</td></tr>
+                <tr><td><strong>RN-03</strong></td><td><code>APPROVER</code> e <code>MANAGER</code> acessam pedidos de sua organização, não de outras</td></tr>
+                <tr><td><strong>RN-04</strong></td><td><code>CUSTOMER</code> cria pedidos apenas em sua organização e sempre com status <code>PENDING</code></td></tr>
+                <tr><td><strong>RN-05</strong></td><td><code>CUSTOMER</code> altera apenas descrição e observação de entrega de pedidos próprios e pendentes</td></tr>
+                <tr><td><strong>RN-06</strong></td><td>Campos administrativos, financeiros, titularidade, organização, estado e aprovação não podem ser alterados pelo PATCH comum</td></tr>
+                <tr><td><strong>RN-07</strong></td><td>Aprovar exige papel <code>APPROVER</code> ou <code>MANAGER</code>, organização correta e status <code>PENDING</code></td></tr>
+                <tr><td><strong>RN-08</strong></td><td>Pedidos <code>APPROVED</code> ou <code>CANCELLED</code> não podem ser aprovados novamente</td></tr>
+                <tr><td><strong>RN-09</strong></td><td>Relatórios, buscas e exportações incluem apenas dados da organização autenticada e exigem papel apropriado</td></tr>
+                <tr><td><strong>RN-10</strong></td><td>Erros não expõem segredos, stack traces ou dados administrativos; respostas do usuário não expõem <code>passwordHash</code></td></tr>
+                <tr><td><strong>RN-11</strong></td><td>Políticas de acesso devem ser verificadas por testes negativos e evidências</td></tr>
+                <tr><td><strong>RN-12</strong></td><td>Código alcançável por endpoints deve ser diferenciado de integrações isoladas ou trechos não chamados</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Como transformar um requisito em uma pergunta de auditoria</h3>
+          <p>Veja uma regra fictícia independente deste laboratório: "Somente o autor de uma anotação privada pode editá-la". Isso exige pelo menos quatro perguntas: o endpoint exige autenticação? O serviço identifica o autor da anotação? A operação consulta ou altera apenas a anotação permitida? O sistema rejeita uma tentativa de editar a anotação de terceiro? Essas perguntas guiam a leitura e indicam testes para obter evidência. Um teste que apenas confirma a edição válida não verifica, por si só, a proibição de edição por terceiros.</p>
+
+          <div class="q excel">
+            <p class="rot">Dica metodológica</p>
+            <p><strong>Matriz de análise:</strong> para cada requisito, registre o método HTTP, o papel, a organização, o recurso, o estado relevante, o fluxo de código e a evidência encontrada. Se algo não puder ser verificado, marque "não avaliado" ou "inconclusivo", não "seguro".</p>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 4: AMBIENTE -->
+    <section id="ambiente">
+      <div class="abre">
+        <p class="eyebrow">Configuração</p>
+        <h2>Preparação e execução do ambiente</h2>
+        <p class="enc">Instruções passo a passo para instalar as ferramentas, iniciar a API e fazer a primeira verificação funcional.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>É necessário saber configurar uma API para participar?</h3>
+          <p>Não. O objetivo da disciplina é aprender a revisar código com perspectiva de segurança, e a investigação inicial pode ocorrer no navegador do GitHub. A execução local, entretanto, permite obter evidências reproduzíveis, testar comportamentos e confirmar correções. Por isso, recomenda-se preparar o ambiente quando possível, preferencialmente com pelo menos um computador funcionando por equipe.</p>
+
+          <h3>Ferramentas necessárias</h3>
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Ferramenta</th><th>Papel na atividade</th><th>Observação</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Git</strong></td><td>Clonar o repositório e registrar versões</td><td>Usar instalação oficial</td></tr>
+                <tr><td><strong>Node.js 22 ou posterior</strong></td><td>Rodar a API e os scripts npm</td><td>O npm acompanha o Node.js</td></tr>
+                <tr><td><strong>Docker com Compose</strong></td><td>Iniciar o PostgreSQL localmente</td><td>Não é necessário instalar PostgreSQL separado</td></tr>
+                <tr><td><strong>VS Code ou editor equivalente</strong></td><td>Ler, pesquisar e alterar código</td><td>Recomendado, não obrigatório</td></tr>
+                <tr><td><strong>TypeScript e Prisma</strong></td><td>Dependências da aplicação</td><td>Instalação realizada pelo npm no projeto</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Não há exigência de instalar TypeScript globalmente, Prisma globalmente ou um terminal Bash específico. Windows PowerShell, Terminal do macOS, terminais Linux e o terminal integrado do editor são opções aceitáveis.</p>
+
+          <h3>Preparação inicial passo a passo</h3>
+
+          <p><strong>1. Verifique as ferramentas.</strong> Abra um terminal e execute os comandos abaixo individualmente. Se algum não for reconhecido, consulte o guia de instalação disponibilizado no Moodle antes de prosseguir.</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">node -v
+npm -v
+git --version
+docker compose version</code></pre>
+          </div>
+
+          <p><strong>2. Acesse o repositório privado da sua equipe.</strong> Aceite o convite do GitHub. Copie a URL real exibida no botão de clonagem do repositório e execute:</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">git clone &lt;URL_REAL_DO_REPOSITORIO_DA_EQUIPE&gt;
+cd &lt;PASTA_CLONADA&gt;</code></pre>
+          </div>
+          <p>Os valores entre sinais angulares são exemplos de substituição, não comandos literais. Se você ainda não recebeu acesso ao GitHub, pode acompanhar a leitura inicial dos requisitos e do código com os colegas.</p>
+
+          <p><strong>3. Execute o diagnóstico.</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">npm run doctor</code></pre>
+          </div>
+          <p>Esse comando verifica requisitos básicos do ambiente e informa possíveis ausências. Ele não instala automaticamente Docker ou Node.js, pois isso depende das permissões e do sistema operacional do computador.</p>
+
+          <p><strong>4. Prepare o ambiente.</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">npm run setup</code></pre>
+          </div>
+          <p>O script foi desenhado para criar o <code>.env</code> local quando não existir, instalar dependências, iniciar o PostgreSQL pelo Docker Compose, gerar o Prisma Client, aplicar migrations e carregar dados fictícios. A primeira execução pode instalar pacotes e iniciar containers. Se falhar, preserve a mensagem exibida e utilize o guia de instalação.</p>
+
+          <p><strong>5. Inicie a aplicação.</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">npm run dev</code></pre>
+          </div>
+          <p>Em outro terminal, ou no navegador, consulte <code>http://127.0.0.1:3000/health</code>. A resposta esperada é um JSON com estado <code>ok</code>. Isso apenas confirma que a API responde, não que todos os requisitos de segurança estejam atendidos.</p>
+
+          <p><strong>6. Faça uma verificação funcional básica.</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-bash">npm run test:smoke</code></pre>
+          </div>
+          <p>Esse comando executa testes básicos de funcionamento e não substitui os testes de segurança. <strong>A execução completa do projeto e dos scripts deve ser validada no ambiente local antes de sua distribuição oficial</strong>, pois o pacote inicial ainda passou por validação parcial.</p>
+
+          <p><strong>7. Nas próximas utilizações:</strong> o projeto disponibiliza <code>npm run lab</code> para verificar ou iniciar o banco e executar a API, e <code>npm run db:stop</code> para interromper os containers sem remover os volumes.</p>
+
+          <h3>Autenticação nas requisições</h3>
+          <p>O seed inclui contas <strong>fictícias</strong> para treinamento. Consulte a documentação <code>README.md</code> do repositório para identificar credenciais de demonstração autorizadas. Uma requisição de login segue a estrutura:</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-http">POST http://127.0.0.1:3000/auth/login
+Content-Type: application/json
+
+{"email":"USUARIO_FICTICIO@exemplo.test","password":"SENHA_DO_LABORATORIO"}</code></pre>
+          </div>
+          <p>Depois, envie o token retornado no header de uma rota protegida:</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-http">GET http://127.0.0.1:3000/users/me
+Authorization: Bearer &lt;TOKEN_RETORNADO_PELO_LOGIN&gt;</code></pre>
+          </div>
+          <p>O arquivo <code>docs/requests.http</code> contém exemplos de requisições. <strong>Nunca copie um JWT real para o relatório, prints públicos ou ferramentas de IA.</strong> O token de teste também deve ser tratado como credencial de sessão, embora os dados do laboratório sejam fictícios.</p>
+
+          <h3>Quando a instalação não funcionar</h3>
+          <p>Você pode continuar participando pela inspeção do código no GitHub, pela discussão com sua equipe e pela análise de evidências disponíveis. Se outro integrante conseguir executar o laboratório, a equipe pode compartilhar a investigação em uma única máquina. Quando nenhuma máquina estiver disponível, registre o impedimento e utilize o material de demonstração ou resultados de testes que forem disponibilizados no Moodle. Não apresente uma execução como realizada se ela não aconteceu.</p>
+
+          <div class="q cuidado">
+            <p class="rot">Cuidados</p>
+            <p>Não use <code>docker compose down -v</code> nem <code>prisma migrate reset</code> sem compreender seu efeito; esses comandos podem apagar dados locais. Não publique o <code>.env</code>, não exponha o PostgreSQL ou a API na internet e não use dados reais.</p>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 5: MÉTODO -->
+    <section id="metodo">
+      <div class="abre">
+        <p class="eyebrow">Metodologia</p>
+        <h2>Como investigar e registrar evidências</h2>
+        <p class="enc">A diferença entre observar, suspeitar e confirmar. Oito movimentos para uma revisão rastreável.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>A diferença entre observar, suspeitar e confirmar</h3>
+          <p>Durante uma revisão de segurança, você encontrará linhas preocupantes, configurações incompletas, alertas de ferramentas e situações que parecem contradizer os requisitos. Nem tudo tem o mesmo peso como evidência.</p>
+
+          <div class="tipos-evidencia">
+            <div class="q confere">
+              <p class="rot">Hipótese</p>
+              <p>Existe uma possibilidade de falha que ainda precisa de confirmação. Exemplo ilustrativo: "A rota de download recebe um identificador, e ainda não encontramos uma verificação de proprietário". Essa afirmação indica um caminho de investigação, mas não garante que o acesso indevido seja possível.</p>
+            </div>
+            <div class="q excel">
+              <p class="rot">Achado confirmado</p>
+              <p>A equipe consegue demonstrar, por leitura completa do fluxo e/ou execução controlada, um comportamento que viola uma regra de segurança, indicando a condição, o local, o impacto e o resultado observado. Um teste negativo reproduzível torna o achado mais robusto.</p>
+            </div>
+            <div class="q">
+              <p class="rot">Alerta que exige contexto</p>
+              <p>Uma ferramenta identificou uma construção potencialmente perigosa, mas faltam informações sobre dados de entrada, alcance, permissões e proteções. A conclusão deve permanecer aberta até a triagem.</p>
+            </div>
+            <div class="q">
+              <p class="rot">Falso positivo</p>
+              <p>O alerta foi investigado e as evidências mostram que a condição acusada não corresponde a uma vulnerabilidade naquele contexto. A classificação precisa ser justificada. Não chame de falso positivo apenas porque a correção é inconveniente ou porque o sistema aparentemente funciona.</p>
+            </div>
+          </div>
+          <div class="q">
+            <p class="rot">Inconclusivo</p>
+            <p>Os dados disponíveis não permitem decidir com segurança. É um resultado válido quando acompanhado da limitação e da próxima verificação necessária.</p>
+          </div>
+
+          <h3>Método de inspeção em oito movimentos</h3>
+          <ol class="passos">
+            <li><strong>Escolha um requisito.</strong> Leia a regra esperada, identifique quem pode executar a ação e em quais condições.</li>
+            <li><strong>Localize o endpoint.</strong> Encontre a rota correspondente e os middlewares aplicados.</li>
+            <li><strong>Percorra as camadas.</strong> Siga controller, service e repository; observe os valores transportados entre elas.</li>
+            <li><strong>Identifique a fronteira de confiança.</strong> Pergunte quais valores são controlados pelo cliente e quais são obtidos de fonte confiável após autenticação.</li>
+            <li><strong>Compare comportamento e regra.</strong> Descubra onde a autorização, a validação e as condições de estado deveriam ocorrer.</li>
+            <li><strong>Formule um cenário negativo.</strong> Pense em um usuário, recurso, organização ou estado para o qual a operação deveria ser recusada.</li>
+            <li><strong>Colete evidências.</strong> Registre arquivo/função, commit, configuração, passos executados e resposta observada; se não executou, explicite que se trata de inspeção estática.</li>
+            <li><strong>Classifique e recomende.</strong> Defina o grau de confiança, o efeito potencial, a correção e a forma de reavaliar o risco.</li>
+          </ol>
+
+          <p>O objetivo não é procurar apenas padrões com palavras como <code>unsafe</code> ou <code>password</code>. Em um back-end organizado, uma vulnerabilidade pode resultar da ausência de uma verificação em uma camada, apesar de todas as funções compilarem e os retornos serem válidos.</p>
+
+          <h3>Exemplo didático: evidência insuficiente versus evidência rastreável</h3>
+          <p>Exemplo genérico, não pertencente ao código do projeto. Imagine uma API fictícia de notas privadas.</p>
+
+          <div class="duas">
+            <div class="ruim">
+              <p class="rot">Insuficiente</p>
+              <p>"Vulnerabilidade crítica. A função busca por ID e não usa o usuário."</p>
+              <p>Esse registro, isoladamente, é insuficiente. Pode existir uma verificação antes ou depois da consulta. O código pode não ser alcançável por nenhum endpoint. Não há ator, requisito nem prova do comportamento observado.</p>
+            </div>
+            <div class="bom">
+              <p class="rot">Rastreável</p>
+              <p>"Hipótese H-01. Na funcionalidade fictícia <code>GET /notes/:id</code>, a rota exige login, mas a verificação de titularidade ainda não foi localizada no fluxo percorrido até o repository. A regra exige que cada usuário visualize somente notas próprias. Próxima verificação: autenticar como usuário B e tentar consultar uma nota pertencente ao usuário A, preservando o status HTTP e sem incluir tokens no registro. Situação atual: hipótese, não confirmada."</p>
+            </div>
+          </div>
+
+          <h3>Modelo de achado a utilizar ao longo do projeto</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">### Achado A-XX: título técnico objetivo
+
+**Requisito:** RN-XX
+**Estado:** Hipótese | Confirmado | Falso positivo | Inconclusivo
+**Método:** Revisão manual | Semgrep | CodeQL | IA | Teste
+**Versão analisada:** commit `&lt;HASH_DO_COMMIT&gt;`
+**Localização:** `src/caminho/arquivo.ts`, função e linhas aproximadas
+
+**Contexto e condição de acesso:**
+- Perfil do usuário: ...
+- Organização/tenant: ...
+- Recurso e estado: ...
+- Entrada relevante: ...
+
+**Comportamento esperado:** ...
+**Comportamento observado / código encontrado:** ...
+**Passos de verificação:** ...
+**Evidência registrada:** ... (sem JWT ou segredos)
+**Possível impacto e alcançabilidade:** ...
+**Correção sugerida:** ...
+**Teste negativo e regressão:** ...
+**Limitações e pontos pendentes:** ...
+**Referência técnica:** ...</code></pre>
+          </div>
+
+          <div class="q confere">
+            <p class="rot">Regra de ouro</p>
+            <p>Associe cada achado ao <strong>commit</strong> analisado. Uma evidência coletada antes da correção não deve ser apresentada como se descrevesse automaticamente o código depois da alteração.</p>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 6: ETAPAS -->
+    <section id="etapas">
+      <div class="abre">
+        <p class="eyebrow">Percurso</p>
+        <h2>Percurso das seis etapas</h2>
+        <p class="enc">O mesmo projeto percorrido em seis etapas progressivas, com duas entregas formais no Moodle.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Você utilizará o mesmo projeto nas seis etapas. Os registros intermediários são partes do trabalho contínuo, <strong>não seis trabalhos com notas independentes</strong>. Existem <strong>duas entregas formais</strong>: uma revisão manual parcial e uma auditoria final integrada. Consulte os prazos e as instruções oficiais no Moodle.</p>
+
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Etapa</th><th>Atividade central</th><th>Registro sugerido</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>1</strong></td><td>Reconhecer a API, entender regras e formular hipóteses</td><td><code>entregas/01_inventario.md</code></td></tr>
+                <tr><td><strong>2</strong></td><td>Revisar manualmente, testar cenários negativos e realizar revisão cruzada</td><td><code>entregas/02_revisao_manual.md</code></td></tr>
+                <tr><td><strong>3</strong></td><td>Executar Semgrep, triar resultados e experimentar uma regra própria</td><td><code>entregas/03_semgrep.md</code></td></tr>
+                <tr><td><strong>4</strong></td><td>Investigar fluxo de dados/CodeQL e analisar hipóteses de IA</td><td><code>entregas/04_fluxo_codeql.md</code> e <code>entregas/04_ia.md</code></td></tr>
+                <tr><td><strong>5</strong></td><td>Comparar métodos e estudar automação no CI/CD</td><td><code>entregas/05_matriz.md</code> e <code>entregas/05_pipeline.md</code></td></tr>
+                <tr><td><strong>6</strong></td><td>Corrigir, validar, analisar risco residual e concluir auditoria</td><td><code>entregas/06_relatorio_final.md</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Os nomes são uma <strong>estrutura recomendada de organização</strong>, não uma exigência de que o estudante crie todos os arquivos antes de começar. As orientações específicas liberadas no Moodle prevalecem sobre exemplos desta página caso haja ajustes operacionais.</p>
+
+          <div class="etapas-grid">
+            <a class="etapa-card" href="#etapa-1">
+              <span class="num-etapa">1</span>
+              <h3>Reconhecimento do projeto</h3>
+              <p>Mapear atores, recursos, rotas e formular hipóteses iniciais.</p>
+            </a>
+            <a class="etapa-card" href="#etapa-2">
+              <span class="num-etapa">2</span>
+              <h3>Revisão manual independente</h3>
+              <p>Comparar implementação com requisitos antes das ferramentas automatizadas.</p>
+            </a>
+            <a class="etapa-card" href="#etapa-3">
+              <span class="num-etapa">3</span>
+              <h3>Semgrep e SAST</h3>
+              <p>Executar análise estática, triar alertas e criar regra própria.</p>
+            </a>
+            <a class="etapa-card" href="#etapa-4">
+              <span class="num-etapa">4</span>
+              <h3>CodeQL e IA</h3>
+              <p>Investigar fluxo de dados e analisar hipóteses assistidas por IA.</p>
+            </a>
+            <a class="etapa-card" href="#etapa-5">
+              <span class="num-etapa">5</span>
+              <h3>Matriz e CI/CD</h3>
+              <p>Comparar métodos, deduplicar achados e estudar automação em pipeline.</p>
+            </a>
+            <a class="etapa-card" href="#etapa-6">
+              <span class="num-etapa">6</span>
+              <h3>Correção e auditoria</h3>
+              <p>Corrigir, validar, avaliar risco residual e consolidar o relatório final.</p>
+            </a>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 7: ETAPA 1 -->
+    <section id="etapa-1">
+      <div class="abre">
+        <span class="num">1</span>
+        <p class="eyebrow">Etapa 1</p>
+        <h2>Reconhecimento do projeto</h2>
+        <p class="enc">Pergunta orientadora: o que estamos protegendo e onde estão os controles?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Antes de procurar falhas, compreenda o sistema. Saber que uma API tem JWT, validação Zod e banco PostgreSQL não é suficiente para afirmar que ela está segura. A primeira tarefa é entender os atores, os recursos, os caminhos de entrada e os componentes responsáveis por controlar cada ação.</p>
+
+          <h3>Seu percurso</h3>
+          <ol class="passos">
+            <li>Acesse o repositório da equipe e leia <code>README.md</code> e <code>docs/REQUISITOS_NEGOCIO.md</code>.</li>
+            <li>Identifique os módulos em <code>src/modules/</code> e desenhe a passagem de uma requisição desde a route até o repository.</li>
+            <li>Liste as rotas e diga quais exigem autenticação e quais podem depender de autorização por papel, organização, proprietário ou estado.</li>
+            <li>Examine <code>prisma/schema.prisma</code> para entender relações entre usuários, organizações e pedidos. Não é necessário dominar todos os recursos do Prisma para perceber relações de titularidade e escopo.</li>
+            <li>Se a API estiver executável, realize login com uma conta fictícia autorizada e consulte uma rota funcional. Diferencie teste de conectividade de teste de segurança.</li>
+            <li>Registre <strong>hipóteses</strong>, sem chamá-las prematuramente de vulnerabilidades. Para cada hipótese, indique qual requisito e fluxo precisam ser investigados.</li>
+          </ol>
+
+          <h3>O registro esperado</h3>
+          <p>Em <code>entregas/01_inventario.md</code>, inclua o objetivo do sistema, lista resumida de atores e recursos, uma tabela das rotas, desenho das camadas, requisitos prioritários e hipóteses para inspeção. Identifique o commit inicial que será preservado como linha de base.</p>
+
+          <div class="q exemplo">
+            <p class="rot">Exemplo de registro genérico</p>
+            <p>"A rota fictícia <code>POST /documents/:id/share</code> exige autenticação. Ainda precisamos verificar se a operação valida a propriedade do documento e a permissão para compartilhá-lo. Requisito a conferir: acesso apenas ao recurso autorizado. Evidência atual: leitura da route; situação: hipótese."</p>
+          </div>
+
+          <h3>Critérios de conclusão</h3>
+          <p>Você consegue explicar a finalidade de cada módulo, localizar uma route, seguir seu controller/service/repository, identificar as dimensões de autorização do sistema e apontar hipóteses com seus próximos passos. Não é necessário encontrar um número mínimo de falhas nesta etapa.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 8: ETAPA 2 -->
+    <section id="etapa-2">
+      <div class="abre">
+        <span class="num">2</span>
+        <p class="eyebrow">Etapa 2</p>
+        <h2>Revisão manual independente</h2>
+        <p class="enc">Pergunta orientadora: o código realmente cumpre as regras de negócio?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Uma revisão manual de segurança não se limita a procurar funções suspeitas. Ela compara a implementação com requisitos explícitos de segurança. Nessa etapa, o resultado humano deve ser <strong>registrado antes do contato com resultados de Semgrep, CodeQL e ferramentas de IA</strong>, de modo que possamos comparar abordagens depois sem contaminar a linha de base.</p>
+
+          <h3>Percurso de revisão</h3>
+          <p><strong>Passo 1:</strong> selecione um requisito. Por exemplo, RN-07: aprovar exige papel apropriado, organização correspondente e pedido pendente. O estudante deve verificar cada condição no fluxo de código, em vez de presumir que uma delas implica as outras.</p>
+          <p><strong>Passo 2:</strong> percorra o caminho completo. Abra a route, localize os middlewares, siga o controller, observe as decisões no service e inspecione os filtros no repository. Anote onde cada condição é verificada e como o sistema responde quando ela não é satisfeita.</p>
+          <p><strong>Passo 3:</strong> formule cenários negativos. Pense na diferença entre acesso permitido e acesso indevido. Uma operação pode funcionar para um usuário legítimo e falhar em proteger um usuário ou organização diferente.</p>
+          <p><strong>Passo 4:</strong> registre hipóteses e confirmações. Associe o registro ao RN, commit, trecho de código e eventual teste. Não inclua segredos, tokens completos ou dados que não sejam os fictícios do case.</p>
+          <p><strong>Passo 5:</strong> preserve a revisão independente. Faça commit do documento com sua análise e guarde o hash. As ferramentas automatizadas serão utilizadas depois dessa linha de base.</p>
+
+          <h3>Revisão cruzada entre equipes</h3>
+          <p>Quando a revisão inicial estiver registrada, outra equipe poderá examinar suas conclusões nos termos do acesso concedido no GitHub. A tarefa é <strong>questionar a qualidade das evidências</strong>, não apenas concordar ou discordar.</p>
+          <p>A equipe revisora deve verificar: o requisito está corretamente interpretado? O trecho citado pertence ao fluxo executável? O comportamento alegado foi demonstrado ou é somente hipótese? Há controle em outra camada? A classificação é justificada? Um teste negativo verificaria o problema? Uma recomendação poderia introduzir regressão?</p>
+
+          <div class="duas">
+            <div class="bom">
+              <p class="rot">Comentário útil</p>
+              <p>"A hipótese é plausível, mas seria necessário inspecionar a verificação de organização no <code>Service</code> antes de classificá-la como confirmada. O teste proposto também deveria comparar usuários de organizações diferentes."</p>
+            </div>
+            <div class="ruim">
+              <p class="rot">Comentário insuficiente</p>
+              <p>"Parece vulnerável", sem indicação de requisito, contexto ou evidência.</p>
+            </div>
+          </div>
+
+          <h3>O registro esperado</h3>
+          <p>Em <code>entregas/02_revisao_manual.md</code>, reúna escopo, requisitos investigados, achados confirmados e hipóteses, localização de código, evidências, resultados de testes negativos quando disponíveis, recomendações e notas de revisão cruzada. Identifique a versão analisada e preserve o texto antes dos resultados automatizados.</p>
+
+          <h3>Critérios de conclusão</h3>
+          <p>O material permite que outra pessoa entenda <strong>como</strong> você chegou às conclusões e o que permanece incerto. A revisão está associada a um commit e foi realizada antes das ferramentas posteriores. Este registro constitui o núcleo da <strong>entrega parcial formal</strong>, conforme instruções do Moodle.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 9: ETAPA 3 -->
+    <section id="etapa-3">
+      <div class="abre">
+        <span class="num">3</span>
+        <p class="eyebrow">Etapa 3</p>
+        <h2>Análise estática com Semgrep</h2>
+        <p class="enc">Pergunta orientadora: o que uma ferramenta encontrou e o que isso significa?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>A análise estática de segurança examina o código sem precisar executar todos os caminhos da aplicação. Ferramentas como Semgrep podem procurar padrões sintáticos, estruturas de código e certos fluxos de dados. Os resultados são <strong>alertas a investigar</strong>; a análise não equivale automaticamente à confirmação de exploração.</p>
+
+          <h3>Percurso de trabalho</h3>
+          <ol class="passos">
+            <li>Preserve o arquivo da revisão manual e o commit anterior à introdução do SAST.</li>
+            <li>Consulte no Moodle as instruções e regras Semgrep liberadas para essa etapa. Elas não precisam estar disponíveis na versão inicial do repositório.</li>
+            <li>Verifique como a ferramenta será executada no ambiente adotado para a disciplina. Quando a CLI e a regra já estiverem disponíveis, o comando poderá seguir o formato <code>semgrep scan --config rules/classroom.yml src</code>.</li>
+            <li>Registre versão da ferramenta, regras usadas, diretório analisado e commit. Se utilizar relatório fornecido, descreva-o como <strong>resultado fornecido</strong>, não como execução da equipe.</li>
+            <li>Para cada alerta, identifique qual expressão foi sinalizada, qual regra o detectou, se o código é alcançável e quais dados influenciam a operação.</li>
+            <li>Classifique o resultado como confirmado, hipótese, falso positivo ou inconclusivo, sempre com justificativa.</li>
+            <li>Experimente uma regra personalizada simples, quando disponibilizada a atividade, e compare um trecho que deveria disparar a regra com outro que não deveria.</li>
+            <li>Compare preliminarmente seus alertas com a revisão manual registrada na etapa anterior.</li>
+          </ol>
+
+          <h3>Exemplo didático de triagem</h3>
+          <p>Considere uma regra fictícia que procura chamadas a <code>exec(...)</code>:</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-typescript">exec("date", callback);</code></pre>
+          </div>
+          <p>A detecção sintática dessa função, sem outras informações, não demonstra injeção de comando. É necessário investigar se a instrução recebe dados não confiáveis, se existe controle do caminho de execução e como o comando é construído. Um uso de argumento constante pode exigir revisão por outras razões, mas não é evidência suficiente da vulnerabilidade específica de injeção de comandos.</p>
+          <p>Agora imagine outra construção genérica:</p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-typescript">exec(`processar ${valorRecebido}`, callback);</code></pre>
+          </div>
+          <p>Se <code>valorRecebido</code> for controlado externamente e chegar à execução de comandos sem proteção apropriada, existe um risco que precisa ser investigado no fluxo completo. O objetivo é aprender a distinguir <strong>padrão, condição de risco, alcançabilidade e evidência</strong>.</p>
+
+          <h3>O registro esperado</h3>
+          <p>Em <code>entregas/03_semgrep.md</code>, documente execução ou origem do relatório, versão/configuração, tabela de alertas, tratamento de duplicatas, justificativas, exemplo da regra própria e seus testes. Não preencha o relatório apenas com uma captura de tela ou uma cópia da saída da ferramenta.</p>
+
+          <h3>Critérios de conclusão</h3>
+          <p>Você consegue explicar pelo menos um alerta com contexto, identificar um caso em que a presença do padrão não basta para confirmar vulnerabilidade e demonstrar como uma regra simples pode produzir acertos e limitações. A <strong>entrega parcial formal</strong> da revisão manual ocorre ao final desta fase, conforme calendário e orientações do Moodle; o texto manual deve permanecer preservado sem incorporar retroativamente descobertas do SAST.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 10: ETAPA 4 -->
+    <section id="etapa-4">
+      <div class="abre">
+        <span class="num">4</span>
+        <p class="eyebrow">Etapa 4</p>
+        <h2>Fluxo de dados, CodeQL e IA</h2>
+        <p class="enc">Pergunta orientadora: de onde veio o dado e a que operação ele chegou?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Uma vulnerabilidade pode depender de como valores atravessam funções e camadas. Em análise de fluxo, identificamos uma <strong>source</strong> (ponto onde dados de interesse entram), acompanhamos a <strong>propagação</strong> e investigamos um <strong>sink</strong> (operação sensível). O percurso pode passar por route, controller, service e repository, e por isso é importante olhar além de um único arquivo.</p>
+
+          <h3>Percurso com CodeQL</h3>
+          <ol class="passos">
+            <li>Escolha um alerta ou exemplo de fluxo disponibilizado para esta etapa.</li>
+            <li>Identifique a source, o sink, as funções intermediárias e possíveis validações ou sanitizações.</li>
+            <li>Registre o caminho de dados em um diagrama, indicando os arquivos e a natureza de cada transformação.</li>
+            <li>Avalie se a trajetória demonstrada é executável nas condições do projeto ou apenas uma relação de código de interesse.</li>
+            <li>Declare como o resultado foi obtido: consulta executada pela equipe, demonstração pública controlada ou relatório disponibilizado.</li>
+          </ol>
+
+          <div class="q cuidado">
+            <p class="rot">Atenção à infraestrutura</p>
+            <p>A integração de CodeQL/Code Scanning em repositórios privados pode exigir licenciamento não disponível na organização gratuita. Se o ambiente privado não permitir a execução, a atividade pode utilizar <strong>um repositório público demonstrativo e resultados disponibilizados pelo Moodle</strong>. A ausência de licença não invalida o objetivo de interpretar o método. Não invente saídas de CodeQL para preencher o relatório.</p>
+          </div>
+
+          <p><strong>Exemplo conceitual (não é gabarito do projeto):</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code>Parâmetro da URL (source)
+       ↓
+Controller recebe a requisição
+       ↓
+Service transforma ou encaminha o valor
+       ↓
+Repository constrói a operação
+       ↓
+Consulta ou chamada sensível (sink)</code></pre>
+          </div>
+          <p>Um dado atravessar várias funções não significa automaticamente que a aplicação é vulnerável. A conclusão depende da semântica da operação, do controle dos valores, das validações e das barreiras existentes.</p>
+
+          <h3>Percurso de IA</h3>
+          <p>A IA é introduzida <strong>depois</strong> da revisão manual independente e da etapa de SAST. Uma ferramenta generativa pode sugerir hipóteses, cenários negativos e melhorias, mas também pode omitir controles, atribuir comportamentos inexistentes ou afirmar exploração sem prova.</p>
+
+          <ol class="passos">
+            <li>Escolha trechos fictícios permitidos para análise. Não compartilhe <code>.env</code>, JWT, senhas, dados reais ou informações institucionais sensíveis.</li>
+            <li>Registre nome da ferramenta e modelo, data do uso, contexto e requisitos fornecidos.</li>
+            <li>Peça hipóteses com arquivo/função, requisito relacionado, condição de alcance e teste que poderia confirmar ou refutar cada hipótese.</li>
+            <li>Preserve a resposta original e <strong>avalie cada afirmação</strong> lendo o código ou usando um teste real quando viável.</li>
+            <li>Classifique o resultado como confirmado, não confirmado ou inconclusivo, explicando a evidência.</li>
+            <li>Compare as hipóteses com a revisão manual e as ferramentas de análise estática.</li>
+          </ol>
+
+          <p><strong>Prompt didático de partida:</strong></p>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-text">Você está revisando uma API fictícia usada para treinamento.
+Considere exclusivamente os arquivos e requisitos fornecidos.
+Proponha até cinco hipóteses de falhas de segurança.
+Para cada hipótese, indique: arquivo/função, requisito,
+condição de alcance, evidência necessária, teste negativo
+possível e limitações. Não invente resultados de execução.
+Não declare vulnerabilidade confirmada sem evidência.</code></pre>
+          </div>
+
+          <h3>O registro esperado</h3>
+          <p><code>entregas/04_fluxo_codeql.md</code> deve explicar a trajetória de dados e o que foi observado ou disponibilizado; <code>entregas/04_ia.md</code> deve guardar prompts, respostas originais, validações e limitações. Isso faz parte do percurso de auditoria, mas <strong>não é uma nova entrega formal independente</strong>.</p>
+
+          <h3>Critérios de conclusão</h3>
+          <p>Você consegue explicar pelo menos um fluxo de dados, diferenciar source e sink, declarar as limitações do ambiente CodeQL e mostrar uma análise crítica de uma hipótese proposta por IA.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 11: ETAPA 5 -->
+    <section id="etapa-5">
+      <div class="abre">
+        <span class="num">5</span>
+        <p class="eyebrow">Etapa 5</p>
+        <h2>Comparação de técnicas e CI/CD</h2>
+        <p class="enc">Pergunta orientadora: por que métodos diferentes produzem resultados diferentes?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Revisão manual, Semgrep, CodeQL e IA observam o código de formas diferentes. A revisão manual pode considerar regras de negócio, mas depende da experiência e do tempo do analista. Regras estáticas podem encontrar padrões em grande escala, mas não compreendem automaticamente todo o contexto. Ferramentas de fluxo podem seguir propagação entre componentes dentro de seus modelos. A IA pode ajudar a formular perguntas, mas não transforma uma hipótese em evidência.</p>
+
+          <h3>Percurso de comparação</h3>
+          <ol class="passos">
+            <li>Reúna a revisão manual preservada, relatórios das ferramentas e a análise crítica da IA.</li>
+            <li>Agrupe registros que descrevem a <strong>mesma condição</strong> para evitar contar duplicatas como várias vulnerabilidades.</li>
+            <li>Para cada achado, indique se o método o identificou, não o sinalizou ou não foi executado/avaliado.</li>
+            <li>Explique divergências. A ausência de alerta não prova que o método avaliou adequadamente aquela condição.</li>
+            <li>Identifique quais confirmações vieram de execução real e quais permanecem fundamentadas somente em inspeção estática.</li>
+            <li>Proponha uma priorização considerando impacto, possibilidade de exploração, acesso necessário, dados afetados e barreiras existentes.</li>
+          </ol>
+
+          <h3>Matriz comparativa para preencher</h3>
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>ID do achado</th><th>RN</th><th>Manual</th><th>Semgrep</th><th>CodeQL</th><th>IA</th><th>Status</th><th>Explicação</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>A-XX</td><td>RN-XX</td><td>Encontrou / não</td><td>Alertou / não / N/A</td><td>Alertou / não / N/A</td><td>Sugeriu / não</td><td>Confirmado / hipótese / inconclusivo</td><td>Contexto e limitações</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="q exemplo">
+            <p class="rot">Exemplo hipotético</p>
+            <p>Uma falha de autorização por propriedade pode ser percebida ao comparar o service com uma regra do negócio, mas passar sem alerta em uma regra Semgrep que procura apenas SQL inseguro. Isso não significa que o Semgrep tenha "errado": o conjunto de regras, o modelo de análise e o objetivo da ferramenta podem não cobrir aquela política. A matriz deve explicar esses limites, não criar um ranking absoluto entre ferramentas.</p>
+          </div>
+
+          <h3>Percurso CI/CD</h3>
+          <p>Um pipeline pode compilar, executar testes e aplicar regras automáticas em uma branch ou Pull Request. A automatização não elimina a necessidade de revisar os resultados. Se um alerta for considerado bloqueante, o critério precisa ser justificável: gravidade, confiança, alcance e política adotada.</p>
+
+          <p><strong>Fluxo conceitual:</strong> mudança de código &rarr; Pull Request &rarr; build/testes &rarr; análise estática &rarr; triagem dos alertas &rarr; decisão técnica &rarr; merge ou correção adicional.</p>
+
+          <p>Na atividade prática, utilize o workflow efetivamente disponibilizado para esta etapa. O arquivo de exemplo não precisa estar presente na distribuição inicial. Documente o que foi executado na conta e plano GitHub disponíveis; se o workflow não rodar, registre a limitação e analise o fluxo teórico ou um resultado fornecido, sem afirmar que ocorreu uma execução.</p>
+
+          <h3>O registro esperado</h3>
+          <p>Em <code>entregas/05_matriz.md</code>, guarde a matriz deduplicada com as justificativas. Em <code>entregas/05_pipeline.md</code>, descreva o workflow, gatilhos, comandos, resultados observados e política proposta para tratar alertas. Não utilize "todos os checks verdes" como prova de ausência de vulnerabilidades.</p>
+
+          <h3>Critérios de conclusão</h3>
+          <p>A matriz permite compreender as contribuições e omissões de cada método, separa "não sinalizado" de "não executado" e apresenta critérios coerentes de priorização e integração de verificações ao processo de desenvolvimento.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 12: ETAPA 6 -->
+    <section id="etapa-6">
+      <div class="abre">
+        <span class="num">6</span>
+        <p class="eyebrow">Etapa 6</p>
+        <h2>Correções, testes e auditoria integrada</h2>
+        <p class="enc">Pergunta orientadora: como demonstrar que uma correção funcionou?</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>Encontrar uma falha e alterar uma função são atividades diferentes de comprovar que o problema foi remediado. A validação precisa confrontar o comportamento anterior e posterior em cenários de sucesso e de negação de acesso. Também é necessário identificar riscos que permanecem fora da cobertura dos testes.</p>
+
+          <h3>Percurso de correção e validação</h3>
+          <ol class="passos">
+            <li><strong>Priorize:</strong> selecione problemas com justificativa de risco e critérios que possam ser verificados.</li>
+            <li><strong>Preserve a linha de base:</strong> identifique o commit da versão inicial e a evidência anterior à correção.</li>
+            <li><strong>Crie uma branch ou Pull Request:</strong> implemente a alteração de forma localizada, respeitando as camadas e os requisitos de negócio.</li>
+            <li><strong>Execute testes positivos e negativos:</strong> um acesso legítimo deve continuar funcionando e o acesso indevido deve ser recusado. Verifique estados e organização quando aplicáveis.</li>
+            <li><strong>Reexecute análises relevantes:</strong> quando a ferramenta estiver disponível, repita a varredura e compare resultados no mesmo escopo e com regras declaradas.</li>
+            <li><strong>Registre antes e depois:</strong> indique commits, entradas, papéis, resposta esperada, resposta observada e diferenças.</li>
+            <li><strong>Avalie o risco residual:</strong> descreva quais cenários não foram cobertos, quais dependências ou integrações não foram verificadas e o que seria necessário em uma auditoria de produção.</li>
+            <li><strong>Consolide o relatório:</strong> apresente escopo, método, resultados, comparação, correções e conclusões sustentadas por evidências.</li>
+          </ol>
+
+          <h3>Exemplo de validação independente do projeto</h3>
+          <p>Uma API fictícia de anotação privada recebeu uma correção de autorização. A equipe precisa demonstrar duas condições: o autor ainda consegue abrir sua própria anotação, e outra pessoa autenticada não consegue acessá-la.</p>
+
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Cenário genérico</th><th>Antes</th><th>Depois esperado</th><th>O que a evidência precisa demonstrar</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Proprietário acessa seu recurso</td><td>Permitido</td><td>Permitido</td><td>Funcionalidade legítima preservada</td></tr>
+                <tr><td>Outro usuário acessa recurso privado</td><td>Permitido indevidamente, se falha confirmada</td><td>Negado</td><td>Política de acesso aplicada</td></tr>
+                <tr><td>Usuário sem login acessa rota privada</td><td>Negado</td><td>Negado</td><td>Autenticação continua exigida</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="q cuidado">
+            <p class="rot">Atenção</p>
+            <p>Não transforme essa tabela em um suposto resultado da API da disciplina. Ela é um <strong>modelo de raciocínio</strong>; o relatório real deve conter apenas os resultados efetivamente coletados pela equipe.</p>
+          </div>
+
+          <h3>O registro esperado</h3>
+          <p>O arquivo <code>entregas/06_relatorio_final.md</code>, ou documento equivalente aceito no Moodle, sintetiza a auditoria. Ele deve apontar a versão inicial e a versão corrigida, evidências por achado, matriz comparativa, decisões de remediação, testes, limitações e referências. O repositório da equipe deve permitir localizar os commits e Pull Requests correspondentes.</p>
+
+          <h3>Critérios de conclusão</h3>
+          <p>O relatório não promete "segurança total". Ele demonstra o que foi efetivamente inspecionado, identifica as verificações executadas, mostra a qualidade das correções selecionadas e declara os riscos residuais e as incertezas da análise.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 13: ENTREGAS -->
+    <section id="entregas">
+      <div class="abre">
+        <p class="eyebrow">Avaliação</p>
+        <h2>Entregas formais</h2>
+        <p class="enc">Duas entregas formais registradas no Moodle. As seis etapas organizam o desenvolvimento, não seis avaliações independentes.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>O projeto possui <strong>duas entregas formais</strong>, registradas no Moodle. As seis etapas organizam o desenvolvimento, mas não correspondem a seis avaliações independentes. Os documentos escritos e o código versionado no GitHub servem como evidência do mesmo trabalho. Os prazos concretos e eventuais orientações adicionais são os informados no Moodle.</p>
+
+          <div class="entregas-duas">
+            <div class="entrega-card destaque-entrega">
+              <h3>Entrega formal 1: Revisão manual parcial</h3>
+              <p><strong>Quando no percurso:</strong> ao concluir a revisão manual independente, com submissão formal associada à terceira etapa. <strong>O foco da entrega é a revisão manual</strong>, mesmo que o encontro já inclua uma introdução ao Semgrep. Não substitua a análise humana por um relatório da ferramenta.</p>
+              <p><strong>Objetivo:</strong> demonstrar que a equipe compreendeu os requisitos, percorreu as camadas relevantes e registrou achados e hipóteses com justificativa própria, antes de se apoiar em resultados automatizados ou IA.</p>
+              <p><strong>Material principal:</strong> <code>entregas/02_revisao_manual.md</code>, ou equivalente aceito no Moodle. O documento deve conter:</p>
+              <ol>
+                <li>Identificação do repositório e versão analisada.</li>
+                <li>Escopo e regras estudadas: endpoints, módulos e requisitos RN avaliados.</li>
+                <li>Método de revisão: como a equipe percorreu routes, controllers, services e repositories.</li>
+                <li>Registros de achados e hipóteses com evidência manual.</li>
+                <li>Evidências reproduzíveis quando disponíveis, sem credenciais ou JWT.</li>
+                <li>Testes negativos propostos ou executados.</li>
+                <li>Revisão cruzada: críticas recebidas e pontos inconclusivos.</li>
+                <li>Referências técnicas necessárias.</li>
+              </ol>
+              <p><strong>Procedimento:</strong> salve e faça commit no repositório privado, copie a URL e o hash do commit e envie na atividade oficial no Moodle.</p>
+            </div>
+            <div class="entrega-card">
+              <h3>Entrega formal 2: Auditoria integrada final</h3>
+              <p><strong>Quando no percurso:</strong> ao concluir a sexta etapa, conforme a atividade de entrega final no Moodle.</p>
+              <p><strong>Objetivo:</strong> apresentar uma visão consolidada do sistema auditado, os resultados de diferentes técnicas, as decisões de priorização e as correções que foram efetivamente implementadas e verificadas.</p>
+              <p><strong>Materiais principais:</strong> relatório <code>entregas/06_relatorio_final.md</code> (ou PDF equivalente), matriz comparativa, evidências de execução e/ou relatórios fornecidos, código atualizado, commits e Pull Requests pertinentes.</p>
+              <p>O relatório deve reunir <strong>oito partes</strong>:</p>
+              <ol>
+                <li>Identificação, objetivo e escopo.</li>
+                <li>Requisitos de segurança e contexto.</li>
+                <li>Metodologia realmente empregada.</li>
+                <li>Achados e evidências.</li>
+                <li>Comparação crítica.</li>
+                <li>Priorização, correções e regressões.</li>
+                <li>Riscos residuais e conclusão.</li>
+                <li>Referências.</li>
+              </ol>
+              <p><strong>Procedimento:</strong> finalize a documentação e faça commit no repositório. Acesse a atividade de auditoria integrada final no Moodle e envie os arquivos e links indicados.</p>
+            </div>
+          </div>
+
+          <h3>Diferença entre checkpoint e entrega</h3>
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Termo</th><th>Significado no projeto</th><th>Exemplo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Etapa de acompanhamento</strong></td><td>Registro incremental para organizar o trabalho</td><td><code>01_inventario.md</code>, <code>03_semgrep.md</code>, <code>05_matriz.md</code></td></tr>
+                <tr><td><strong>Entrega parcial formal</strong></td><td>Submissão avaliada de revisão manual, conforme Moodle</td><td><code>02_revisao_manual.md</code> com commit e link</td></tr>
+                <tr><td><strong>Entrega final formal</strong></td><td>Submissão avaliada da auditoria integrada</td><td>Relatório final, matriz, evidências e repositório/PR</td></tr>
+                <tr><td><strong>Componente da nota</strong></td><td>Critério da rubrica sobre o conjunto de evidências</td><td>Revisão manual 30%, SAST 25%, comparação 25%, correções 20%</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="q confere">
+            <p class="rot">Atenção à nomenclatura</p>
+            <p>Os quatro componentes de avaliação são <strong>C1 a C4 na rubrica</strong>, enquanto as etapas de aprendizagem são <strong>Etapas 1 a 6</strong>. Não existe uma nota independente para cada etapa.</p>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 14: AVALIAÇÃO -->
+    <section id="avaliacao">
+      <div class="abre">
+        <p class="eyebrow">Rubrica</p>
+        <h2>Como será avaliado o projeto</h2>
+        <p class="enc">Nota de 0 a 10, calculada a partir de 100 pontos divididos em quatro componentes.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <p>A avaliação considera a consistência técnica e a qualidade das evidências do projeto. A nota global vai de <strong>0 a 10</strong>, calculada a partir de uma rubrica de 100 pontos dividida em quatro componentes.</p>
+
+          <div class="tab">
+            <table>
+              <thead>
+                <tr><th>Componente</th><th style="text-align:right">Pontos</th><th>O que demonstra qualidade</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>C1. Revisão manual</strong></td><td style="text-align:right"><strong>30</strong></td><td>Compreensão dos requisitos, achados rastreáveis, testes negativos e revisão cruzada</td></tr>
+                <tr><td><strong>C2. Análise automatizada SAST</strong></td><td style="text-align:right"><strong>25</strong></td><td>Execução ou interpretação reprodutível, triagem contextual, regra Semgrep e análise CodeQL/alternativa</td></tr>
+                <tr><td><strong>C3. Comparação crítica</strong></td><td style="text-align:right"><strong>25</strong></td><td>Matriz deduplicada, avaliação de falsos positivos, lacunas de cobertura e hipóteses de IA</td></tr>
+                <tr><td><strong>C4. Correções e validação</strong></td><td style="text-align:right"><strong>20</strong></td><td>Mudanças justificadas, testes antes/depois, riscos residuais e conclusão consistente</td></tr>
+                <tr class="rubrica-total"><td><strong>Total</strong></td><td style="text-align:right"><strong>100</strong></td><td><code>nota final = pontos obtidos / 10</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Detalhamento dos critérios</h3>
+          <p><strong>C1, revisão manual (30 pontos):</strong> até 10 pontos pelo uso adequado dos requisitos e do escopo; até 10 pontos por achados com evidência e possibilidade de reprodução; até 5 pontos pela elaboração/interpretação de testes negativos; até 5 pontos pela qualidade da revisão cruzada e do raciocínio técnico. Um texto afirmando que algo está vulnerável, sem mostrar o motivo, não satisfaz os critérios de evidência.</p>
+
+          <p><strong>C2, SAST (25 pontos):</strong> até 8 pontos pelo registro de versão, regras, escopo e origem dos resultados; até 8 pontos pela interpretação e triagem dos alertas; até 5 pontos por uma regra Semgrep própria com teste positivo e negativo; até 4 pontos por investigação de CodeQL ou alternativa disponibilizada e documentada. Quando o ambiente institucional não permitir uma ferramenta, identifique honestamente a alternativa usada.</p>
+
+          <p><strong>C3, comparação crítica (25 pontos):</strong> até 10 pontos por matriz que consolida o mesmo achado entre métodos sem duplicar contagens; até 8 pontos pela discussão de falsos positivos, ausências de detecção e hipóteses da IA validadas; até 7 pontos pela explicação da cobertura, alcançabilidade, limitações e complementaridade das abordagens.</p>
+
+          <p><strong>C4, correções e validação (20 pontos):</strong> até 10 pontos por correções coerentes com os requisitos, implementadas de modo controlado; até 7 pontos por testes de regressão com evidências antes e depois; até 3 pontos por registro de risco residual e qualidade do relatório final.</p>
+
+          <h3>O que distingue um trabalho fundamentado</h3>
+          <p>Um trabalho consistente não precisa encontrar o maior número de falhas. Ele explica <strong>o que foi inspecionado</strong>, <strong>como foi testado</strong>, <strong>qual evidência sustenta cada conclusão</strong> e <strong>o que continua desconhecido</strong>. Uma análise parcialmente inconclusiva, mas transparente e tecnicamente coerente, é mais útil que uma lista de "vulnerabilidades críticas" sem justificativa.</p>
+          <p>As atividades podem ser feitas em equipe, mas todos os integrantes devem compreender as conclusões apresentadas e ser capazes de explicar as principais decisões do relatório.</p>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 15: MODELOS -->
+    <section id="modelos">
+      <div class="abre">
+        <p class="eyebrow">Templates</p>
+        <h2>Modelos para organizar suas evidências</h2>
+        <p class="enc">Cinco modelos reutilizáveis para inventário, cenários de verificação, matriz comparativa, comparação antes/depois e sumário executivo.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>Modelo 1. Inventário da superfície de análise</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">| Endpoint | Papel | Requisito | Route | Service | Repository | Estado da análise |
+|---|---|---|---|---|---|---|
+| /exemplo | USER | RN-XX | ... | ... | ... | Pendente / Em análise / Avaliado |</code></pre>
+          </div>
+          <p>Preencha com <strong>as rotas reais do laboratório</strong>, não com valores ilustrativos. Uma rota pode ter mais de um requisito. Não considere "avaliado" como sinônimo de "seguro".</p>
+
+          <h3>Modelo 2. Registro do cenário de verificação</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">**Cenário:** tentativa de executar operação fora da permissão
+**Requisito relacionado:** RN-XX
+**Conta/perfil fictício:** ...
+**Recurso e estado:** ...
+**Commit analisado:** ...
+**Pré-condição:** ...
+**Requisição ou percurso de código:** ...
+**Resultado esperado:** ...
+**Resultado observado:** ...
+**Evidência:** arquivo, saída redigida, print sem segredo, hash
+**Interpretação:** ...
+**Limitações:** ...</code></pre>
+          </div>
+          <div class="q confere">
+            <p class="rot">Importante</p>
+            <p>HTTP 200, 403 ou 404 é apenas parte do contexto. Interprete também o conteúdo retornado, as condições de autenticação e o requisito aplicável. A API pode adotar 403 ou 404 conforme a política definida para ocultar a existência de recursos; não presuma um único código universal para todas as situações.</p>
+          </div>
+
+          <h3>Modelo 3. Matriz de comparação de métodos</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">| Achado | RN | Manual | Semgrep | CodeQL | IA | Status | Explicação |
+|---|---|---|---|---|---|---|---|
+| A-01 | RN-XX | ... | ... | ... | ... | Hipótese | ... |</code></pre>
+          </div>
+          <p>Adote uma legenda consistente: <code>identificou</code>, <code>não sinalizou</code>, <code>não executado</code>, <code>não aplicável</code> ou <code>inconclusivo</code>. Essa diferenciação impede interpretações erradas sobre a cobertura da técnica.</p>
+
+          <h3>Modelo 4. Comparação antes/depois</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">| Cenário | Commit inicial | Resultado antes | Commit corrigido |
+|---|---|---|---|
+| Acesso legítimo | ... | ... | ... |
+| Acesso proibido | ... | ... | ... |
+
+| Cenário | Resultado depois | Teste executado | Limitação |
+|---|---|---|---|
+| Acesso legítimo | ... | ... | ... |
+| Acesso proibido | ... | ... | ... |</code></pre>
+          </div>
+          <p>A organização pode ser adaptada à largura de visualização do site ou do relatório, mas não elimine a informação essencial: <strong>versão, cenário e evidência</strong>.</p>
+
+          <h3>Modelo 5. Sumário executivo do relatório</h3>
+          <div class="pre-wrap">
+            <button class="copy-btn" type="button">Copiar</button>
+            <pre><code class="language-markdown">**Objetivo:** avaliar se determinados requisitos de segurança são aplicados pela API.
+**Escopo:** módulos e rotas efetivamente analisados, na versão identificada pelo commit.
+**Métodos:** revisão manual, análise estática e verificações complementares realizadas.
+**Resultados:** achados confirmados, hipóteses e alertas que exigem contextualização, sem duplicação.
+**Correções:** alterações aplicadas e evidências de regressão.
+**Conclusão:** comportamento observado nos testes, limitações e riscos residuais.</code></pre>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 16: DÚVIDAS -->
+    <section id="duvidas">
+      <div class="abre">
+        <p class="eyebrow">FAQ</p>
+        <h2>Dúvidas frequentes</h2>
+        <p class="enc">Respostas para as perguntas mais comuns sobre o laboratório.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <ul class="duvidas-lista">
+            <li>
+              <details>
+                <summary>Preciso conhecer Node.js, TypeScript ou Docker previamente?</summary>
+                <p>Não é necessário dominar a stack para começar a inspeção. É importante, porém, aprender a localizar routes, controllers, services e repositories e compreender as regras de negócio. A execução local ajuda na reprodução de cenários; se houver dificuldades, utilize o guia de instalação, a colaboração da equipe e os materiais disponibilizados para contingência. A instalação, isoladamente, não é componente da nota.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>É obrigatório que todos os integrantes tenham a aplicação instalada?</summary>
+                <p>O projeto pode ser investigado em equipe. Ter pelo menos uma máquina funcionando facilita os testes, mas todos os integrantes devem participar da análise e compreender as conclusões. A execução local pode ser complementada por inspeção no GitHub e resultados demonstrativos, quando necessário e permitido pelas instruções do Moodle.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Posso corrigir o código assim que encontro uma suspeita?</summary>
+                <p>Na fase inicial, priorize documentar a revisão manual e preservar o commit original. Isso permite comparar o estado vulnerável e o corrigido. Implementar mudanças antes de registrar a linha de base pode apagar evidências e dificultar a comparação. As correções fazem parte das etapas finais.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Tenho que encontrar todas as vulnerabilidades deliberadas?</summary>
+                <p>A avaliação exige investigação fundamentada e documentação coerente, não uma contagem de adivinhações. Verifique a rubrica e as regras do Moodle. Identificar uma hipótese corretamente e explicar a limitação da evidência faz parte do trabalho técnico.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Se Semgrep não mostrar alerta, posso afirmar que o código é seguro?</summary>
+                <p>Não. Um SAST atua conforme as regras, modelos e arquivos analisados. Ausência de alerta pode indicar que determinado padrão não foi encontrado, mas não garante ausência de falhas de autorização, de lógica de negócio ou de outros tipos.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>E se o CodeQL não estiver disponível no meu repositório privado?</summary>
+                <p>O plano gratuito do GitHub pode não incluir Code Scanning/CodeQL para repositórios privados. Utilize a alternativa definida nas orientações do Moodle, como resultados de uma demonstração em repositório público. Identifique claramente a origem dos dados. Não é correto afirmar que uma análise foi executada localmente se a equipe apenas interpretou um relatório fornecido.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Posso usar ferramentas de IA?</summary>
+                <p>Sim, nas condições definidas pelo protocolo da disciplina, após preservar a revisão manual independente. Registre a ferramenta, os prompts, as respostas e a verificação feita. Não compartilhe segredos, tokens, <code>.env</code> ou dados reais. A IA sugere hipóteses; as evidências e decisões técnicas são responsabilidade da equipe.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Preciso fazer upload dos seis arquivos de etapa no Moodle?</summary>
+                <p>Não como seis avaliações independentes. O percurso possui registros intermediários, mas <strong>duas entregas formais</strong> estão previstas: revisão manual parcial e auditoria final integrada. O Moodle especifica o que deve ser anexado em cada uma. Os registros intermediários ajudam a organizar as evidências que serão utilizadas nelas.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Se eu fizer commit no GitHub, a entrega está concluída?</summary>
+                <p>Não necessariamente. O código e o histórico ficam no GitHub; a <strong>submissão oficial ocorre no Moodle</strong>. Verifique qual atividade está aberta, o formato exigido e o prazo informado na oferta. Envie o arquivo/link conforme solicitado e confira se o envio foi registrado.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Qual é a diferença entre hipótese e vulnerabilidade confirmada?</summary>
+                <p>A hipótese é uma possibilidade fundamentada que ainda precisa de verificação. Um achado confirmado apresenta evidências suficientes de que uma condição viola um requisito de segurança. A conclusão deve informar os limites do que foi testado; um indício visual em uma função isolada pode não ser suficiente.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Devo usar a quantidade de alertas como medida de qualidade da ferramenta?</summary>
+                <p>Não. O volume de alertas isoladamente não mede precisão, revocação, gravidade nem utilidade. Investigue alertas duplicados, alcance, falsos positivos, lacunas de detecção e os critérios de configuração antes de comparar métodos.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>E se a minha correção fizer o teste de segurança passar, mas quebrar uma funcionalidade legítima?</summary>
+                <p>Essa alteração introduz uma regressão. É necessário verificar tanto o comportamento proibido quanto o comportamento permitido. A revisão deve explicar o que mudou, por que a correção respeita os requisitos e quais testes sustentam a conclusão.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Posso usar dados reais ou publicar o laboratório na internet para facilitar o acesso?</summary>
+                <p>Não. A API possui vulnerabilidades intencionais para treinamento. Mantenha execução local e isolada, use dados fictícios, preserve o repositório privado da equipe e não compartilhe chaves ou dados pessoais reais.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Preciso alterar o package.json ou instalar Prisma/TypeScript globalmente?</summary>
+                <p>Não para a configuração básica. O projeto contém seus scripts e dependências. Instale os pré-requisitos de sistema, depois execute os comandos previstos no README. As dependências de aplicação são instaladas no próprio projeto.</p>
+              </details>
+            </li>
+            <li>
+              <details>
+                <summary>Uma resposta gerada por IA pode ser usada como evidência empírica?</summary>
+                <p>Não, isoladamente. A IA pode levantar hipóteses e ajudar a organizar testes. Para afirmar que uma vulnerabilidade foi reproduzida, documente o código e/ou a execução realizada. Se o teste não foi executado, declare essa limitação.</p>
+              </details>
+            </li>
+          </ul>
+
+        </div>
+      </article>
+    </section>
+
+    <!-- SEÇÃO 17: REFERÊNCIAS -->
+    <section id="referencias">
+      <div class="abre">
+        <p class="eyebrow">Fontes</p>
+        <h2>Documentação e referências</h2>
+        <p class="enc">Documentos internos do laboratório e referências técnicas externas para aprofundamento.</p>
+      </div>
+      <article class="cap">
+        <div class="pagina">
+
+          <h3>Documentos internos do laboratório</h3>
+          <p>Consulte no repositório da equipe ou no Moodle: <code>README.md</code>, <code>docs/REQUISITOS_NEGOCIO.md</code>, <code>docs/ARQUITETURA.md</code>, <code>docs/GUIA_INSTALACAO.md</code>, <code>docs/GUIA_TESTES.md</code>, <code>docs/requests.http</code>, <code>prisma/schema.prisma</code>, rubrica, protocolo de IA e modelo de relatório. Esses documentos complementam a página sem alterar o papel do Moodle como ambiente oficial.</p>
+
+          <h3>Referências técnicas externas</h3>
+          <div class="recursos">
+            <a class="recurso" href="https://top10.owasp.org/2025/" target="_blank" rel="noopener noreferrer">
+              <strong>OWASP Top 10:2025</strong>
+              <span>OWASP Foundation</span>
+            </a>
+            <a class="recurso" href="https://asvs.owasp.org/" target="_blank" rel="noopener noreferrer">
+              <strong>ASVS</strong>
+              <span>Application Security Verification Standard</span>
+            </a>
+            <a class="recurso" href="https://cheatsheetseries.owasp.org/cheatsheets/Secure_Code_Review_Cheat_Sheet.html" target="_blank" rel="noopener noreferrer">
+              <strong>Secure Code Review Cheat Sheet</strong>
+              <span>OWASP Foundation</span>
+            </a>
+            <a class="recurso" href="https://cwe.mitre.org/" target="_blank" rel="noopener noreferrer">
+              <strong>CWE</strong>
+              <span>Common Weakness Enumeration, MITRE</span>
+            </a>
+            <a class="recurso" href="https://doi.org/10.6028/NIST.SP.800-218" target="_blank" rel="noopener noreferrer">
+              <strong>SSDF, SP 800-218</strong>
+              <span>Secure Software Development Framework, NIST</span>
+            </a>
+            <a class="recurso" href="https://semgrep.dev/docs/" target="_blank" rel="noopener noreferrer">
+              <strong>Semgrep Docs</strong>
+              <span>Documentação oficial do Semgrep</span>
+            </a>
+            <a class="recurso" href="https://codeql.github.com/docs/" target="_blank" rel="noopener noreferrer">
+              <strong>CodeQL Documentation</strong>
+              <span>GitHub</span>
+            </a>
+            <a class="recurso" href="https://docs.github.com/en/pull-requests" target="_blank" rel="noopener noreferrer">
+              <strong>Pull Requests</strong>
+              <span>Documentação do GitHub</span>
+            </a>
+            <a class="recurso" href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">
+              <strong>Node.js</strong>
+              <span>Página de instalação oficial</span>
+            </a>
+            <a class="recurso" href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">
+              <strong>Docker</strong>
+              <span>Documentação oficial</span>
+            </a>
+          </div>
+
+        </div>
+      </article>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  // IntersectionObserver for sidebar active state
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = {};
+  document.querySelectorAll('.lateral [href^="#"], .topo-movel [href^="#"]').forEach(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    if (!navLinks[id]) navLinks[id] = [];
+    var li = a.closest('li');
+    if (li) navLinks[id].push(li);
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      var links = navLinks[e.target.id];
+      if (links) links.forEach(function (li) { li.classList.toggle('ativo', e.isIntersecting); });
+    });
+  }, { rootMargin: '-15% 0px -60% 0px' });
+  sections.forEach(function (s) { obs.observe(s); });
+
+  // Copy buttons
+  document.querySelectorAll('.pre-wrap').forEach(function (wrap) {
+    var btn = wrap.querySelector('.copy-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var text = wrap.querySelector('pre').textContent;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copiado!';
+        setTimeout(function () { btn.textContent = 'Copiar'; }, 2000);
+      }).catch(function () {
+        btn.textContent = 'Erro';
+        setTimeout(function () { btn.textContent = 'Copiar'; }, 2000);
+      });
+    });
+  });
+
+  // External link configuration via CIBERSAST_CONFIG
+  var config = window.CIBERSAST_CONFIG || {};
+  document.querySelectorAll('[data-target]').forEach(function (anchor) {
+    var key = anchor.dataset.target;
+    var href = (config[key] || '').trim();
+    if (/^https:\/\/[^\s]+$/i.test(href)) {
+      anchor.href = href;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener noreferrer';
+      anchor.classList.remove('place-link');
+      anchor.removeAttribute('aria-disabled');
+    } else {
+      anchor.href = '#visao-geral';
+      anchor.classList.add('place-link');
+      anchor.textContent = key.startsWith('moodle') ? 'Como acessar o Moodle' : 'Como acessar o GitHub';
+      anchor.title = 'Configuração pendente';
+    }
+  });
+})();
+</script>
+</body>
+</html>

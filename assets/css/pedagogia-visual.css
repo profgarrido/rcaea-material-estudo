@@ -1,0 +1,36 @@
+/* Structural additions to Laura's existing palettes and typography. No visual rebranding. */
+:root{--v-orange:var(--orange);--v-ink:var(--ink);--v-muted:var(--ink-2);--v-panel:var(--surface)}
+.viz-scene{background:linear-gradient(120deg,var(--paper),var(--sunk))}
+.visual-panel{border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);padding:clamp(16px,3vw,28px);box-shadow:0 3px 0 rgba(30,20,10,.045);width:100%}
+.viz-heading{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:24px}.viz-heading h3{font-family:var(--f-disp);font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1.05;margin:0}
+.viz-mark{display:inline-flex;align-items:center;padding:6px 10px;border:1.5px solid var(--orange);background:var(--orange-soft);color:var(--orange-ink);border-radius:999px;font-size:.72rem;letter-spacing:.1em;font-weight:800}
+.visual-flow{display:flex;align-items:stretch;gap:6px;max-width:100%;margin:18px 0 14px}.vflow-step{flex:1;min-width:0;border:1.5px solid var(--line);border-top:6px solid var(--orange);background:var(--paper);border-radius:12px;padding:16px 12px}.vflow-step h3{font-family:var(--f-body);font-size:1.07rem;font-weight:700;margin:4px 0 7px}.vflow-step p{font-size:.88rem;line-height:1.47;color:var(--ink-2);margin:0}.vflow-num{font-family:var(--f-disp);color:var(--orange-ink);font-size:1.4rem;font-weight:700}.vflow-arrow{align-self:center;color:var(--orange-ink);font-size:24px;font-weight:700}
+.viz-caption{font-size:.91rem;line-height:1.5;color:var(--ink-2);margin:16px 0 0;padding-left:14px;border-left:4px solid var(--orange)}
+.visual-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.visual-cards.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.visual-card{border-radius:12px;background:var(--sunk);border:1.5px solid var(--line);padding:20px;position:relative;min-height:148px}.visual-card h3{font-family:var(--f-disp);font-size:1.38rem;margin:8px 0 6px}.visual-card p{font-size:.97rem;line-height:1.5;color:var(--ink-2);margin:0}.vc-icon{background:var(--orange);border-radius:9px;color:#fff;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;font-family:var(--f-disp);font-weight:700}
+.vtable-scroll{overflow-x:auto;border:1.5px solid var(--line);border-radius:12px}.visual-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.99rem}.visual-table th{background:var(--orange);color:white;font-size:.9rem;padding:15px;text-align:left;white-space:normal}.visual-table td{padding:14px;border-bottom:1px solid var(--line-soft);white-space:normal;vertical-align:top;line-height:1.48}.visual-table td:first-child{font-weight:700}.visual-table tbody tr:nth-child(even){background:var(--sunk)}.visual-table tr:last-child td{border-bottom:0}
+.comparison-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.comparison-card{background:var(--sunk);padding:22px;border-radius:14px;border:1.5px solid var(--line);border-left:7px solid var(--orange);min-height:200px}.comparison-safe{border-left-color:var(--good)}.comparison-card .vc-label{font-size:.72rem;letter-spacing:.14em;font-weight:800;color:var(--muted)}.comparison-card h3{font-family:var(--f-disp);font-size:clamp(1.4rem,2.9vw,1.9rem);margin:13px 0 10px;line-height:1.1}.comparison-card p{line-height:1.58;color:var(--ink-2)}
+.code-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.code-pane{min-width:0}.code-caption{font-weight:800;font-size:.85rem;color:var(--orange-ink);letter-spacing:.05em}.code-pane pre{white-space:pre;overflow:auto;background:#25211e;color:#fff3e4;border-radius:11px;padding:16px;font-family:var(--f-mono);font-size:.79rem;min-height:112px}.code-pane p{font-size:.93rem;line-height:1.5;color:var(--ink-2)}
+.visual-svg{background:var(--sunk);padding:15px;border-radius:14px;overflow:hidden}.visual-svg svg{display:block;width:100%;height:auto}
+/* Preserve every theoretical explanation, but present ideas as small, scannable, illustrated cards. */
+.section-text{max-width:none}.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:none}.study-card{background:var(--surface);border-radius:12px;border:1.5px solid var(--line);border-left:5px solid var(--orange);padding:20px 23px;min-width:0;display:flex;flex-direction:column;gap:8px}.study-card:nth-child(2n){border-left-color:var(--ink)}.study-card p{font-size:1.02rem;line-height:1.59;margin:0;color:var(--ink-2)}.study-card-no{font-family:var(--f-disp);font-size:1.25rem;color:var(--orange-ink);font-weight:700}.learning-grid>pre,.learning-grid>table,.learning-grid>ul,.learning-grid>ol,.learning-grid>blockquote{grid-column:1/-1}.section-text .learning-grid .study-card code{overflow-wrap:anywhere}.section-text p{max-width:95ch}
+/* Navigation remains directly inherited from Laura; slightly denser typography in lecture mode. */
+body.aula .learning-grid{gap:12px}body.aula .study-card{padding:14px 16px}body.aula .study-card p{font-size:.94rem;line-height:1.42}body.aula .vflow-step{padding:12px 10px}body.aula .vflow-step p{font-size:.81rem}body.aula .visual-panel{padding:16px}
+@media(max-width:980px){.visual-flow{flex-wrap:wrap}.vflow-step{min-width:160px}.vflow-arrow{display:none}.visual-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.learning-grid,.visual-cards,.visual-cards.cols-2,.comparison-two,.code-grid{grid-template-columns:1fr}.visual-table{table-layout:auto;min-width:520px}.visual-flow{flex-direction:column}.vflow-step{width:100%}.viz-heading h3{font-size:1.6rem}.study-card p{font-size:.97rem}.visual-panel{padding:15px}}
+@media print{.study-card,.visual-card,.visual-panel,.visual-svg{break-inside:avoid}.visual-flow{flex-wrap:wrap}}
+
+/* Balanced repositioning for flowcharts and code comparisons on different screen widths. */
+.visual-panel{max-width:100%;overflow:visible}
+.visual-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;align-items:stretch}
+.visual-flow .vflow-step{min-width:0;min-height:130px;display:flex;flex-direction:column;gap:5px}
+.visual-flow .vflow-arrow{display:none}
+.visual-cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,225px),1fr));align-items:stretch}
+.visual-cards.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.visual-card,.study-card,.comparison-card{min-width:0;height:100%}
+.visual-card h3,.study-card p,.comparison-card p{overflow-wrap:break-word}
+.code-grid,.comparison-two,.learning-grid{align-items:stretch}
+.code-pane pre{max-width:100%;font-size:.76rem;line-height:1.55;overflow-x:auto}
+.visual-table{table-layout:auto}.visual-table th,.visual-table td{overflow-wrap:anywhere}
+.vtable-scroll{max-width:100%}.viz-caption{max-width:95ch}
+body.aula .visual-flow{grid-template-columns:repeat(auto-fit,minmax(min(100%,195px),1fr))}
+@media(max-width:720px){.visual-flow,.visual-cards,.visual-cards.cols-2{grid-template-columns:1fr}.vflow-step{min-width:0}.learning-grid{grid-template-columns:1fr}.visual-panel{padding:16px}.study-card{padding:16px 18px}}

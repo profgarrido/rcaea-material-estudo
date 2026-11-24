@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <title>Como acessar o GitHub | Laboratório</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,700&family=Barlow:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/laura-guia.css">
+  <link rel="stylesheet" href="../assets/css/github-guia.css">
+</head>
+<body>
+
+<div class="topo-movel" id="topo-movel">
+  <span class="topo-movel-titulo">GitHub no laboratório</span>
+  <button aria-expanded="false" aria-controls="nav-movel" class="topo-toggle" id="btn-nav-movel" type="button">Menu</button>
+</div>
+<nav aria-label="Índice móvel" class="nav-movel" id="nav-movel" hidden>
+  <ul class="lat-nav">
+    <li><a href="#visao-geral">O papel do GitHub</a></li>
+    <li><a href="#conceitos">Conceitos fundamentais</a></li>
+    <li><a href="#conta">Preparar sua conta</a></li>
+    <li><a href="#entrar-equipe">Entrar na organização</a></li>
+    <li><a href="#encontrar-repositorio">Encontrar o repositório</a></li>
+    <li><a href="#clonar">Clonar o repositório</a></li>
+    <li><a href="#executar">Executar a API localmente</a></li>
+    <li><a href="#git-basico">Fluxo de alterações</a></li>
+    <li><a href="#branches">Trabalhar em branches</a></li>
+    <li><a href="#pull-requests">Pull Requests</a></li>
+    <li><a href="#evidencias">Registrar evidências</a></li>
+    <li><a href="#entregas">Registros e entregas</a></li>
+    <li><a href="#seguranca">Cuidados de segurança</a></li>
+    <li><a href="#problemas">Problemas frequentes</a></li>
+    <li><a href="#checagem">Verificação final</a></li>
+    <li><a href="#referencias">Documentação oficial</a></li>
+  </ul>
+</nav>
+
+<div class="livro">
+
+  <nav class="lateral" aria-label="Índice do guia GitHub">
+    <div class="lateral-header">
+      <a href="../index.html" class="voltar-inicio" aria-label="Voltar à página inicial">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h2v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414l-7-7z"/></svg>
+        Início
+      </a>
+    </div>
+    <strong class="lateral-titulo-bloco">GitHub no laboratório</strong>
+    <ul class="lat-nav">
+      <li><a href="#visao-geral">O papel do GitHub</a></li>
+      <li><a href="#conceitos">Conceitos fundamentais</a></li>
+      <li><a href="#conta">Preparar sua conta</a></li>
+      <li><a href="#entrar-equipe">Entrar na organização</a></li>
+      <li><a href="#encontrar-repositorio">Encontrar o repositório</a></li>
+      <li><a href="#clonar">Clonar o repositório</a></li>
+      <li><a href="#executar">Executar a API localmente</a></li>
+      <li><a href="#git-basico">Fluxo de alterações</a></li>
+      <li><a href="#branches">Trabalhar em branches</a></li>
+      <li><a href="#pull-requests">Pull Requests</a></li>
+      <li><a href="#evidencias">Registrar evidências</a></li>
+      <li><a href="#entregas">Registros e entregas</a></li>
+      <li><a href="#seguranca">Cuidados de segurança</a></li>
+      <li><a href="#problemas">Problemas frequentes</a></li>
+      <li><a href="#checagem">Verificação final</a></li>
+      <li><a href="#referencias">Documentação oficial</a></li>
+    </ul>
+  </nav>
+
+  <main class="conteudo">
+
+    <nav aria-label="Navegação estrutural" class="breadcrumb">
+      <a href="../index.html">Disciplina</a> <span>/</span>
+      <a href="index.html">Laboratório</a> <span>/</span>
+      <span>GitHub</span>
+    </nav>
+
+    <header class="pagina-header">
+      <h1>Como acessar e utilizar o GitHub no laboratório</h1>
+      <p class="lead">Preparar a conta, ingressar na equipe, clonar o repositório, registrar evidências e distinguir o trabalho no GitHub da entrega formal.</p>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="visao-geral">
+      <h2>O papel do GitHub no laboratório</h2>
+
+      <h3>O código da sua equipe, em um lugar organizado</h3>
+      <p>Ao longo da disciplina, sua equipe analisará uma aplicação em Node.js e TypeScript, registrará hipóteses e achados, utilizará ferramentas de análise estática, comparará resultados e documentará as correções que conseguir validar. Esse trabalho precisa ficar organizado e ser rastreável: outra pessoa deve conseguir descobrir <strong>o que foi analisado, em qual versão, quem registrou a mudança e quais evidências sustentam a conclusão</strong>.</p>
+      <p>É para isso que vamos utilizar o GitHub. Cada equipe terá acesso a um repositório privado, com uma cópia inicial da API do laboratório. Os integrantes poderão consultar o mesmo código, registrar arquivos Markdown, trabalhar em branches, propor mudanças por Pull Requests e consultar o histórico de commits.</p>
+      <p>O GitHub não substitui as aulas nem o ambiente de entrega formal. Cada ambiente tem uma responsabilidade diferente:</p>
+
+      <div class="tres-ambientes">
+        <div class="amb-card">
+          <h4>Página da disciplina (GitHub Pages)</h4>
+          <p>Estudar os conteúdos, consultar o guia e seguir os procedimentos do laboratório. Não recebe nota, código ou relatórios enviados por formulário.</p>
+        </div>
+        <div class="amb-card">
+          <h4>GitHub da equipe</h4>
+          <p>Guardar código, análises, evidências, commits, branches e Pull Requests. Não substitui a submissão exigida no Moodle.</p>
+        </div>
+        <div class="amb-card">
+          <h4>Moodle</h4>
+          <p>Consultar materiais liberados, prazos, orientações oficiais e atividades de entrega. Não substitui o histórico técnico do repositório.</p>
+        </div>
+      </div>
+
+      <p><strong>Em resumo:</strong> você estuda na página, trabalha no GitHub e entrega pelo Moodle. Os três ambientes se complementam.</p>
+
+      <h3>O percurso do seu primeiro acesso</h3>
+      <p>O caminho será: <strong>preparar a conta → informar o username → receber convite → ingressar na organização e na equipe → abrir repositório → clonar, se for executar localmente → trabalhar e registrar evidências</strong>.</p>
+      <p>Se o primeiro acesso ainda não estiver liberado, não significa que você cometeu algum erro: o repositório é privado e depende da autorização da organização. Enquanto isso, você pode preparar o Git, Node.js, Docker e editor, além de consultar os materiais públicos da disciplina.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="conceitos">
+      <h2>Git, GitHub, organização, Team e repositório</h2>
+      <p>É comum tratar Git e GitHub como sinônimos, mas eles cumprem papéis diferentes.</p>
+
+      <div class="conceito-cards">
+        <div class="conceito-card">
+          <div class="termo">Git</div>
+          <p>Sistema de controle de versões para registrar mudanças em arquivos. Permite criar commits, comparar versões, trabalhar em branches e recuperar alterações. A maior parte das operações ocorre no computador, mesmo sem internet.</p>
+        </div>
+        <div class="conceito-card">
+          <div class="termo">GitHub</div>
+          <p>Plataforma que hospeda repositórios Git e acrescenta ferramentas de colaboração: Pull Requests, discussões, revisão de código e controle de acesso. A sincronização ocorre por <code>git push</code> e <code>git pull</code>.</p>
+        </div>
+        <div class="conceito-card">
+          <div class="termo">Organização</div>
+          <p>Espaço administrativo que reúne vários repositórios e controla os acessos. Neste laboratório: <strong>appsec-labs-cesar-school</strong>.</p>
+        </div>
+        <div class="conceito-card">
+          <div class="termo">Team</div>
+          <p>Grupo de membros da organização. Quando você entra no Team correto, herda o acesso aos repositórios atribuídos àquele grupo, conforme o papel concedido.</p>
+        </div>
+        <div class="conceito-card">
+          <div class="termo">Repositório</div>
+          <p>Conjunto versionado de arquivos e histórico. O repositório privado da sua equipe contém o código inicial e será o espaço de trabalho do grupo. Um repositório privado não aparece para quem não tem permissão.</p>
+        </div>
+        <div class="conceito-card">
+          <div class="termo">GitHub Pages</div>
+          <p>Funcionalidade usada para publicar este site de estudo. Ele é público e tem finalidade diferente dos repositórios privados do laboratório.</p>
+        </div>
+      </div>
+
+      <h3>Como essas peças se relacionam</h3>
+<pre class="diagrama">Organização appsec-labs-cesar-school
+│
+├── Site público da disciplina (GitHub Pages)
+│
+└── Repositórios privados das equipes
+    │
+    ├── Team da equipe A ── permissão Write ── repositório da equipe A
+    │
+    ├── Team da equipe B ── permissão Write ── repositório da equipe B
+    │
+    └── ...</pre>
+      <p>No desenho, A e B são apenas exemplos. Você não precisa criar a organização, o Team ou o repositório. Essas estruturas serão disponibilizadas para seu grupo.</p>
+
+      <h3>O que a permissão Write permite</h3>
+      <p>O acesso <strong>Write</strong> permite colaborar no repositório: criar branches, enviar commits, propor Pull Requests e modificar arquivos conforme as regras do projeto. Não é uma permissão de administração. Alterar acesso de outros usuários, excluir repositórios ou mudar determinadas configurações é responsabilidade de quem os administra.</p>
+      <p>Uma pessoa pode conhecer o endereço de um repositório privado e ainda assim não conseguir abri-lo. <strong>Saber o nome de um repositório não equivale a ter permissão de acesso.</strong></p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="conta">
+      <h2>Prepare sua conta GitHub</h2>
+
+      <h3>1. Criar ou acessar a conta</h3>
+      <p>Abra <a href="https://github.com/" target="_blank" rel="noopener noreferrer">github.com</a> e entre na sua conta. Se ainda não tiver uma, escolha <strong>Sign up</strong> e siga as instruções do GitHub para criar e verificar a conta.</p>
+      <p>Utilize uma conta pessoal que você consiga acessar durante as aulas e depois delas. Se já utiliza GitHub profissionalmente, não é necessário criar uma segunda conta, a menos que isso faça sentido para suas próprias restrições de uso.</p>
+
+      <h3>2. Identificar seu username</h3>
+      <p>O <strong>username</strong> é o identificador de sua conta no GitHub, não seu nome completo nem seu e-mail. Para localizá-lo, clique na foto de perfil e observe o identificador exibido no menu. Outra forma é abrir seu perfil e consultar a URL:</p>
+<pre class="bloco-cmd"><code class="bloco-cmd">https://github.com/SEU_USERNAME</code></pre>
+      <p>Exemplo fictício: se o perfil fosse <code>https://github.com/aluno-exemplo</code>, o username seria <code>aluno-exemplo</code>.</p>
+      <p>A equipe deverá informar os usernames conforme a orientação do Moodle ou do responsável pela organização. Digitar o nome completo em vez do username pode impedir que o convite seja enviado à conta correta.</p>
+
+      <h3>3. Conferir o e-mail e a autenticação de dois fatores</h3>
+      <p>Verifique se você consegue receber notificações e convites no e-mail associado à sua conta. Considere também o ambiente de segurança exigido pelo GitHub: contas que contribuem com código podem precisar habilitar autenticação de dois fatores (2FA), e organizações podem exigir essa configuração para seus membros.</p>
+      <p>Se o GitHub pedir configuração de 2FA, conclua o processo pela página oficial de segurança da sua conta. Guarde os métodos de recuperação em local seguro. <strong>Nunca compartilhe códigos de autenticação nem códigos de recuperação com colegas.</strong></p>
+
+      <h3>4. Conferência antes da aula prática</h3>
+      <p>Você está preparado para solicitar acesso quando conseguir confirmar estes quatro pontos:</p>
+      <ol>
+        <li>Consegue entrar em <code>github.com</code>.</li>
+        <li>Conhece o username correto da sua conta.</li>
+        <li>Consegue acessar as notificações e e-mails de convite.</li>
+        <li>Sabe qual é a equipe atribuída ao seu grupo, conforme a organização realizada na disciplina.</li>
+      </ol>
+      <p>Não é necessário enviar senha, token ou código de autenticação ao docente ou aos colegas.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="entrar-equipe">
+      <h2>Como entrar na organização e no Team da sua equipe</h2>
+
+      <h3>O ingresso não é automático por um link</h3>
+      <p>A organização do laboratório utiliza <strong>Teams privados de trabalho</strong>, associados a repositórios específicos. Você não entra automaticamente em um Team por abrir o endereço do GitHub ou compartilhar uma URL de equipe. A inclusão exige uma ação de quem administra a organização ou um processo oficial de convite.</p>
+      <p>Assim, o link da organização serve para identificar o ambiente, mas não substitui o convite. Da mesma forma, se o colega já entrou, isso não significa que você terá acesso sem ser incluído.</p>
+
+      <h3>Passo 1. Informe o username da conta correta</h3>
+      <p>Depois de definir sua equipe segundo as orientações da disciplina, informe seu username GitHub pelo canal estabelecido no Moodle ou em aula. Confirme as letras, números e hífens. Se você usa mais de uma conta, informe aquela em que estará autenticado para trabalhar.</p>
+
+      <h3>Passo 2. Aguarde o convite administrativo</h3>
+      <p>A pessoa responsável pela organização adicionará sua conta ao Team apropriado ou enviará um convite para ingresso na organização. Dependendo de sua situação, você poderá receber uma mensagem por e-mail, uma notificação no GitHub ou um convite indicado no fluxo da organização.</p>
+      <p>O tempo de liberação depende dessa inclusão. Antes dela, receber um erro ao abrir um repositório privado não prova que o endereço está incorreto.</p>
+
+      <h3>Passo 3. Aceite o convite no GitHub</h3>
+      <p>Abra o convite recebido e confirme que o destino é o GitHub oficial, com domínio <code>github.com</code>. Esteja conectado com o mesmo username informado. Leia o nome da organização e aceite o ingresso caso corresponda à atividade da disciplina.</p>
+      <p>Se a organização exigir 2FA, pode ser necessário habilitá-la antes de concluir a aceitação. Se o convite não aparecer, confira as notificações da conta, o e-mail cadastrado e a caixa de spam. Não crie outra conta sem antes verificar se você informou o username correto.</p>
+
+      <h3>Passo 4. Confirme a participação na equipe</h3>
+      <p>Depois da aceitação, acesse <a href="https://github.com/appsec-labs-cesar-school" target="_blank" rel="noopener noreferrer">a organização appsec-labs-cesar-school</a>. Verifique se consegue localizar o repositório da sua equipe por meio do link fornecido no Moodle. Se a organização permitir a visualização da lista de Teams, você também poderá consultar sua participação por lá.</p>
+      <div class="aviso"><strong>Importante:</strong> participar da organização e fazer parte do Team correto são informações relacionadas, mas distintas. Se você consegue ver a organização e não consegue abrir o repositório da sua equipe, informe o username e a equipe ao responsável pela configuração; talvez sua inclusão no Team ainda esteja pendente.</div>
+
+      <h3>Passo 5. Confirme com seus colegas</h3>
+      <p>Cada integrante deve abrir o mesmo repositório da equipe na própria conta. Não utilizem uma única conta compartilhada. Trabalhar com contas individuais faz com que commits, comentários e Pull Requests sejam atribuídos corretamente a quem os realizou.</p>
+
+      <h3>Situações de acesso</h3>
+      <div class="situacoes-table">
+        <table class="tabela">
+          <thead>
+            <tr><th>Situação observada</th><th>O que significa e o que fazer</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Você ainda não recebeu convite</td><td>Confirme que informou o username correto e consulte o canal oficial de comunicação</td></tr>
+            <tr><td>O convite chegou, mas está pendente</td><td>Entre na conta correta e aceite o convite no GitHub</td></tr>
+            <tr><td>Você entrou na organização, mas não vê o repositório</td><td>Pode faltar vinculação ao Team ou permissão ao repositório; solicite conferência</td></tr>
+            <tr><td>Seus colegas acessam e você recebe 404</td><td>Repositórios privados podem retornar 404 para usuários sem permissão; verifique sua conta e inclusão</td></tr>
+            <tr><td>Você acessa um repositório, mas não consegue enviar alterações</td><td>Verifique se entrou com a conta autorizada e se o Team possui permissão Write</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="encontrar-repositorio">
+      <h2>Como encontrar o repositório privado da sua equipe</h2>
+
+      <h3>O endereço certo é o que foi atribuído ao grupo</h3>
+      <p>Cada equipe trabalhará sobre uma cópia própria da aplicação. Utilize o link indicado no Moodle ou fornecido pelo responsável pela organização. Não tente descobrir repositórios privados alterando o número de outros grupos na URL.</p>
+      <p>O endereço de um repositório do GitHub normalmente segue este formato:</p>
+<pre class="bloco-cmd"><code class="bloco-cmd">https://github.com/ORGANIZACAO/NOME_DO_REPOSITORIO</code></pre>
+      <p>Neste laboratório, a organização é conhecida; já o <strong>nome efetivo do repositório da sua equipe deverá ser confirmado no GitHub ou no Moodle</strong>, pois pode variar entre ofertas da disciplina.</p>
+
+      <h3>Reconhecendo a tela correta</h3>
+      <p>Ao abrir um repositório para o qual você tem permissão, verá uma página com o nome do projeto, abas como <strong>Code</strong>, <strong>Issues</strong> e <strong>Pull requests</strong>, uma lista de arquivos e o histórico de commits. A aparência exata pode variar com atualizações da interface.</p>
+      <p>Antes de começar, verifique:</p>
+      <ul>
+        <li>O nome do repositório corresponde à sua equipe.</li>
+        <li>A organização exibida é <code>appsec-labs-cesar-school</code>.</li>
+        <li>Você consegue visualizar <code>README.md</code>, <code>package.json</code>, <code>src/</code>, <code>prisma/</code> e <code>docs/</code>.</li>
+        <li>Seus colegas também têm acesso ao mesmo repositório.</li>
+      </ul>
+      <p>A cópia inicial não deve ser substituída por um repositório público criado individualmente. Nosso trabalho utiliza o repositório privado da equipe para preservar o contexto da atividade e as evidências da investigação.</p>
+
+      <h3>O que há dentro do projeto</h3>
+<pre class="arvore">REPOSITORIO_DA_EQUIPE/
+├── README.md
+├── package.json
+├── compose.yaml
+├── .env.example
+├── src/
+│   ├── modules/
+│   │   ├── auth/
+│   │   ├── users/
+│   │   ├── orders/
+│   │   └── reports/
+│   └── middlewares/
+├── prisma/
+│   ├── schema.prisma
+│   ├── migrations/
+│   └── seed.ts
+├── scripts/
+│   ├── doctor.mjs
+│   ├── setup.mjs
+│   └── lab.mjs
+├── docs/
+│   ├── ARQUITETURA.md
+│   ├── REQUISITOS_NEGOCIO.md
+│   ├── GUIA_INSTALACAO.md
+│   ├── GUIA_TESTES.md
+│   └── requests.http
+└── tests/
+    └── smoke.test.ts</pre>
+      <p>A estrutura foi organizada para que você consiga seguir uma requisição pelas camadas. No início, concentre-se em compreender os requisitos, o fluxo de dados e a organização do projeto. Não é necessário conhecer previamente cada arquivo nem cada recurso do Prisma.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="clonar">
+      <h2>Clonar o repositório: trazer o projeto para seu computador</h2>
+
+      <h3>O que significa clonar?</h3>
+      <p>Clonar é obter uma cópia local de um repositório Git, incluindo seus arquivos e seu histórico de versões. A partir dessa cópia, você poderá executar a API, criar branches, fazer commits e enviar mudanças para o GitHub.</p>
+      <p>Clonar <strong>não</strong> é criar um novo repositório e não remove o original. Cada integrante pode ter uma cópia local, mas todos deverão enviar o trabalho para o repositório privado compartilhado da equipe.</p>
+
+      <h3>Antes de clonar</h3>
+      <p>É necessário ter Git instalado e estar autorizado a acessar o repositório. Verifique a instalação em um terminal:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git --version</code></pre>
+      <p>Se o comando não for reconhecido, instale o Git pela <a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer">página oficial</a> e reinicie o terminal.</p>
+
+      <h3>Método A. Clonagem pelo terminal</h3>
+      <ol>
+        <li>Abra o repositório privado no navegador, autenticado no GitHub.</li>
+        <li>Na página do repositório, clique em <strong>Code</strong>.</li>
+        <li>Selecione <strong>HTTPS</strong> e copie a URL exibida.</li>
+        <li>Abra o terminal na pasta de seu computador onde deseja guardar o projeto.</li>
+        <li>Execute <code>git clone</code> seguido da URL que você acabou de copiar:</li>
+      </ol>
+<pre class="bloco-bash"><code class="bloco-cmd">git clone URL_HTTPS_COPIADA_NO_GITHUB</code></pre>
+      <div class="aviso"><strong>Atenção:</strong> não digite literalmente <code>URL_HTTPS_COPIADA_NO_GITHUB</code>. Substitua pelo endereço copiado do botão <strong>Code</strong>. Esse endereço é exclusivo do repositório escolhido e não deve ser presumido pelo guia público.</div>
+      <p>Entre na pasta recém-criada:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">cd NOME_DA_PASTA_CLONADA</code></pre>
+      <p>Confira se o projeto foi clonado:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git status
+git remote -v</code></pre>
+      <p><code>git status</code> indica o estado de sua cópia local. <code>git remote -v</code> mostra o endereço do repositório remoto configurado, normalmente identificado como <code>origin</code>.</p>
+
+      <h3>Como funciona a autenticação</h3>
+      <p>Ao clonar um repositório privado por HTTPS, o Git pode abrir uma janela de autenticação no navegador. No Windows, o <strong>Git Credential Manager</strong>, disponível em instalações atuais de Git para Windows, permite utilizar esse fluxo e guardar credenciais de maneira apropriada.</p>
+      <p>O GitHub <strong>não aceita a senha comum da conta como senha para operações Git por HTTPS</strong>. Se aparecer uma solicitação de senha no terminal, não continue tentando a senha da página web. Utilize um gerenciador de credenciais, GitHub CLI ou o método de autenticação configurado para sua máquina.</p>
+      <p>Se você já utiliza SSH, também pode clonar pelo endereço SSH do botão <strong>Code</strong>, desde que sua chave pública esteja cadastrada no GitHub. Não é necessário configurar SSH para acompanhar este laboratório.</p>
+
+      <h3>Método B. GitHub Desktop</h3>
+      <p>Quem preferir uma interface gráfica pode utilizar <a href="https://desktop.github.com/" target="_blank" rel="noopener noreferrer">GitHub Desktop</a>:</p>
+      <ol>
+        <li>Instale o aplicativo e autentique-se com sua conta GitHub.</li>
+        <li>No repositório privado, abra <strong>Code</strong> e escolha a opção de abrir com GitHub Desktop, se estiver disponível, ou utilize <strong>File → Clone repository</strong> no aplicativo.</li>
+        <li>Escolha uma pasta local e conclua a clonagem.</li>
+        <li>Confirme que o aplicativo está conectado ao repositório da equipe.</li>
+      </ol>
+      <p>O GitHub Desktop facilita a clonagem, a criação de commits e o push. Para executar a API, entretanto, você ainda utilizará um terminal e os scripts npm.</p>
+
+      <h3>Posso trabalhar apenas pelo navegador?</h3>
+      <p>Você poderá ler o código e editar arquivos Markdown diretamente na interface do GitHub, conforme suas permissões. Essa opção é útil quando o computador não está preparado para executar a API. Contudo, <strong>editar pelo navegador não equivale a executar o software nem a comprovar um teste de segurança</strong>. Registre corretamente a origem das evidências e utilize um equipamento da equipe para as verificações que exigem execução local.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="executar">
+      <h2>Preparar e executar a API localmente</h2>
+
+      <h3>Pré-requisitos reais do laboratório</h3>
+      <p>A API utiliza Node.js, TypeScript, Express, Prisma, PostgreSQL e JWT. O projeto-base foi preparado para <strong>Node.js 20.19.0 ou superior</strong>. Não é necessário instalar TypeScript, Prisma CLI ou PostgreSQL separadamente.</p>
+      <table class="tabela">
+        <thead>
+          <tr><th>Ferramenta</th><th>Necessidade</th><th>O que verificar</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Node.js 20.19.0+ e npm</td><td>Executar scripts e API</td><td><code>node -v</code> e <code>npm -v</code></td></tr>
+          <tr><td>Git</td><td>Clonar e versionar</td><td><code>git --version</code></td></tr>
+          <tr><td>Docker com Compose</td><td>Executar o PostgreSQL local</td><td><code>docker compose version</code> e <code>docker info</code></td></tr>
+          <tr><td>Editor de código</td><td>Ler, comparar e modificar arquivos</td><td>VS Code ou equivalente</td></tr>
+        </tbody>
+      </table>
+      <p>No Windows, o Docker Desktop deve estar aberto e com seu Engine funcionando. Instalar Docker sem iniciá-lo não basta para executar o PostgreSQL.</p>
+
+      <h3>Preparação inicial</h3>
+      <p>Na pasta que contém o <code>package.json</code>, execute:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run doctor</code></pre>
+      <p>O comando analisa a disponibilidade de Node.js, npm, Git, Docker e Compose, além de condições necessárias à preparação do ambiente. Se indicar que falta algum componente, corrija a condição indicada antes de continuar.</p>
+      <p>Depois, execute:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run setup</code></pre>
+      <p>O setup instala dependências, prepara um arquivo <code>.env</code> local com chave JWT, inicia o PostgreSQL pelo Docker, gera o Prisma Client, aplica as migrations e insere dados fictícios para a investigação. Ele foi criado para simplificar a primeira execução da equipe.</p>
+      <p>Quando o processo terminar sem erros, execute:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run dev</code></pre>
+      <p>O servidor Express ficará em execução no terminal. Abra outro terminal caso precise executar novos comandos.</p>
+
+      <h3>Como verificar que a API respondeu</h3>
+      <p>No navegador, acesse:</p>
+<pre class="bloco-cmd"><code class="bloco-cmd">http://127.0.0.1:3000/health</code></pre>
+      <p>A resposta esperada da aplicação é:</p>
+<pre class="bloco-cmd"><code class="bloco-cmd">{
+  "status": "ok",
+  "environment": "laboratory"
+}</code></pre>
+      <p>Esse resultado demonstra que o endpoint de saúde está respondendo. <strong>Ele não prova que todas as funcionalidades estão corretas nem que a API está segura.</strong> Para verificar integração com banco e autenticação, siga também os exemplos e contas fictícias do <code>README.md</code> do seu repositório privado e as requisições em <code>docs/requests.http</code>.</p>
+
+      <h3>Testes básicos e compilações</h3>
+      <p>Os scripts de verificação disponíveis incluem:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run build
+npm run test:smoke</code></pre>
+      <p><code>npm run build</code> verifica se o projeto TypeScript compila. <code>npm run test:smoke</code> executa testes funcionais básicos de conectividade e autenticação. A presença desses testes não significa que todas as vulnerabilidades intencionais do laboratório foram identificadas ou corrigidas.</p>
+
+      <h3>Execuções seguintes</h3>
+      <p>Nas aulas seguintes, você pode utilizar:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run lab</code></pre>
+      <p>Esse script verifica ou inicia o banco e a API conforme a configuração do projeto. Para parar os containers do laboratório sem apagar o volume do PostgreSQL:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">npm run db:stop</code></pre>
+      <p>Evite <code>docker compose down -v</code> e <code>prisma migrate reset</code> sem orientação, pois esses comandos podem eliminar dados locais.</p>
+
+      <h3>Se a equipe não conseguir executar localmente</h3>
+      <p>O objetivo da disciplina é auditar o código, não avaliar a instalação de infraestrutura. Quando um computador não atender aos pré-requisitos, a equipe pode organizar uma máquina principal para os testes e utilizar as demais para revisão de código, pesquisa e documentação. Se nenhuma máquina executar a API, registrem a dificuldade e utilizem os resultados demonstrativos disponibilizados pela disciplina, quando houver.</p>
+      <div class="aviso"><strong>Atenção:</strong> não declarem que executaram um teste que não foi executado. Diferenciem sempre "observado localmente", "observado em demonstração", "inferido por leitura" e "ainda não verificado".</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="git-basico">
+      <h2>Entender o Git antes de registrar alterações</h2>
+
+      <h3>O que muda quando você edita um arquivo</h3>
+      <p>Ao clonar o repositório, seu computador tem uma cópia de trabalho. Se você editar <code>README.md</code> ou criar um arquivo de registro, a mudança existe inicialmente apenas na máquina. Para torná-la parte do histórico compartilhado, você precisa passar por algumas etapas:</p>
+<pre class="diagrama">Arquivo na pasta local
+       │ editar
+       ▼
+Working tree: mudanças ainda não registradas
+       │ git add
+       ▼
+Staging area: arquivos selecionados para o commit
+       │ git commit
+       ▼
+Histórico local: commit identificado por hash
+       │ git push
+       ▼
+Repositório remoto no GitHub
+       │ abrir Pull Request, quando aplicável
+       ▼
+Revisão de mudanças e eventual integração</pre>
+      <p>O <strong>commit</strong> é um registro de uma alteração no histórico Git, com identificador próprio. O <strong>push</strong> envia commits locais para o repositório remoto. O <strong>Pull Request</strong> é uma proposta de incorporar mudanças entre branches, acompanhada de contexto e revisão. Esses conceitos se complementam, mas não são a mesma ação.</p>
+
+      <h3>Configure sua identificação no Git</h3>
+      <p>Na primeira utilização de Git em seu computador, você pode configurar o nome e o e-mail que aparecerão como autor dos commits:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git config --global user.name "SEU_NOME_DE_EXIBICAO"
+git config --global user.email "SEU_EMAIL_DE_COMMITS"</code></pre>
+      <p>Substitua os valores por seus dados apropriados. O GitHub permite utilizar um endereço de e-mail privado do tipo <code>noreply</code> nas configurações da conta. <strong>Não use o e-mail ou a conta de um colega como identidade do commit.</strong></p>
+      <p>Para conferir:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git config --global user.name
+git config --global user.email</code></pre>
+
+      <h3>Verificar o estado de sua cópia</h3>
+<pre class="bloco-bash"><code class="bloco-cmd">git status</code></pre>
+      <p>O resultado mostrará a branch atual, arquivos alterados e arquivos ainda não rastreados. Antes de qualquer commit, examine essa lista e tenha certeza de que ela contém apenas o material que deve ser versionado.</p>
+
+      <h3>Cuide de arquivos locais</h3>
+      <p>O arquivo <code>.env</code> contém configurações de execução e pode incluir credenciais ou segredos de treinamento. Ele não deve ser enviado para o GitHub. <code>node_modules/</code>, <code>dist/</code>, arquivos de log e dados temporários também não devem ser incluídos no repositório.</p>
+      <p>O projeto já possui <code>.gitignore</code>. Mesmo assim, examine <code>git status</code> e, sobretudo, <code>git diff --cached</code> antes de confirmar um commit. O <code>.gitignore</code> não remove automaticamente arquivos que já foram versionados anteriormente.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="branches">
+      <h2>Trabalhar em branches sem perder a linha de base</h2>
+
+      <h3>Por que não alterar tudo diretamente em <code>main</code>?</h3>
+      <p>A branch <code>main</code> representa a linha principal do repositório da equipe. Uma branch de trabalho permite separar uma tarefa, registrar seus commits e apresentar a mudança para revisão antes da integração. Isso ajuda a organizar o laboratório, no qual a revisão manual precisa ser preservada antes das ferramentas automatizadas e das correções.</p>
+      <p>No GitHub Free, a utilização de Pull Requests e branches pode ocorrer <strong>por convenção da equipe</strong>, mesmo quando o plano não oferece a imposição automática de todas as regras de proteção de branch em repositórios privados. A ausência de uma proteção automática não dispensa a revisão acordada pelo grupo.</p>
+
+      <h3>Exemplo completo: registrando o inventário inicial</h3>
+      <p>Primeiro, confirme que está na pasta do repositório e que não há alterações locais inesperadas:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git status</code></pre>
+      <p>Se sua branch <code>main</code> local estiver sem alterações e sua equipe não estiver fazendo uma mudança concorrente, atualize-a:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git switch main
+git pull --ff-only origin main</code></pre>
+      <p>O uso de <code>--ff-only</code> evita criar automaticamente um commit de merge quando o histórico local diverge. Se o comando falhar, não faça <code>reset --hard</code> para "resolver" o problema: identifique a divergência com a equipe.</p>
+      <p>Crie uma branch para o registro inicial:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git switch -c docs/inventario-inicial</code></pre>
+      <p>Crie o arquivo <code>entregas/01_inventario.md</code> no editor, seguindo as orientações da etapa correspondente do laboratório. Se a pasta ainda não existir, crie-a. Depois confira e prepare apenas esse arquivo:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git status
+git add entregas/01_inventario.md
+git diff --cached</code></pre>
+      <p>O último comando mostra o conteúdo selecionado para o próximo commit. Leia-o antes de registrar a mudança.</p>
+      <p>Quando estiver correto:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git commit -m "docs: registra inventario inicial"
+git push -u origin docs/inventario-inicial</code></pre>
+      <p>O commit ficará registrado localmente e depois será enviado para uma branch remota no repositório da equipe. Para visualizar o histórico:</p>
+<pre class="bloco-bash"><code class="bloco-cmd">git log --oneline -5</code></pre>
+      <p>Os identificadores apresentados nesse histórico servem para relacionar evidências à versão do código analisado.</p>
+
+      <h3>E se o colega já alterou arquivos?</h3>
+      <p>Conversem sobre qual mudança será integrada primeiro. É comum que duas pessoas editem o mesmo documento; nesse caso, o Git pode exigir uma resolução manual de conflito. O conflito não significa perda automática de dados: significa que existem duas alterações que precisam ser reconciliadas antes de seguir.</p>
+      <p>Não use <code>git push --force</code> ou <code>git reset --hard</code> para contornar conflitos sem compreender as consequências e sem combinar com os integrantes. Esses comandos podem sobrescrever ou descartar trabalho.</p>
+
+      <h3>Sugestões de nomes para branches</h3>
+      <table class="tabela">
+        <thead>
+          <tr><th>Tipo de trabalho</th><th>Nome ilustrativo</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Inventário e reconhecimento</td><td><code>docs/inventario-inicial</code></td></tr>
+          <tr><td>Revisão manual</td><td><code>docs/revisao-manual</code></td></tr>
+          <tr><td>Registro do Semgrep</td><td><code>docs/triagem-semgrep</code></td></tr>
+          <tr><td>Fluxo de dados</td><td><code>docs/fluxo-dados</code></td></tr>
+          <tr><td>Relatório integrado</td><td><code>docs/relatorio-final</code></td></tr>
+          <tr><td>Correção selecionada</td><td><code>fix/controle-acesso</code></td></tr>
+        </tbody>
+      </table>
+      <p>Os nomes servem como exemplos de organização, não como uma lista obrigatória. Evite incluir senha, token, dado pessoal ou descrição sensível no nome de uma branch.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="pull-requests">
+      <h2>Abrir Pull Requests e revisar alterações</h2>
+
+      <h3>O Pull Request é uma explicação, não apenas um botão</h3>
+      <p>Um Pull Request, ou PR, apresenta a diferença entre duas branches e abre um espaço para revisão. Ele permite explicar qual problema motivou a mudança, o que foi modificado e como verificar o resultado.</p>
+      <p>Em um laboratório de revisão de código, o PR tem valor pedagógico especial: outra pessoa precisa interpretar o contexto, identificar riscos, comentar sobre as evidências e decidir se a mudança está suficientemente justificada.</p>
+
+      <h3>Como abrir um PR</h3>
+      <ol>
+        <li>Crie uma branch e faça push de seus commits para o repositório da equipe.</li>
+        <li>Abra o repositório no GitHub.</li>
+        <li>Acesse a aba <strong>Pull requests</strong> e escolha <strong>New pull request</strong>, ou utilize a opção <strong>Compare &amp; pull request</strong>, quando aparecer.</li>
+        <li>Em <strong>base</strong>, selecione a branch que receberá a mudança, normalmente <code>main</code>.</li>
+        <li>Em <strong>compare</strong>, selecione sua branch de trabalho.</li>
+        <li>Leia o resumo de arquivos e as diferenças exibidas em <strong>Files changed</strong>.</li>
+        <li>Escreva um título objetivo e uma descrição que permita revisar a proposta.</li>
+        <li>Crie o PR e solicite a revisão de um integrante, quando possível.</li>
+        <li>Discuta os comentários e acrescente novos commits na mesma branch caso seja necessário ajustar algo.</li>
+        <li>Integre a alteração somente depois de compreender seus impactos e de acordo com o fluxo combinado pela equipe.</li>
+      </ol>
+
+      <h3>Modelo de descrição de PR</h3>
+<pre class="bloco-cmd"><code class="bloco-cmd">## Objetivo
+Registrar o inventário inicial do laboratório e as hipóteses de inspeção.
+
+## O que foi alterado
+- Criado `entregas/01_inventario.md`.
+- Organizadas rotas, módulos e requisitos a verificar.
+- Indicada a versão do código de referência.
+
+## Como verificar
+1. Abrir o documento Markdown.
+2. Conferir a correspondência com os requisitos de negócio.
+3. Verificar se as hipóteses estão separadas dos achados confirmados.
+
+## Limitações
+- Não foram executadas ferramentas SAST nesta etapa.
+- Hipóteses ainda dependem de inspeção complementar.
+
+## Revisão solicitada
+Conferir a precisão do inventário e a rastreabilidade das hipóteses.</code></pre>
+
+      <h3>Como comentar de forma útil</h3>
+      <p>Compare dois comentários fictícios sobre um arquivo de requisitos:</p>
+      <p><strong>Comentário pouco útil:</strong> "Isso está errado. Precisa melhorar."</p>
+      <p><strong>Comentário fundamentado:</strong> "O registro afirma que a rota exige autorização por recurso, mas ainda não identifica onde essa regra é aplicada. Você consegue acrescentar o arquivo/função verificado e explicar se a conclusão veio de leitura, teste ou hipótese?"</p>
+      <p>O segundo comentário permite que quem escreveu saiba <strong>o que investigar e qual evidência falta</strong>. A revisão deve analisar o conteúdo da proposta, não apenas confirmar que o arquivo existe.</p>
+
+      <h3>Revisão de código não é automaticamente aprovação de segurança</h3>
+      <p>Um PR aprovado indica que a mudança passou por uma revisão no escopo daquele processo. Não é prova de que a aplicação inteira está segura. Testes e ferramentas automatizadas também têm cobertura limitada. Durante a auditoria, descreva quais verificações realmente ocorreram e quais limitações permanecem.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="evidencias">
+      <h2>Onde registrar as evidências do laboratório</h2>
+
+      <h3>Uma pasta de registros progressivos</h3>
+      <p>A documentação do projeto propõe uma pasta <code>entregas/</code> dentro do repositório privado da equipe. Os arquivos serão construídos progressivamente, acompanhando o percurso das seis etapas.</p>
+<pre class="arvore">entregas/
+├── 01_inventario.md
+├── 02_revisao_manual.md
+├── 03_semgrep.md
+├── 04_fluxo_codeql.md
+├── 04_ia.md
+├── 05_matriz.md
+├── 05_pipeline.md
+└── 06_relatorio_final.md</pre>
+      <p>A existência desses arquivos <strong>não significa oito avaliações independentes</strong>. Eles são registros técnicos de um único projeto, que culmina em duas entregas formais no Moodle. Caso o Moodle estabeleça um formato complementar, siga a atividade oficial.</p>
+
+      <h3>O que cada arquivo deve responder</h3>
+      <table class="tabela">
+        <thead>
+          <tr><th>Arquivo</th><th>Finalidade e pergunta principal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>01_inventario.md</code></td><td>Quais módulos, rotas, atores, recursos e requisitos vamos investigar?</td></tr>
+          <tr><td><code>02_revisao_manual.md</code></td><td>O que a inspeção humana identificou <strong>antes</strong> das ferramentas? Quais são as evidências?</td></tr>
+          <tr><td><code>03_semgrep.md</code></td><td>Quais regras e alertas foram produzidos? O que foi confirmado, descartado ou mantido inconclusivo?</td></tr>
+          <tr><td><code>04_fluxo_codeql.md</code></td><td>Como os dados percorrem funções até operações sensíveis? Qual foi a origem dos resultados do CodeQL?</td></tr>
+          <tr><td><code>04_ia.md</code></td><td>Quais hipóteses a IA propôs e como foram validadas criticamente?</td></tr>
+          <tr><td><code>05_matriz.md</code></td><td>O que cada método encontrou, não encontrou, não executou ou classificou de forma diferente?</td></tr>
+          <tr><td><code>05_pipeline.md</code></td><td>Quais verificações de CI/CD foram observadas e como os alertas deveriam influenciar uma decisão?</td></tr>
+          <tr><td><code>06_relatorio_final.md</code></td><td>Qual foi o escopo, quais achados são sustentados por evidências e quais correções/testes foram realizados?</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Como escrever uma evidência verificável</h3>
+      <p>Evite registros como "encontramos uma vulnerabilidade na API". Essa frase não permite que alguém reproduza ou compreenda sua conclusão.</p>
+      <p>Um achado deve apresentar pelo menos: requisito relacionado, arquivo/função, versão do código ou commit, condição investigada, comportamento esperado, comportamento observado, origem da observação, impacto possível, situação da hipótese e recomendação. Evidências podem incluir testes negativos controlados, trechos de código contextualizados e saídas de ferramentas identificadas.</p>
+      <p><strong>Exemplo neutro, independente da API avaliada:</strong></p>
+<pre class="bloco-cmd"><code class="bloco-cmd">### Hipótese H-01: autorização no compartilhamento de documentos
+
+- Requisito: somente pessoas autorizadas podem compartilhar documentos.
+- Fluxo: rota de compartilhamento → service → repository.
+- Referência: commit &lt;HASH_DA_VERSAO_ANALISADA&gt;.
+- Observação: a rota autentica o usuário, mas ainda precisamos verificar
+  se a autorização por documento é aplicada na camada de serviço.
+- Classificação: hipótese, não confirmada.
+- Próximo passo: revisar o service e executar teste negativo com
+  um usuário que não seja proprietário, em ambiente controlado.</code></pre>
+      <p>O exemplo ilustra a diferença entre hipótese e confirmação. Não representa uma vulnerabilidade identificada no projeto real da disciplina.</p>
+
+      <h3>Por que registrar o commit?</h3>
+      <p>O código muda durante o projeto. Uma hipótese registrada hoje pode deixar de ser verdadeira depois de uma correção ou refatoração. O hash do commit permite localizar o estado exato em que a observação foi feita. Por isso, preserve uma linha de base da revisão manual antes de incorporar resultados de Semgrep, CodeQL ou IA e antes de alterar trechos investigados.</p>
+
+      <h3>Posso colar o resultado de uma ferramenta como relatório?</h3>
+      <p>A saída de uma ferramenta é uma <strong>fonte de evidência</strong>, não uma conclusão completa. Explique a regra utilizada, os arquivos analisados, a versão da ferramenta, o contexto do alerta, as condições de risco, as verificações realizadas e a justificativa da classificação. Não use apenas capturas de tela. Se a ferramenta não foi executada no ambiente da equipe, identifique expressamente a origem dos resultados fornecidos.</p>
+
+      <h3>Como registrar o trabalho em equipe</h3>
+      <p>Distribuam atividades e documentem a revisão cruzada, sem exigir que todos realizem exatamente a mesma alteração. O histórico de commits e os comentários dos PRs podem ajudar a demonstrar como a equipe trabalhou e discutiu as decisões técnicas. Evitem fazer todo o projeto em uma conta compartilhada, pois isso torna a autoria e a rastreabilidade menos claras.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="entregas">
+      <h2>O que registrar no GitHub e o que entregar no Moodle</h2>
+
+      <h3>O projeto é contínuo, mas as entregas formais são duas</h3>
+      <p>O trabalho ocorre em seis etapas integradas. Em cada uma delas, o grupo produz registros que permanecem versionados no GitHub. Entretanto, <strong>existem apenas duas entregas formais</strong>, conforme as atividades oficiais do Moodle:</p>
+      <ol>
+        <li><strong>Revisão manual parcial</strong>, associada à terceira etapa. A evidência central é <code>entregas/02_revisao_manual.md</code>, contendo a análise humana preservada antes das ferramentas automatizadas.</li>
+        <li><strong>Auditoria integrada final</strong>, associada à sexta etapa. A evidência central é o relatório consolidado <code>entregas/06_relatorio_final.md</code>, com resultados dos métodos utilizados, comparação, correções selecionadas, verificações e riscos residuais.</li>
+      </ol>
+      <p>Os arquivos intermediários são necessários para documentar a evolução técnica, mas <strong>não exigem uma submissão formal independente no Moodle a cada etapa</strong>, salvo orientação institucional adicional.</p>
+
+      <h3>Como concluir uma entrega formal</h3>
+      <ol>
+        <li>Verifique se os arquivos exigidos estão no repositório privado da equipe e se o histórico correspondente foi enviado ao GitHub.</li>
+        <li>Abra os links ou arquivos na própria interface do GitHub para conferir se são legíveis.</li>
+        <li>Identifique o commit ou a versão a que o relatório se refere. Confirme que não está enviando uma branch antiga ou um documento ainda incompleto.</li>
+        <li>Consulte a atividade correspondente no Moodle, leia formato, prazo e anexos solicitados.</li>
+        <li>Submeta o arquivo e/ou o link solicitado pelo Moodle. O que vale como submissão é o registro na atividade oficial, não apenas a existência de um commit.</li>
+        <li>Verifique a confirmação de envio no Moodle.</li>
+      </ol>
+      <div class="aviso"><strong>GitHub registra o trabalho. Moodle recebe a entrega.</strong> Uma ação não substitui automaticamente a outra.</div>
+
+      <h3>Composição geral da avaliação</h3>
+      <table class="tabela">
+        <thead>
+          <tr><th>Critério de avaliação</th><th style="text-align:right">Peso</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Revisão manual</td><td style="text-align:right">30%</td></tr>
+          <tr><td>Análise estática de segurança (SAST)</td><td style="text-align:right">25%</td></tr>
+          <tr><td>Comparação crítica das técnicas</td><td style="text-align:right">25%</td></tr>
+          <tr><td>Correções e validação</td><td style="text-align:right">20%</td></tr>
+          <tr><td><strong>Total</strong></td><td style="text-align:right"><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+      <p>Os critérios detalhados e eventuais orientações complementares estão na atividade oficial e na <a href="index.html">página do laboratório</a>. A primeira entrega formal concentra a revisão manual. A segunda consolida a auditoria integrada.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="seguranca">
+      <h2>Cuidados de segurança durante o trabalho</h2>
+
+      <h3>Repositório privado não significa ausência de cuidados</h3>
+      <p>A aplicação-base contém situações intencionalmente inseguras para fins de aprendizagem. Execute-a apenas em ambiente de treinamento, com dados fictícios e acesso restrito. Não hospede a API vulnerável publicamente, não exponha suas portas à internet e não reutilize configurações de laboratório em sistemas reais.</p>
+
+      <h3>O que não colocar em commits ou PRs</h3>
+      <ul>
+        <li>Senhas de contas pessoais, tokens de autenticação e códigos de recuperação.</li>
+        <li>Conteúdo do <code>.env</code>, chaves JWT, credenciais de serviços ou segredos de integração.</li>
+        <li>Capturas de tela que exibam informações privadas da conta ou dados pessoais de terceiros.</li>
+        <li>Informações confidenciais de empresas, projetos reais ou sistemas fora do escopo do laboratório.</li>
+        <li>Resultados de varredura sobre serviços que não façam parte da atividade autorizada.</li>
+      </ul>
+      <p>Utilize dados fictícios e redija valores sensíveis em logs e imagens. Se um segredo for enviado por engano a um commit, apenas excluí-lo no commit seguinte pode não removê-lo do histórico. Informe o ocorrido imediatamente aos responsáveis pelo ambiente e providencie a revogação do segredo afetado.</p>
+
+      <h3>Ao utilizar ferramentas de IA</h3>
+      <p>Não compartilhe tokens, <code>.env</code>, credenciais ou dados reais com assistentes externos. Se utilizar IA para apoiar análise de código, registro de hipóteses ou revisão, indique ferramenta, finalidade, informações fornecidas e validação independente. Respostas de IA não são evidência de testes executados.</p>
+
+      <h3>Ao trabalhar com colegas</h3>
+      <p>Utilizem suas próprias contas e permissões. Não solicitem login ou 2FA do colega. Não concedam acesso ao repositório para pessoas externas à equipe sem autorização. Ao editar ou integrar um PR, preservem o histórico da investigação e os registros necessários à avaliação.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="problemas">
+      <h2>Problemas frequentes e como resolver</h2>
+
+      <details class="faq">
+        <summary>Recebo erro 404 ao abrir o repositório da equipe</summary>
+        <div class="faq-corpo">
+          <p>Em repositórios privados, um 404 pode indicar <strong>falta de permissão</strong>, não necessariamente a inexistência do endereço. Verifique se está autenticado com o username convidado, se aceitou o convite da organização, se foi incluído no Team correto e se recebeu o link oficial do repositório. Se os colegas conseguirem abrir e você não, informe seu username e a equipe para conferência administrativa.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Aceitei o convite, mas ainda não consigo abrir o repositório</summary>
+        <div class="faq-corpo">
+          <p>Confirme primeiro se o convite de organização foi aceito e, depois, se houve inclusão no Team que tem acesso ao repositório. Essas duas condições são distintas. Evite criar outra conta ou duplicar o repositório para contornar a permissão: isso fragmentaria as evidências do grupo.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Não recebi o e-mail de convite</summary>
+        <div class="faq-corpo">
+          <p>Confira o e-mail associado à conta GitHub, notificações, spam e o username informado. O convite também pode estar pendente de ações na própria conta. Se persistir, solicite conferência do convite ao responsável pela organização, sem compartilhar senha ou código de segurança.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>O Git pede uma senha que não funciona</summary>
+        <div class="faq-corpo">
+          <p>O GitHub não aceita a senha normal de login para operações Git por HTTPS. Utilize o fluxo de autenticação do Git Credential Manager ou GitHub CLI, ou SSH se já configurado. Evite criar tokens de acesso pessoal sem compreender o escopo e a necessidade. Nunca cole credenciais em mensagens, documentos ou capturas de tela.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>O comando <code>git clone</code> diz "Repository not found"</summary>
+        <div class="faq-corpo">
+          <p>Confirme a URL copiada pelo botão <strong>Code</strong>, a autenticação na conta correta e o acesso ao repositório privado. Se o caminho estiver correto e a mensagem persistir, a causa pode ser autorização ausente ou credencial local de outra conta.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>O comando <code>git push</code> retorna "Permission denied" ou erro 403</summary>
+        <div class="faq-corpo">
+          <p>Verifique se o repositório remoto (<code>git remote -v</code>) corresponde ao da sua equipe, se a conta autenticada é a autorizada e se você possui permissão Write. Para corrigir, procure a configuração de credenciais ou a pessoa responsável pela organização. Não solicite permissão de administrador para executar operações comuns de estudante.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Não consigo fazer push porque o repositório remoto tem commits novos</summary>
+        <div class="faq-corpo">
+          <p>O repositório pode ter recebido alterações de um colega. Veja <code>git status</code>, <code>git branch --show-current</code> e converse com a equipe sobre como sincronizar as branches. Não resolva esse caso executando <code>git push --force</code>, <code>git reset --hard</code> ou apagando a pasta sem compreender a situação.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Apareceu um conflito de merge</summary>
+        <div class="faq-corpo">
+          <p>Um conflito significa que o Git não consegue decidir sozinho como combinar determinadas alterações. Abra os arquivos indicados, compare as versões e discuta o resultado correto com quem editou o material. Remova marcadores de conflito somente depois de decidir qual conteúdo manter, execute os testes pertinentes e registre a resolução. Em caso de dúvida, preserve o trabalho local e peça orientação antes de descartar mudanças.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary><code>node</code> ou <code>npm</code> não é reconhecido</summary>
+        <div class="faq-corpo">
+          <p>Confira se Node.js está instalado e se a versão é pelo menos 20.19.0. Abra um novo terminal após a instalação e execute <code>node -v</code> e <code>npm -v</code>. Se o problema persistir, investigue a configuração de PATH ou utilize o computador de outro integrante que esteja preparado.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary><code>docker --version</code> funciona, mas <code>npm run setup</code> falha</summary>
+        <div class="faq-corpo">
+          <p>O cliente Docker pode estar instalado enquanto o Docker Engine está parado. Verifique <code>docker info</code> e <code>docker compose version</code>. No Windows, abra o Docker Desktop e aguarde o Engine iniciar. Não habilite configurações administrativas inseguras para contornar restrições do equipamento.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>A porta 3000 ou a porta do banco está ocupada</summary>
+        <div class="faq-corpo">
+          <p>Outra aplicação ou container pode estar utilizando a porta. Identifique o processo antes de encerrá-lo. Se for necessário alterar configuração, mantenha coerência entre <code>.env</code>, scripts e Compose, seguindo o guia de instalação da API e as orientações da equipe. Não publique uma porta externa como solução improvisada.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>O endpoint <code>/health</code> funciona. A atividade está concluída?</summary>
+        <div class="faq-corpo">
+          <p>Não. O endpoint <code>/health</code> confirma uma parte da inicialização. O objetivo do projeto é investigar requisitos, controles de acesso, fluxo de dados, resultados de ferramentas, correções e evidências. Um resultado funcional não equivale a uma auditoria de segurança.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>O colega registrou um arquivo, mas não o vejo no meu computador</summary>
+        <div class="faq-corpo">
+          <p>O colega precisa confirmar que fez <code>git commit</code> e <code>git push</code>, e você precisa obter as alterações do remoto na branch apropriada. Consulte o GitHub no navegador para identificar onde o commit foi enviado. Depois sincronize com cuidado, preservando quaisquer mudanças locais ainda não registradas.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Criei um commit, mas ele não aparece no GitHub</summary>
+        <div class="faq-corpo">
+          <p>O commit pode existir apenas localmente. Execute <code>git status</code>, <code>git log --oneline -5</code> e confira a branch atual. Se necessário, envie os commits com <code>git push</code>. Lembre-se: <code>git commit</code> registra localmente; <code>git push</code> envia ao remoto.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Abri um Pull Request. Isso já conta como entrega no Moodle?</summary>
+        <div class="faq-corpo">
+          <p>Não. Pull Requests ajudam a explicar e revisar as mudanças. As entregas formais continuam sendo feitas nas atividades oficiais do Moodle, com os documentos e links exigidos. Sempre confira a confirmação de submissão.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Posso fazer tudo diretamente na branch <code>main</code>?</summary>
+        <div class="faq-corpo">
+          <p>É tecnicamente possível em alguns repositórios, mas não é o fluxo recomendado. Utilize uma branch para cada conjunto de mudanças, proponha um PR e preserve o histórico. Como determinados controles obrigatórios de branch não estão incluídos no GitHub Free para repositórios privados, parte dessa disciplina de trabalho depende do acordo entre os integrantes.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Minha equipe encontrou uma suspeita. Devemos corrigir imediatamente?</summary>
+        <div class="faq-corpo">
+          <p>Não alterem o comportamento antes de registrar a observação e a versão analisada. A comparação entre revisão manual, SAST, CodeQL e IA depende de uma linha de base preservada. Primeiro documentem a hipótese e as evidências; a correção será realizada no momento correspondente do percurso do laboratório.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Posso disponibilizar o projeto em um repositório público?</summary>
+        <div class="faq-corpo">
+          <p>Não. O material foi organizado para investigação em repositórios privados da organização, com falhas intencionais para estudo. Repositórios públicos, deploys externos e compartilhamento desnecessário do código contrariam essa finalidade e podem expor respostas ou comportamentos inseguros.</p>
+        </div>
+      </details>
+
+      <details class="faq">
+        <summary>Como devo proceder se não tiver computador adequado?</summary>
+        <div class="faq-corpo">
+          <p>É possível acompanhar a leitura do código e a documentação diretamente pelo GitHub, além de trabalhar com outro integrante que consiga executar a API localmente. Registre claramente o que foi observado em execução e o que foi inferido por leitura. O desafio é demonstrar qualidade da análise, não apenas realizar a instalação.</p>
+        </div>
+      </details>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="checagem">
+      <h2>Verificação final de acesso e trabalho</h2>
+      <p>Antes de começar a investigação, confira:</p>
+      <ul class="checklist-local">
+        <li><label><input type="checkbox"> Tenho acesso à minha conta GitHub e conheço meu username.</label></li>
+        <li><label><input type="checkbox"> Aceitei o convite necessário para a organização e/ou Team.</label></li>
+        <li><label><input type="checkbox"> Consigo abrir o repositório privado atribuído à minha equipe.</label></li>
+        <li><label><input type="checkbox"> Verifiquei o <code>README.md</code> e os requisitos de negócio do projeto.</label></li>
+        <li><label><input type="checkbox"> Sei onde registrar os arquivos em <code>entregas/</code>.</label></li>
+        <li><label><input type="checkbox"> Se utilizarei execução local, conferi Node.js, Git e Docker.</label></li>
+        <li><label><input type="checkbox"> Consigo distinguir commit, push e Pull Request.</label></li>
+        <li><label><input type="checkbox"> Sei que o Moodle é o local oficial das entregas parciais e finais.</label></li>
+        <li><label><input type="checkbox"> Entendo que a revisão manual deve ser preservada antes das análises automatizadas.</label></li>
+      </ul>
+      <p>Esse checklist é apenas uma orientação pessoal. Marcar uma opção nesta página não equivale a comprovar acesso nem a realizar uma entrega formal.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="referencias">
+      <h2>Documentação oficial e próximos passos</h2>
+      <p>Para dúvidas sobre o funcionamento do GitHub e das ferramentas, consulte as fontes oficiais:</p>
+      <ul class="refs-lista">
+        <li><a href="https://github.com/appsec-labs-cesar-school" target="_blank" rel="noopener noreferrer">Organização GitHub da disciplina</a></li>
+        <li><a href="https://docs.github.com/en/organizations/organizing-members-into-teams/adding-organization-members-to-a-team" target="_blank" rel="noopener noreferrer">GitHub Docs: adicionar membros de uma organização a um Team</a></li>
+        <li><a href="https://docs.github.com/en/organizations/managing-membership-in-your-organization/inviting-users-to-join-your-organization" target="_blank" rel="noopener noreferrer">GitHub Docs: convite para participar de uma organização</a></li>
+        <li><a href="https://docs.github.com/pt/repositories/creating-and-managing-repositories/cloning-a-repository" target="_blank" rel="noopener noreferrer">GitHub Docs: clonar um repositório</a></li>
+        <li><a href="https://docs.github.com/en/get-started/git-basics/caching-your-github-credentials-in-git?platform=windows" target="_blank" rel="noopener noreferrer">GitHub Docs: autenticação HTTPS com gerenciador de credenciais</a></li>
+        <li><a href="https://docs.github.com/en/pull-requests/get-started/pull-request-quickstart" target="_blank" rel="noopener noreferrer">GitHub Docs: primeiros passos com Pull Requests</a></li>
+        <li><a href="https://docs.github.com/en/authentication/securing-your-account-with-two-factor-authentication-2fa/about-two-factor-authentication" target="_blank" rel="noopener noreferrer">GitHub Docs: autenticação de dois fatores</a></li>
+        <li><a href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer">Git SCM: documentação e instalação</a></li>
+        <li><a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">Node.js: página oficial</a></li>
+        <li><a href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">Docker: instruções oficiais de instalação</a></li>
+        <li><a href="https://desktop.github.com/" target="_blank" rel="noopener noreferrer">GitHub Desktop</a></li>
+      </ul>
+      <p><strong>Próximo passo:</strong> abra o <a href="index.html">laboratório da disciplina</a>, consulte as tarefas da etapa em andamento, confirme o endereço do seu repositório privado no Moodle e comece a registrar sua investigação com evidências rastreáveis.</p>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function() {
+  var btn = document.getElementById('btn-nav-movel');
+  var nav = document.getElementById('nav-movel');
+  if (!btn || !nav) return;
+  btn.addEventListener('click', function() {
+    var expanded = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!expanded));
+    nav.hidden = expanded;
+  });
+  nav.querySelectorAll('a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      nav.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+
+document.querySelectorAll('pre.bloco-bash, pre.bloco-cmd').forEach(function(pre) {
+  if (pre.classList.contains('diagrama') || pre.classList.contains('arvore')) return;
+  var btn = document.createElement('button');
+  btn.className = 'copiar-btn';
+  btn.textContent = 'Copiar';
+  btn.setAttribute('aria-label', 'Copiar comando');
+  pre.appendChild(btn);
+  btn.addEventListener('click', function() {
+    var code = pre.querySelector('code');
+    var text = code ? code.textContent : pre.textContent.replace(/Copiar$/, '').trim();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = 'Copiado';
+        setTimeout(function() { btn.textContent = 'Copiar'; }, 2000);
+      }).catch(function() {
+        btn.textContent = 'Falhou';
+        setTimeout(function() { btn.textContent = 'Copiar'; }, 2000);
+      });
+    } else {
+      var range = document.createRange();
+      range.selectNodeContents(code || pre);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+      btn.textContent = 'Selecione e copie';
+      setTimeout(function() { btn.textContent = 'Copiar'; }, 3000);
+    }
+  });
+});
+
+(function() {
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = {};
+  document.querySelectorAll('.lateral [href^="#"], .nav-movel [href^="#"]').forEach(function(a) {
+    var id = a.getAttribute('href').slice(1);
+    if (!navLinks[id]) navLinks[id] = [];
+    var li = a.closest('li');
+    if (li) navLinks[id].push(li);
+  });
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        var links = navLinks[e.target.id];
+        if (links) links.forEach(function(li) { li.classList.toggle('ativo', e.isIntersecting); });
+      });
+    }, { rootMargin: '-15% 0px -60% 0px' });
+    sections.forEach(function(s) { obs.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
