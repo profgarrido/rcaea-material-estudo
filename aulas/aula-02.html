@@ -251,32 +251,105 @@
       <h2>Ler o código como quem busca o que pode dar errado</h2>
     </div>
     <p class="lede">Leitura estruturada de código, autorização por objeto e papel, fronteiras de confiança e documentação de achados.</p>
+<style>
+.obj-mais-btn{margin-top:10px;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--orange);background:var(--orange-soft);color:var(--orange-ink);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.15rem;font-weight:900;line-height:1;padding:0;transition:background .14s,color .14s,border-color .14s;flex-shrink:0}
+.obj-mais-btn:hover,.obj-mais-btn:focus-visible{background:var(--orange);color:#fff;border-color:var(--orange);outline:none}
+.obj-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:9100;display:flex;align-items:center;justify-content:center;padding:20px}
+.obj-modal-bg[hidden]{display:none}
+.obj-modal-box{background:var(--surface);border-radius:18px;padding:28px 28px 24px;max-width:700px;width:100%;max-height:82vh;overflow-y:auto;position:relative;box-shadow:0 12px 48px rgba(0,0,0,.22)}
+.obj-modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border:none;background:var(--sunk);border-radius:50%;cursor:pointer;font-size:1rem;line-height:1;color:var(--ink-2);display:flex;align-items:center;justify-content:center;transition:background .14s}
+.obj-modal-close:hover{background:var(--line);color:var(--ink)}
+.obj-modal-eyebrow{font-size:.75rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.obj-modal-title{font-family:var(--f-disp);font-size:1.15rem;font-weight:700;margin:0 36px 14px 0;line-height:1.25;color:var(--ink)}
+.obj-modal-body{font-size:.93rem;line-height:1.65;color:var(--ink-2)}
+.obj-modal-body p{margin:0 0 8px}
+.obj-modal-body ul{margin:6px 0 0;padding-left:1.3rem}
+.obj-modal-body li{margin-bottom:6px}
+.obj-modal-body code{font-family:var(--f-mono);font-size:.82rem;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.obj-modal-body strong{color:var(--ink)}
+</style>
     <div class="obj-grid">
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <p>Conduzir uma revisão orientada a requisitos seguindo o percurso Route → Controller → Service → Repository</p>
+        <button class="obj-mais-btn" data-ex="0" aria-label="Ver exemplo">+</button>
       </div>
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
         <p>Distinguir autorização por função (papel) de autorização por objeto (propriedade do recurso)</p>
+        <button class="obj-mais-btn" data-ex="1" aria-label="Ver exemplo">+</button>
       </div>
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
         <p>Identificar fronteiras de confiança e verificar onde entradas externas cruzam para o sistema interno</p>
+        <button class="obj-mais-btn" data-ex="2" aria-label="Ver exemplo">+</button>
       </div>
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <p>Documentar achados com localização, condição de reprodução e impacto antes de propor correção</p>
+        <button class="obj-mais-btn" data-ex="3" aria-label="Ver exemplo">+</button>
       </div>
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <p>Executar revisão cruzada entre equipes, distinguindo evidências de suposições</p>
+        <button class="obj-mais-btn" data-ex="4" aria-label="Ver exemplo">+</button>
       </div>
       <div class="obj-item">
         <div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
         <p>Analisar transições de estado válidas e regras de negócio que não aparecem em linters</p>
+        <button class="obj-mais-btn" data-ex="5" aria-label="Ver exemplo">+</button>
       </div>
     </div>
+
+    <!-- Modal de exemplos -->
+    <div class="obj-modal-bg" id="obj-modal" role="dialog" aria-modal="true" aria-labelledby="obj-modal-ttl" hidden>
+      <div class="obj-modal-box">
+        <button class="obj-modal-close" id="obj-modal-close" aria-label="Fechar">&#x2715;</button>
+        <p class="obj-modal-eyebrow">Exemplo prático</p>
+        <h4 class="obj-modal-title" id="obj-modal-ttl"></h4>
+        <div class="obj-modal-body" id="obj-modal-body"></div>
+      </div>
+    </div>
+<script>
+(function(){
+  var EX=[
+    {title:'Percurso Route → Controller → Service → Repository',
+     body:'<p>Para o endpoint <code>POST /orders/:id/approve</code>:</p><ul><li><strong>Rota:</strong> <code>authMiddleware</code> está aplicado antes do controller?</li><li><strong>Controller:</strong> o campo <code>id</code> é extraído e validado pelo schema Zod?</li><li><strong>Service:</strong> existe verificação de <code>order.ownerId === user.id</code> e de organização?</li><li><strong>Repository:</strong> a consulta é parametrizada e filtra por tenant?</li></ul>'},
+    {title:'Papel vs. objeto: dois vetores da autorização',
+     body:'<ul><li><strong>Papel (role-based):</strong> MANAGER pode aprovar pedidos. Mas pode aprovar qualquer pedido, de qualquer empresa?</li><li><strong>Objeto (resource-based):</strong> o pedido #42 pertence à empresa X. Apenas usuários dessa empresa deveriam acessá-lo, independente do papel.</li><li>Uma boa política de autorização verifica os dois: <em>quem você é</em> e <em>a quem pertence o recurso</em>.</li></ul>'},
+    {title:'Fronteiras de confiança: onde a entrada externa é controlada?',
+     body:'<p>Usuário envia <code>{"orderId": "1 OR 1=1"}</code> no body. Onde essa string externa se torna dado interno?</p><ul><li>A <strong>fronteira de confiança</strong> deve estar na validação Zod no Controller.</li><li>Se o dado chega ao Repository sem validação, a fronteira foi cruzada sem controle.</li><li>A revisão deve verificar: cada entrada externa passa por um ponto de validação explícito?</li></ul>'},
+    {title:'Anatomia de um achado bem documentado',
+     body:'<ul><li><strong>Localização:</strong> <code>src/orders/order.service.ts</code>, linha 47, commit <code>a3f9c1b</code></li><li><strong>Condição:</strong> usuário autenticado com qualquer papel, usando o <code>orderId</code> de outro tenant</li><li><strong>Impacto:</strong> acesso cross-tenant a dados financeiros de outra empresa</li><li><strong>Classificação:</strong> CWE-639, hipótese pendente de confirmação via teste</li></ul>'},
+    {title:'Revisão cruzada: hipótese vs. evidência',
+     body:'<p>Time A revisa o código do Time B e documenta:</p><ul><li><strong>Hipótese:</strong> "getOrder (linha 47) parece não verificar propriedade do recurso."</li><li>Time B responde: "A verificação está no repository, veja <code>findByIdAndOwner()</code>."</li><li>Resultado: hipótese encerrada com evidência, ou confirmada como vulnerabilidade real.</li></ul><p>Distinguir "hipótese" de "confirmado" evita ruído no relatório.</p>'},
+    {title:'Transições de estado e regras de negócio',
+     body:'<p>Um pedido cancelado pode ser aprovado?</p><ul><li><strong>Transição válida:</strong> <code>PENDING → APPROVED</code> (por aprovador autorizado)</li><li><strong>Transição inválida:</strong> <code>CANCELLED → APPROVED</code> (deve ser bloqueada)</li><li>O linter não detecta esse problema. A revisão manual pergunta: o método <code>approve()</code> verifica se <code>order.status === \'PENDING\'</code> antes de agir?</li></ul>'}
+  ];
+  var modal=document.getElementById('obj-modal');
+  var ttl=document.getElementById('obj-modal-ttl');
+  var body=document.getElementById('obj-modal-body');
+  var closeBtn=document.getElementById('obj-modal-close');
+  var lastFocus=null;
+  function openModal(idx){
+    var ex=EX[idx];
+    ttl.textContent=ex.title;
+    body.innerHTML=ex.body;
+    modal.removeAttribute('hidden');
+    closeBtn.focus();
+  }
+  function closeModal(){
+    modal.setAttribute('hidden','');
+    if(lastFocus)lastFocus.focus();
+  }
+  document.querySelectorAll('.obj-mais-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){lastFocus=btn;openModal(+btn.dataset.ex);});
+  });
+  closeBtn.addEventListener('click',closeModal);
+  modal.addEventListener('click',function(e){if(e.target===modal)closeModal();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hasAttribute('hidden'))closeModal();});
+})();
+</script>
     <div class="cartao" style="margin-top:14px">
       <h3>Como participar</h3>
       <p>Explore os exemplos, responda às questões e consulte as explicações. Use o <strong>Modo aula</strong> para navegar por seções. As entregas oficiais ficam no Moodle e nos repositórios privados das equipes.</p>
@@ -287,33 +360,288 @@
 <section class="cena" data-nome="Conceito: Revisar código significa reconstruir sua intenção" id="conceito-1">
   <div class="wrap pilha">
     <div><p class="eyebrow">Fundamentação teórica · 1</p><h2>Revisar código significa reconstruir sua intenção</h2></div>
+<style>
+/* Sequência 01-02 */
+.rev-seq{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:start;margin-bottom:1rem}
+@media(max-width:620px){.rev-seq{grid-template-columns:1fr}.rev-seq-arrow{transform:rotate(90deg);text-align:center;padding:6px 0}}
+.rev-seq-step{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px}
+.rev-seq-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--orange);color:#fff;border-radius:50%;font-family:var(--f-disp);font-weight:700;font-size:.9rem;margin-bottom:10px}
+.rev-seq-step h4{margin:0 0 8px;font-size:.97rem;font-weight:700;color:var(--ink)}
+.rev-seq-step ul{margin:0;padding-left:1.2rem;font-size:.88rem;line-height:1.65;color:var(--ink-2)}
+.rev-seq-step li{margin-bottom:5px}
+.rev-seq-arrow{display:flex;align-items:center;justify-content:center;padding:0 14px;font-size:1.4rem;color:var(--orange);margin-top:52px}
+/* Quadro 03 */
+.study-card-b ul{margin:8px 0 0;padding-left:1.3rem;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+.study-card-b li{margin-bottom:5px}
+/* Quadro 04: Baseline vs Diff */
+.card-approach{background:var(--surface);border:1.5px solid var(--orange-soft);border-radius:14px;padding:20px 22px;margin-top:1rem;min-width:0;overflow-x:hidden}
+.card-intro-txt{font-size:.93rem;line-height:1.65;color:var(--ink-2);margin:6px 0 12px}
+/* Definições lado a lado */
+.approach-defs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 16px}
+@media(max-width:500px){.approach-defs{grid-template-columns:1fr}}
+.approach-def-box{background:var(--sunk);border-radius:10px;padding:14px 16px}
+.approach-def-box.box-diff{background:var(--orange-soft);border:1.5px solid var(--orange)}
+.approach-def-ttl{font-weight:700;font-size:.88rem;margin:0 0 6px;color:var(--ink)}
+.approach-def-txt{font-size:.85rem;line-height:1.6;margin:0;color:var(--ink-2)}
+/* Toggle expandível */
+.approach-details{min-width:0;overflow:hidden}
+.approach-toggle{display:inline-flex;align-items:center;gap:6px;list-style:none;cursor:pointer;font-size:.82rem;font-weight:700;color:var(--orange-ink);background:var(--orange-soft);border:1.5px solid var(--orange-soft);border-radius:6px;padding:4px 12px;transition:background .14s,color .14s;user-select:none;margin-top:4px}
+.approach-toggle::-webkit-details-marker{display:none}
+.approach-toggle svg{transition:transform .2s;flex-shrink:0}
+.approach-details[open] .approach-toggle,.approach-toggle:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+.approach-details[open] .approach-toggle svg{transform:rotate(180deg)}
+/* Comparação sem scroll — CSS Grid em vez de <table> */
+.approach-table-wrap{margin-top:14px;padding:14px 16px;background:var(--sunk);border-radius:10px;min-width:0}
+.cmp-tbl{display:flex;flex-direction:column;border-radius:8px;overflow:hidden;font-size:.85rem}
+.cmp-row{display:grid;grid-template-columns:22% 1fr 1fr;border-bottom:1px solid var(--line)}
+.cmp-row:last-child{border-bottom:none}
+.cmp-cell{padding:8px 10px;line-height:1.55;min-width:0;word-break:break-word;overflow-wrap:anywhere}
+.cmp-row-head .cmp-cell{font-family:var(--f-disp);font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--surface);padding-block:10px}
+.cmp-crit{font-weight:700;color:var(--ink)}
+.approach-conn{margin-top:14px;padding:12px 14px;background:var(--surface);border-radius:8px;border-left:3px solid var(--orange);font-size:.87rem}
+.approach-conn p{margin:0 0 6px;font-weight:700;color:var(--ink)}
+.approach-conn ul{margin:0;padding-left:1.2rem;line-height:1.6;color:var(--ink-2)}
+.approach-conn li{margin-bottom:5px}
+/* Correção: filho flex precisa de min-width:0 para não vazar o viewport */
+#conceito-1 .section-text{min-width:0;overflow-x:hidden}
+/* Intro dos passos de sequência */
+.rev-seq-intro{font-size:.88rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+/* Quadro 05 standalone */
+.card-05{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:1rem;min-width:0}
+.card-05 ul{margin:8px 0 0;padding-left:1.3rem;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+.card-05 li{margin-bottom:6px}
+.consequence-alert{margin-top:14px;padding:12px 16px;background:var(--warn-soft);border-left:3px solid var(--warn);border-radius:0 8px 8px 0;font-size:.88rem;line-height:1.6;color:var(--ink);font-weight:600}
+</style>
     <div class="section-text">
-      <div class="learning-grid">
-        <article class="study-card"><span class="study-card-no">01</span><p>O revisor de segurança procura compreender como dados, privilégios e estados atravessam componentes. A leitura começa no contexto da funcionalidade: requisitos, ativos, perfis de usuários e decisões de acesso.</p></article>
-        <article class="study-card"><span class="study-card-no">02</span><p>Em seguida identifica pontos de entrada, chamadas críticas e saídas observáveis. Uma implementação não pode ser considerada segura apenas por compilar, passar em testes funcionais ou retornar o HTTP esperado.</p></article>
-        <article class="study-card"><span class="study-card-no">03</span><p>A OWASP recomenda que o escopo da revisão manual inclua arquitetura, autenticação, autorização, tratamento de erros, lógica de negócio e fluxo de dados.</p></article>
-        <article class="study-card"><span class="study-card-no">04</span><p><strong>Baseline review:</strong> avalia a aplicação de modo abrangente; serve para onboarding, auditoria e conhecimento de legado. <strong>Diff-based review:</strong> concentra-se nas linhas alteradas e na repercussão sobre controles existentes.</p></article>
-        <article class="study-card"><span class="study-card-no">05</span><p>Em um Pull Request, o risco pode estar em uma função modificada ou no contrato de uma função que não foi alterada. Revisar apenas o diff verde sem conhecer suas chamadas pode deixar uma vulnerabilidade passar.</p></article>
+
+      <!-- Quadros 01 + 02: sequência visual -->
+      <div class="rev-seq">
+        <div class="rev-seq-step">
+          <div class="rev-seq-num">1</div>
+          <h4>Contexto e intenção</h4>
+          <p class="rev-seq-intro">O revisor de segurança procura compreender como dados, privilégios e estados atravessam componentes. A leitura começa no contexto da funcionalidade:</p>
+          <ul>
+            <li>Requisitos da funcionalidade</li>
+            <li>Ativos protegidos e perfis de usuário</li>
+            <li>Decisões de acesso documentadas</li>
+          </ul>
+        </div>
+        <div class="rev-seq-arrow">&#8594;</div>
+        <div class="rev-seq-step">
+          <div class="rev-seq-num">2</div>
+          <h4>Pontos críticos de execução</h4>
+          <p class="rev-seq-intro">Em seguida identifica pontos de entrada, chamadas críticas e saídas observáveis.</p>
+          <ul>
+            <li>Pontos de entrada e chamadas críticas</li>
+            <li>Saídas observáveis do sistema</li>
+            <li><strong>Compilar, testar ou retornar o HTTP esperado não equivale a ser seguro.</strong></li>
+          </ul>
+        </div>
       </div>
+
+      <!-- Quadro 03: escopo OWASP com bullets -->
+      <article class="study-card study-card-b"><span class="study-card-no">03</span>
+        <p style="margin:4px 0 0;font-size:.9rem;color:var(--ink-2)">A OWASP recomenda que o escopo da revisão manual inclua:</p>
+        <ul>
+          <li><strong>Arquitetura:</strong> decisões estruturais de segurança</li>
+          <li><strong>Autenticação:</strong> como a identidade é verificada</li>
+          <li><strong>Autorização:</strong> o que cada perfil pode fazer</li>
+          <li><strong>Tratamento de erros:</strong> o que é exposto ao cliente</li>
+          <li><strong>Lógica de negócio:</strong> regras de domínio implícitas</li>
+          <li><strong>Fluxo de dados:</strong> como dados sensíveis transitam</li>
+        </ul>
+      </article>
+
+      <!-- Quadro 04: Baseline vs Diff-based -->
+      <article class="card-approach">
+        <span class="study-card-no">04</span>
+        <p class="card-intro-txt">Duas abordagens complementares estruturam a revisão de código e a auditoria de segurança (AppSec).</p>
+
+        <!-- Definições lado a lado -->
+        <div class="approach-defs">
+          <div class="approach-def-box box-base">
+            <p class="approach-def-ttl">Baseline Review</p>
+            <p class="approach-def-txt">Avalia a aplicação de modo abrangente. Usada em onboarding, auditorias periódicas e aquisição de sistemas legados.</p>
+          </div>
+          <div class="approach-def-box box-diff">
+            <p class="approach-def-ttl">Diff-based Review</p>
+            <p class="approach-def-txt">Concentra-se nas linhas alteradas e na repercussão sobre controles existentes. Aplicada em Pull Requests e CI/CD.</p>
+          </div>
+        </div>
+
+        <details class="approach-details">
+          <summary class="approach-toggle"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg> Ver comparação completa</summary>
+          <div class="approach-table-wrap">
+            <div class="cmp-tbl">
+              <div class="cmp-row cmp-row-head">
+                <div class="cmp-cell cmp-crit">Critério</div>
+                <div class="cmp-cell">Baseline Review</div>
+                <div class="cmp-cell">Diff-based Review</div>
+              </div>
+              <div class="cmp-row">
+                <div class="cmp-cell cmp-crit">Escopo</div>
+                <div class="cmp-cell">Toda a base de código, configurações, dependências e arquitetura.</div>
+                <div class="cmp-cell">Apenas o delta (linhas adicionadas, removidas ou alteradas) e o contexto imediato.</div>
+              </div>
+              <div class="cmp-row">
+                <div class="cmp-cell cmp-crit">Objetivo</div>
+                <div class="cmp-cell">Mapear a superfície de ataque total, encontrar dívidas técnicas e vulnerabilidades latentes.</div>
+                <div class="cmp-cell">Garantir que uma nova funcionalidade ou correção não introduza falhas nem quebre controles existentes.</div>
+              </div>
+              <div class="cmp-row">
+                <div class="cmp-cell cmp-crit">Quando aplicar</div>
+                <div class="cmp-cell">Início de projeto, auditorias periódicas, aquisição de sistemas legados ou onboarding.</div>
+                <div class="cmp-cell">Pull Requests, commits individuais e ciclos de entrega contínua (CI/CD).</div>
+              </div>
+              <div class="cmp-row">
+                <div class="cmp-cell cmp-crit">Esforço</div>
+                <div class="cmp-cell">Alto esforço; processo lento e profundo.</div>
+                <div class="cmp-cell">Baixo a médio esforço; processo rápido e ágil.</div>
+              </div>
+            </div>
+            <div class="approach-conn">
+              <p>Como se conectam na prática:</p>
+              <ul>
+                <li><strong>A Baseline cria o alicerce:</strong> sem ela, uma revisão diff-based pode aprovar código aparentemente seguro que interage com arquitetura ou controle de acesso já comprometido na base.</li>
+                <li><strong>O Diff mantém a integridade:</strong> estabelecida a linha de base, a revisão diff-based atua como barreira contínua para impedir a degradação ao longo do tempo.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </article>
+
+      <!-- Quadro 05: consequência prática no Pull Request -->
+      <article class="card-05">
+        <span class="study-card-no">05</span>
+        <p style="margin:4px 0 6px;font-size:.9rem;color:var(--ink-2)">Em um PR, o risco pode estar em:</p>
+        <ul>
+          <li><strong>Uma função modificada</strong> que introduz uma nova falha diretamente.</li>
+          <li><strong>O contrato de uma função não alterada</strong> que passa a ser chamada em um contexto diferente.</li>
+        </ul>
+        <div class="consequence-alert">
+          Revisar apenas o "diff verde" sem conhecer as chamadas do código circundante pode deixar uma vulnerabilidade passar despercebida.
+        </div>
+      </article>
+
     </div>
   </div>
 </section>
 
 <section class="cena viz-scene" data-nome="Visual 1: Percurso em camadas" id="visual-1">
+<style>
+/* Slide visual-1: botão olho + modal */
+#visual-1 .hypo-step{position:relative;padding-bottom:38px}
+.step-eye-btn{position:absolute;bottom:10px;right:10px;background:none;border:1.5px solid var(--line);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:border-color .14s,color .14s;padding:0;line-height:1}
+.step-eye-btn:hover{border-color:var(--orange);color:var(--orange)}
+/* Modal de exemplo */
+.step-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px}
+.step-modal-bg[hidden]{display:none}
+.step-modal-box{background:var(--paper);border-radius:16px;max-width:560px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18);overflow:hidden}
+.step-modal-head{display:flex;align-items:center;gap:10px;padding:16px 20px 14px;border-bottom:1px solid var(--line)}
+.step-modal-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--orange);color:#fff;border-radius:50%;font-family:var(--f-disp);font-weight:700;font-size:.85rem;flex-shrink:0}
+.step-modal-title{font-size:1rem;font-weight:700;color:var(--ink);margin:0;flex:1}
+.step-modal-close{background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:4px;border-radius:6px;transition:color .14s}
+.step-modal-close:hover{color:var(--ink)}
+.step-modal-body{padding:18px 20px 20px;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+.step-modal-body p{margin:0 0 10px}
+.step-modal-body p:last-child{margin:0}
+.step-modal-body .ex-block{margin-top:12px;padding:12px 14px;background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:.88rem;color:var(--ink)}
+.step-modal-body .ex-block strong{display:block;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:4px}
+.step-modal-body code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+</style>
   <div class="wrap pilha">
     <div><p class="eyebrow">Conceito em perspectiva</p><h2>Percurso estruturado da leitura</h2></div>
     <div class="visual-panel">
       <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Da rota ao banco: seis perguntas por camada</h3></div>
       <div class="hypo-flow" aria-label="Percurso de revisão por camada">
-        <div class="hypo-step"><div class="hypo-num">01</div><h4>Rota</h4><p>Qual endpoint? Quais middlewares são aplicados? Autenticação obrigatória?</p></div>
-        <div class="hypo-step"><div class="hypo-num">02</div><h4>Controller</h4><p>Como a entrada é extraída? O body é validado pelo schema Zod antes de prosseguir?</p></div>
-        <div class="hypo-step"><div class="hypo-num">03</div><h4>Service</h4><p>Onde está a autorização? O recurso é verificado contra o usuário autenticado?</p></div>
-        <div class="hypo-step"><div class="hypo-num">04</div><h4>Repository</h4><p>A consulta é parametrizada? Retorna só os campos necessários?</p></div>
-        <div class="hypo-step"><div class="hypo-num">05</div><h4>Resposta</h4><p>O que é exposto? Dados de outros usuários? Campos sensíveis desnecessários?</p></div>
+        <div class="hypo-step">
+          <div class="hypo-num">01</div><h4>Rota</h4><p>Qual endpoint? Quais middlewares são aplicados? Autenticação obrigatória?</p>
+          <button class="step-eye-btn" data-step="0" aria-label="Ver exemplos de Rota"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">02</div><h4>Controller</h4><p>Como a entrada é extraída? O body é validado pelo schema Zod antes de prosseguir?</p>
+          <button class="step-eye-btn" data-step="1" aria-label="Ver exemplos de Controller"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">03</div><h4>Service</h4><p>Onde está a autorização? O recurso é verificado contra o usuário autenticado?</p>
+          <button class="step-eye-btn" data-step="2" aria-label="Ver exemplos de Service"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">04</div><h4>Repository</h4><p>A consulta é parametrizada? Retorna só os campos necessários?</p>
+          <button class="step-eye-btn" data-step="3" aria-label="Ver exemplos de Repository"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="hypo-step">
+          <div class="hypo-num">05</div><h4>Resposta</h4><p>O que é exposto? Dados de outros usuários? Campos sensíveis desnecessários?</p>
+          <button class="step-eye-btn" data-step="4" aria-label="Ver exemplos de Resposta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
       </div>
-      <p class="viz-caption">Percorra esse caminho para cada operação antes de registrar hipóteses.</p>
+      <p class="viz-caption">Percorra esse caminho para cada operação antes de registrar hipóteses. Use os ícones de olho para ver exemplos práticos por etapa.</p>
     </div>
   </div>
+
+  <!-- Modal de exemplos -->
+  <div class="step-modal-bg" id="step-modal" role="dialog" aria-modal="true" hidden>
+    <div class="step-modal-box" role="document">
+      <div class="step-modal-head">
+        <span class="step-modal-num" id="step-modal-num"></span>
+        <h4 class="step-modal-title" id="step-modal-title"></h4>
+        <button class="step-modal-close" id="step-modal-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="step-modal-body" id="step-modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var steps = [
+      {
+        num:'01', title:'Rota',
+        html:'<p>Mapeie os middlewares na ordem em que são aplicados. Verifique se autenticação é obrigatória, se existem rotas de administração sem verificação de papel e se o método HTTP correto é exigido.</p><div class="ex-block"><strong>Exemplo</strong>Uma rota <code>POST /orders/:id/approve</code> sem middleware de verificação de role permite que qualquer usuário autenticado — inclusive um comprador — realize a aprovação.</div>'
+      },
+      {
+        num:'02', title:'Controller',
+        html:'<p>Verifique como os parâmetros chegam: <code>req.body</code>, <code>req.params</code> e <code>req.query</code>. O schema é validado antes de prosseguir para o service?</p><div class="ex-block"><strong>Exemplo</strong><code>req.body.status</code> passado diretamente para a query permite manipulação de tipo. Um schema Zod como <code>z.object({ status: z.enum([\'approved\']) })</code> garante que apenas valores esperados prossigam.</div>'
+      },
+      {
+        num:'03', title:'Service',
+        html:'<p>A autorização acontece no service, não no controller. Verificar <code>if (user)</code> apenas confirma que o usuário está autenticado — não que ele pode agir sobre aquele recurso específico.</p><div class="ex-block"><strong>Exemplo</strong>Para aprovar um pedido, o service deve confirmar <code>order.ownerId === currentUser.id</code> e <code>order.orgId === currentUser.orgId</code>. Sem essas verificações, qualquer usuário autenticado pode atuar sobre recursos de outros.</div>'
+      },
+      {
+        num:'04', title:'Repository',
+        html:'<p>As consultas evitam concatenação de strings? Retornam apenas os campos utilizados pela operação?</p><div class="ex-block"><strong>Exemplo</strong><code>prisma.order.findUnique({ where: { id } })</code> retorna todas as colunas. Use <code>select: { id, status, ownerId }</code> para limitar a superfície de exposição. Nunca monte queries SQL com concatenação de entradas do usuário.</div>'
+      },
+      {
+        num:'05', title:'Resposta',
+        html:'<p>O que é serializado e enviado ao cliente? A resposta inclui campos internos que não deveriam ser visíveis externamente?</p><div class="ex-block"><strong>Exemplo</strong><code>res.json(user)</code> pode vazar <code>passwordHash</code>, <code>refreshToken</code> ou <code>role</code>. Serialize apenas os campos necessários: <code>{ id, name, email }</code> ou use um DTO específico para a operação.</div>'
+      }
+    ];
+    var modal = document.getElementById('step-modal');
+    var modalNum = document.getElementById('step-modal-num');
+    var modalTitle = document.getElementById('step-modal-title');
+    var modalBody = document.getElementById('step-modal-body');
+    var closeBtn = document.getElementById('step-modal-close');
+    var lastFocus;
+    function openModal(idx) {
+      var s = steps[idx];
+      modalNum.textContent = s.num;
+      modalTitle.textContent = s.title;
+      modalBody.innerHTML = s.html;
+      modal.removeAttribute('hidden');
+      lastFocus = document.activeElement;
+      closeBtn.focus();
+    }
+    function closeModal() {
+      modal.setAttribute('hidden','');
+      if (lastFocus) lastFocus.focus();
+    }
+    document.querySelectorAll('.step-eye-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){ openModal(+btn.dataset.step); });
+    });
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', function(e){ if (e.key==='Escape' && !modal.hasAttribute('hidden')) closeModal(); });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Autorização por objeto" id="interacao-1">
@@ -334,17 +662,164 @@
 </section>
 
 <section class="cena" data-nome="Conceito: Autorização em três dimensões" id="conceito-3">
+<style>
+/* Slide conceito-3 */
+.c3-lead{font-size:.93rem;line-height:1.7;color:var(--ink-2);margin:4px 0 0}
+#conceito-3 .wrap{max-width:100% !important;width:100% !important;margin-left:0 !important;margin-right:0 !important}
+#conceito-3 .section-text{width:100%;max-width:none;min-width:0;align-self:stretch}
+#conceito-3 .learning-grid{width:100%;min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#conceito-3 .study-card{min-width:0;width:100%;box-sizing:border-box}
+#conceito-3 .study-card h4{font-size:.95rem;font-weight:700;color:var(--ink);margin:0 0 8px}
+#conceito-3 .study-card ul{margin:6px 0 0;padding-left:1.3rem;font-size:.88rem;line-height:1.65;color:var(--ink-2)}
+#conceito-3 .study-card li{margin-bottom:5px}
+/* Visual horizontal/vertical */
+.access-visual{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:14px 14px 10px;background:var(--sunk);border-radius:10px;margin:10px 0 0}
+.access-type{display:flex;flex-direction:column;align-items:center;gap:8px}
+.access-type-label{font-family:var(--f-disp);font-weight:700;font-size:.74rem;letter-spacing:.05em;text-transform:uppercase;color:var(--orange-ink);background:var(--orange-soft);padding:2px 10px;border-radius:4px}
+.access-flow{display:flex;align-items:center;gap:8px}
+.access-flow-vert{flex-direction:column}
+.av-box{padding:5px 10px;border-radius:7px;font-size:.76rem;font-weight:600;text-align:center;min-width:76px}
+.av-user{background:var(--surface);border:1.5px solid var(--line);color:var(--ink)}
+.av-locked{background:var(--surface);border:1.5px solid var(--orange);color:var(--ink)}
+.av-priv{background:var(--orange-soft);border:1.5px solid var(--orange);color:var(--orange-ink)}
+.av-arrow{font-size:1rem;color:var(--orange-ink);font-weight:700;flex-shrink:0;line-height:1}
+.access-desc{font-size:.76rem;color:var(--muted);text-align:center;margin:0;line-height:1.4}
+.access-divider{width:1px;background:var(--line);align-self:stretch;margin:4px 0}
+@media(max-width:460px){.access-visual{grid-template-columns:1fr}.access-divider{width:auto;height:1px}}
+/* Glossário CWE */
+.cwe-btn{display:inline-flex;align-items:center;gap:3px;background:none;border:1.5px solid var(--line);border-radius:5px;padding:1px 7px;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;line-height:1.6;transition:border-color .14s,color .14s;font-family:inherit;vertical-align:middle;margin-left:6px}
+.cwe-btn:hover{border-color:var(--orange);color:var(--orange)}
+.cwe-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px}
+.cwe-modal-bg[hidden]{display:none}
+.cwe-modal-box{background:var(--paper);border-radius:14px;max-width:680px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.18);padding:20px 22px}
+.cwe-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.cwe-modal-ttl{font-weight:700;font-size:.97rem;color:var(--ink);margin:0;line-height:1.3}
+.cwe-modal-sub{font-size:.8rem;color:var(--muted);margin:3px 0 0;font-weight:400}
+.cwe-modal-close{background:none;border:none;cursor:pointer;color:var(--muted);padding:2px;border-radius:4px;transition:color .14s;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.cwe-modal-close:hover{color:var(--ink)}
+.cwe-modal-body{font-size:.88rem;line-height:1.65;color:var(--ink-2)}
+.cwe-modal-body p{margin:0 0 10px}
+.cwe-modal-body p:last-child{margin:0}
+/* Bloco de código simples (sem overflow que corta tooltips) */
+.code-block{background:#1a1a2e;border-radius:10px;padding:14px 18px;margin-top:10px;min-width:0}
+.cb-line{display:block;font-family:var(--f-mono);font-size:.8rem;line-height:1.75;color:#c8d3f5;white-space:pre-wrap;overflow-wrap:anywhere}
+.ck{color:#82aaff}
+.cm{color:#c3e88d}
+.cp{color:#89ddff}
+.cs{color:#f78c6c}
+.cmt{color:#546e7a;font-style:italic}
+.ktip{position:relative;cursor:help;text-decoration:underline dotted rgba(255,255,255,.25)}
+.ktip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:6px;padding:5px 10px;font-size:.74rem;font-family:var(--f-body);white-space:nowrap;z-index:20;opacity:0;pointer-events:none;transition:opacity .15s;line-height:1.45;max-width:240px;text-align:center;font-style:normal}
+.ktip:hover::after{opacity:1}
+.code-note{padding:10px 14px;background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:.86rem;line-height:1.6;color:var(--ink-2);margin-top:10px}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Autorização em três dimensões</h2></div>
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 2</p>
+      <h2>Autorização em três dimensões</h2>
+      <p class="c3-lead">Verificar se um usuário está autenticado responde apenas à primeira dimensão da autorização. Uma política completa exige três perguntas independentes para cada operação: <strong>Sujeito</strong> (quem age), <strong>Objeto</strong> (qual recurso específico) e <strong>Ação/Condição</strong> (o que pode ser feito e em qual estado).</p>
+    </div>
     <div class="section-text">
       <div class="learning-grid">
-        <article class="study-card"><span class="study-card-no">01</span><p>Analisar apenas <code>if (user)</code> é insuficiente. Para cada operação, perguntar: sujeito (quem age?), objeto (sobre o quê?) e ação/condição (o que pode realizar e em qual estado?).</p></article>
-        <article class="study-card"><span class="study-card-no">02</span><p>Um endpoint pode negar acesso anônimo e ainda permitir acesso horizontal a outro titular ou acesso vertical a uma função administrativa. A CWE-639 descreve autorização contornável pelo uso de uma chave controlada pelo usuário.</p></article>
-        <article class="study-card"><span class="study-card-no">03</span><p>Condição insegura ilustrativa: <code>const order = orders.find(o =&gt; o.id === Number(req.params.id)); return res.json(order);</code>: retorna o pedido sem verificar a quem pertence.</p></article>
-        <article class="study-card"><span class="study-card-no">04</span><p>Uma correção exige verificar <code>order.ownerId === currentUser.id</code> e ainda que ambos pertençam à mesma organização. O código correto depende da política de segurança explicitada nos requisitos.</p></article>
+        <!-- Quadro 01 -->
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <h4>As três dimensões</h4>
+          <ul>
+            <li><strong>Sujeito:</strong> quem age? Qual é o papel e o contexto do usuário autenticado?</li>
+            <li><strong>Objeto:</strong> sobre o quê? Qual recurso específico está sendo acessado?</li>
+            <li><strong>Ação/Condição:</strong> o que pode ser realizado e em qual estado o sistema permite isso?</li>
+          </ul>
+        </article>
+        <!-- Quadro 02 -->
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <h4>Acesso horizontal e vertical <button class="cwe-btn" id="cwe-639-btn" aria-label="Ver glossário CWE-639">CWE-639 ⓘ</button></h4>
+          <div class="access-visual">
+            <div class="access-type">
+              <span class="access-type-label">Horizontal</span>
+              <div class="access-flow">
+                <div class="av-box av-user">Comprador A</div>
+                <span class="av-arrow" aria-hidden="true">→</span>
+                <div class="av-box av-locked">Pedido de B</div>
+              </div>
+              <p class="access-desc">Mesmo papel, recurso de outro titular</p>
+            </div>
+            <div class="access-divider" aria-hidden="true"></div>
+            <div class="access-type">
+              <span class="access-type-label">Vertical</span>
+              <div class="access-flow access-flow-vert">
+                <div class="av-box av-priv">Fn. de aprovador</div>
+                <span class="av-arrow" aria-hidden="true">↑</span>
+                <div class="av-box av-user">Comprador</div>
+              </div>
+              <p class="access-desc">Papel inferior acessa função privilegiada</p>
+            </div>
+          </div>
+        </article>
+        <!-- Quadro 03 -->
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <h4>Condição insegura</h4>
+          <p>O código abaixo localiza o pedido e retorna o recurso sem verificar a quem ele pertence. Passe o mouse sobre as palavras sublinhadas para entender cada parte:</p>
+          <div class="code-block">
+            <span class="cb-line"><span class="ck ktip" data-tip="Declara uma variável cujo valor não pode ser reatribuído no bloco">const</span> order = orders.<span class="cm ktip" data-tip="Percorre o array e retorna o 1º elemento que satisfaz a condição">find</span>(o =&gt; o.id === <span class="cm ktip" data-tip="Converte o valor para número — evita comparação string × inteiro">Number</span>(<span class="cp ktip" data-tip="Parâmetros de rota do Express — ex: :id em /orders/:id">req.params</span>.id));</span>
+            <span class="cb-line"><span class="ck">return</span> <span class="cp ktip" data-tip="Serializa o objeto como JSON e envia a resposta HTTP">res.json</span>(order); <span class="cmt">// sem verificar order.ownerId</span></span>
+          </div>
+        </article>
+        <!-- Quadro 04 -->
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <h4>O que a correção deve garantir</h4>
+          <p>Localizar o recurso pelo ID não é suficiente. Antes de retornar ou modificar, o código deve confirmar que o pedido pertence ao usuário autenticado e à mesma organização:</p>
+          <div class="code-block">
+            <span class="cb-line"><span class="cmt">// Verificação de propriedade</span></span>
+            <span class="cb-line"><span class="ck">if</span> (!order || order.ownerId !== currentUser.id) {</span>
+            <span class="cb-line">  <span class="ck">return</span> res.status(<span class="cs">403</span>).json({ error: <span class="cs">'Forbidden'</span> });</span>
+            <span class="cb-line">}</span>
+            <span class="cb-line"><span class="cmt">// Verificação de organização</span></span>
+            <span class="cb-line"><span class="ck">if</span> (order.orgId !== currentUser.orgId) {</span>
+            <span class="cb-line">  <span class="ck">return</span> res.status(<span class="cs">403</span>).json({ error: <span class="cs">'Forbidden'</span> });</span>
+            <span class="cb-line">}</span>
+            <span class="cb-line"><span class="ck">return</span> res.json({ id: order.id, status: order.status });</span>
+          </div>
+          <p class="code-note">A resposta final expõe apenas os campos necessários para a operação, não o objeto completo.</p>
+        </article>
       </div>
     </div>
   </div>
+
+  <!-- Modal glossário CWE-639 -->
+  <div class="cwe-modal-bg" id="cwe-modal" role="dialog" aria-modal="true" aria-labelledby="cwe-modal-ttl" hidden>
+    <div class="cwe-modal-box">
+      <div class="cwe-modal-head">
+        <div>
+          <p class="cwe-modal-ttl" id="cwe-modal-ttl">CWE-639</p>
+          <p class="cwe-modal-sub">Authorization Bypass Through User-Controlled Key</p>
+        </div>
+        <button class="cwe-modal-close" id="cwe-modal-close" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="cwe-modal-body">
+        <p>Vulnerabilidade em que a autorização é contornada porque a chave de acesso ao recurso (como um ID de pedido) é controlada pelo próprio usuário. O sistema verifica autenticação mas não valida que o recurso identificado pertence ao solicitante.</p>
+        <p>Exemplo: um comprador substitui o ID do seu pedido pelo de outro usuário na URL e obtém acesso ao recurso alheio. A autenticação ocorre corretamente, mas a verificação do objeto falha.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var btn = document.getElementById('cwe-639-btn');
+    var modal = document.getElementById('cwe-modal');
+    var closeBtn = document.getElementById('cwe-modal-close');
+    var lastFocus;
+    function openCwe(){ modal.removeAttribute('hidden'); lastFocus = document.activeElement; closeBtn.focus(); }
+    function closeCwe(){ modal.setAttribute('hidden',''); if (lastFocus) lastFocus.focus(); }
+    btn.addEventListener('click', openCwe);
+    closeBtn.addEventListener('click', closeCwe);
+    modal.addEventListener('click', function(e){ if (e.target === modal) closeCwe(); });
+    document.addEventListener('keydown', function(e){ if (e.key==='Escape' && !modal.hasAttribute('hidden')) closeCwe(); });
+  })();
+  </script>
 </section>
 
 <section class="cena viz-scene" data-nome="Visual 2: Autorização em camadas" id="visual-2">
@@ -370,15 +845,102 @@
 </section>
 
 <section class="cena" data-nome="Conceito: Regras de negócio e estados" id="conceito-4">
+<style>
+/* Slide conceito-4 */
+#conceito-4 .wrap{max-width:100% !important;width:100% !important;margin-left:0 !important;margin-right:0 !important}
+#conceito-4 .section-text{width:100%;max-width:none;min-width:0;align-self:stretch}
+#conceito-4 .learning-grid{width:100%;min-width:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.c4-lead{font-size:.95rem;line-height:1.7;color:var(--ink-2);margin:4px 0 0;max-width:68ch}
+#conceito-4 .study-card h4{font-size:.97rem;font-weight:700;color:var(--ink);margin:0 0 8px}
+#conceito-4 .study-card ul{margin:8px 0 0;padding-left:1.3rem;font-size:.9rem;line-height:1.65;color:var(--ink-2)}
+#conceito-4 .study-card li{margin-bottom:5px}
+#conceito-4 .study-card p+p{margin-top:8px;font-size:.9rem;color:var(--ink-2)}
+.c4-card-note{margin-top:10px;padding:10px 14px;background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 6px 6px 0;font-size:.88rem;line-height:1.6;color:var(--ink-2)}
+/* Diagrama de estado */
+.state-diag-wrap{padding:1.25rem 1.5rem .75rem;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;margin:.5rem 0}
+.state-diag-wrap svg{width:100%;max-width:360px;height:auto;display:block;margin:0 auto}
+.sd-bg-neutral{fill:var(--sunk);stroke:var(--line)}
+.sd-bg-good{fill:var(--good-soft);stroke:var(--good)}
+.sd-bg-cond{fill:var(--orange-soft);stroke:var(--orange)}
+.sd-arrow-good{stroke:var(--good);fill:none}
+.sd-arrow-cond{stroke:var(--orange);fill:none}
+.sd-label{fill:var(--ink)}
+.sd-sublabel{fill:var(--ink-2)}
+.sd-label-good{fill:var(--good)}
+.sd-label-cond{fill:var(--orange-ink)}
+.sd-caption{fill:var(--muted)}
+/* Rodapé bibliográfico */
+.slide-footnote{font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.75rem;margin-top:1rem;font-style:italic;line-height:1.6}
+.slide-footnote strong{font-style:normal;color:var(--ink-2)}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Regras de negócio e estados de um pedido</h2></div>
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 3</p>
+      <h2>Regras de negócio e estados de um pedido</h2>
+      <p class="c4-lead">Uma funcionalidade pode executar corretamente uma operação e, ainda assim, violar as regras de segurança do sistema. Imagine uma API para gerenciar pedidos: cada pedido possui um estado, e a ação de aprovação deve respeitar regras sobre quem pode aprovar e em quais condições isso é permitido.</p>
+    </div>
     <div class="section-text">
+
       <div class="learning-grid">
-        <article class="study-card"><span class="study-card-no">01</span><p>Considere o endpoint de aprovação de pedido. Não basta ter uma rota POST e um status <code>approved</code> válido. Deve existir um conjunto de transições possíveis: apenas <code>pending → approved</code>, apenas por um aprovador autorizado, com trilha de auditoria.</p></article>
-        <article class="study-card"><span class="study-card-no">02</span><p>Uma rota que aprova qualquer pedido sem consultar a identidade e o estado permite alteração indevida mesmo sem injeção ou erro sintático.</p></article>
-        <article class="study-card"><span class="study-card-no">03</span><p>A revisão manual tem vantagem quando o controle depende de política de domínio que não está codificada em anotações ou regras externas.</p></article>
-        <article class="study-card"><span class="study-card-no">04</span><p>O estudo de Braz et al. sugere que a atenção dirigida à segurança durante a revisão influencia a detecção, reforçando a necessidade de perguntas específicas em vez de listas genéricas.</p></article>
+        <!-- Quadro 01 -->
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <h4>O cenário: aprovação de um pedido</h4>
+          <p>Um pedido foi criado e está com status <code>pending</code>. Quando um usuário solicita sua aprovação, a aplicação recebe a requisição e precisa decidir se a operação pode ser realizada.</p>
+          <p class="c4-card-note">Não basta que o endpoint exista e receba um status válido. A aplicação precisa verificar as condições de negócio antes de modificar o pedido.</p>
+        </article>
+        <!-- Quadro 02 -->
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <h4>Quais regras precisam ser respeitadas?</h4>
+          <p>A aprovação depende de três verificações:</p>
+          <ul>
+            <li><strong>Estado:</strong> o pedido precisa estar <code>pending</code> para passar a <code>approved</code>.</li>
+            <li><strong>Autorização:</strong> o usuário deve possuir permissão para aprovar aquele pedido.</li>
+            <li><strong>Rastreabilidade:</strong> a operação deve registrar quem aprovou, qual pedido foi alterado e quando.</li>
+          </ul>
+        </article>
       </div>
+
+      <!-- Diagrama de transição de estados -->
+      <div class="state-diag-wrap" role="img" aria-label="Diagrama de transição: pending para approved condicionada a estado e autorização">
+        <svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg">
+          <rect class="sd-bg-neutral" x="14" y="12" width="102" height="43" rx="9"/>
+          <text class="sd-label" x="65" y="29" text-anchor="middle" font-size="12" font-weight="600" font-family="inherit">pending</text>
+          <text class="sd-sublabel" x="65" y="43" text-anchor="middle" font-size="10" font-family="inherit">Pendente</text>
+          <path class="sd-arrow-good" d="M116 33 H203" stroke-width="2.5"/>
+          <path class="sd-arrow-good" d="M196 28 L204 33 L196 38" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect class="sd-bg-good" x="205" y="12" width="102" height="43" rx="9"/>
+          <text class="sd-label-good" x="256" y="29" text-anchor="middle" font-size="12" font-weight="600" font-family="inherit">approved</text>
+          <text class="sd-label-good" x="256" y="43" text-anchor="middle" font-size="10" font-family="inherit">Aprovado</text>
+          <rect class="sd-bg-cond" x="87" y="69" width="146" height="37" rx="7"/>
+          <text class="sd-label-cond" x="160" y="83" text-anchor="middle" font-size="11" font-weight="600" font-family="inherit">Condições necessárias</text>
+          <text class="sd-label-cond" x="160" y="96" text-anchor="middle" font-size="10" font-family="inherit">Estado + autorização</text>
+          <path class="sd-arrow-cond" d="M160 55 V69" stroke-width="1.6" stroke-dasharray="3 3"/>
+          <text class="sd-sublabel" x="160" y="127" text-anchor="middle" font-size="10" font-family="inherit">Sem as verificações, a atualização</text>
+          <text class="sd-sublabel" x="160" y="141" text-anchor="middle" font-size="10" font-family="inherit">pode violar a política de negócio.</text>
+          <text class="sd-caption" x="160" y="158" text-anchor="middle" font-size="9" font-family="inherit">Exemplo didático de regra de aprovação</text>
+        </svg>
+      </div>
+
+      <div class="learning-grid">
+        <!-- Quadro 03 -->
+        <article class="study-card">
+          <span class="study-card-no">03</span>
+          <h4>Onde surge a vulnerabilidade?</h4>
+          <p>Imagine que o endpoint simplesmente localize o pedido e altere seu status para <code>approved</code>, sem consultar seu estado atual ou verificar as permissões do usuário.</p>
+          <p>Um usuário sem autorização poderia aprovar pedidos, ou um pedido em estado incompatível poderia ser aprovado indevidamente. A aplicação executaria a atualização sem erro técnico, mas o resultado violaria as regras de negócio.</p>
+        </article>
+        <!-- Quadro 04 -->
+        <article class="study-card">
+          <span class="study-card-no">04</span>
+          <h4>O papel da revisão manual</h4>
+          <p>Durante a revisão do código, não basta procurar erros de sintaxe, injeções ou funções inseguras. O revisor precisa compreender como o processo deveria funcionar e verificar se o código implementa as restrições necessárias.</p>
+          <p>É justamente nesse tipo de análise que a revisão manual orientada por requisitos e regras de negócio se torna importante, especialmente quando essas regras não estão formalizadas para uma ferramenta automatizada.</p>
+        </article>
+      </div>
+
+      <p class="slide-footnote">Estudos sobre revisão de código e segurança, como o de <strong>Braz et al.</strong>, discutem a importância de direcionar a atenção do revisor para aspectos específicos de segurança, em vez de depender apenas de uma inspeção genérica do código. A referência completa encontra-se na seção de Referências deste material.</p>
     </div>
   </div>
 </section>
