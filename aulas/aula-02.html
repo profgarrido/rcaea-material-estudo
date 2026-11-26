@@ -946,17 +946,115 @@
 </section>
 
 <section class="cena viz-scene" data-nome="Visual 3: Ciclo do pedido" id="visual-3">
+<style>
+.state-flow{display:flex;align-items:center;width:100%;margin:12px 0}
+.state-box{flex:1;min-width:0;background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center}
+.state-box-label{font-size:.66rem;letter-spacing:.08em;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.state-box-name{font-family:var(--f-disp);font-size:1rem;font-weight:700;color:var(--ink);line-height:1.2}
+.state-box.s-active{border-color:var(--orange);background:var(--orange-soft)}
+.state-box.s-active .state-box-name{color:var(--orange-ink)}
+.state-box.s-done{border-color:var(--good);background:var(--good-soft)}
+.state-box.s-done .state-box-name{color:var(--good)}
+.state-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px;min-width:52px;flex-shrink:0;gap:3px}
+.state-arrow-action{font-size:.6rem;font-weight:700;color:var(--orange-ink);background:var(--orange-soft);border:1px solid var(--orange);border-radius:4px;padding:2px 5px;text-align:center;white-space:nowrap;line-height:1.3}
+.state-arrow-sym{color:var(--orange);font-size:1.1rem;line-height:1;font-weight:700}
+.cond-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cond-card{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:14px;text-align:center}
+.cond-num{font-family:var(--f-disp);font-size:1.3rem;font-weight:700;color:var(--orange-ink);margin-bottom:4px}
+.cond-title{font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+.cond-desc{font-size:.78rem;color:var(--ink-2);line-height:1.4;margin:0}
+.ops-table{width:100%;border-collapse:collapse;font-size:.84rem}
+.ops-table th{text-align:left;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 10px;border-bottom:1.5px solid var(--line)}
+.ops-table td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ops-table tr:last-child td{border-bottom:none}
+.ops-status{display:inline-flex;align-items:center;gap:4px;font-size:.78rem;font-weight:700;padding:2px 8px;border-radius:4px}
+.ops-ok{background:var(--good-soft);color:var(--good)}
+.ops-no{background:#fee2e2;color:#991b1b}
+.state-question{background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:12px 14px;font-size:.88rem;line-height:1.6;color:var(--ink-2)}
+.state-question strong{color:var(--ink)}
+@media(max-width:600px){
+  .state-flow{flex-direction:column;gap:4px;align-items:stretch}
+  .state-arrow{flex-direction:row;gap:6px;min-width:auto;padding:0 0 0 8px}
+  .state-arrow-sym::after{content:'↓'}
+  .state-arrow-sym{font-size:0}
+  .cond-grid{grid-template-columns:1fr}
+}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Máquina de estados: quais transições são válidas?</h2></div>
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Como impedir que um pedido avance para um estado indevido?</h2>
+    </div>
     <div class="visual-panel">
-      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Estados e transições precisam de regras explícitas</h3></div>
-      <div class="taint-flow" aria-label="Ciclo de estados do pedido">
-        <div class="tf-step tf-source"><div class="tf-label">Estado inicial</div><h4>Pendente</h4><p>Criado; editável pelo criador dentro das regras</p></div>
-        <div class="tf-step tf-prop"><div class="tf-label">Transição</div><h4>Em análise</h4><p>Aguardando decisão de aprovador autorizado</p></div>
-        <div class="tf-step tf-barrier"><div class="tf-label">Transição controlada</div><h4>Aprovado</h4><p>Mudança registrada com responsável e data</p></div>
-        <div class="tf-step tf-sink"><div class="tf-label">Estado final</div><h4>Finalizado</h4><p>Não deve retornar arbitrariamente a estado anterior</p></div>
+      <p style="font-size:.88rem;line-height:1.65;color:var(--ink-2);margin:0 0 16px">Imagine um sistema corporativo no qual um pedido precisa passar por diferentes etapas até ser concluído. O sistema não pode permitir que qualquer usuário altere livremente seu status. Cada mudança precisa respeitar regras de negócio e permissões.</p>
+
+      <div class="viz-heading" style="margin-bottom:10px"><span class="viz-mark">ESTADOS</span><h3>Ciclo de aprovação de um pedido</h3></div>
+      <div class="state-flow" role="list" aria-label="Ciclo de estados do pedido">
+        <div class="state-box" role="listitem">
+          <div class="state-box-label">Estado 1</div>
+          <div class="state-box-name">Pendente</div>
+        </div>
+        <div class="state-arrow" aria-hidden="true">
+          <span class="state-arrow-action">Enviar para análise</span>
+          <span class="state-arrow-sym">→</span>
+        </div>
+        <div class="state-box" role="listitem">
+          <div class="state-box-label">Estado 2</div>
+          <div class="state-box-name">Em análise</div>
+        </div>
+        <div class="state-arrow" aria-hidden="true">
+          <span class="state-arrow-action">Aprovar</span>
+          <span class="state-arrow-sym">→</span>
+        </div>
+        <div class="state-box s-active" role="listitem">
+          <div class="state-box-label">Estado 3</div>
+          <div class="state-box-name">Aprovado</div>
+        </div>
+        <div class="state-arrow" aria-hidden="true">
+          <span class="state-arrow-action">Concluir</span>
+          <span class="state-arrow-sym">→</span>
+        </div>
+        <div class="state-box s-done" role="listitem">
+          <div class="state-box-label">Estado 4</div>
+          <div class="state-box-name">Finalizado</div>
+        </div>
       </div>
-      <p class="viz-caption">Exemplo conceitual; confira os requisitos reais antes de concluir quais transições são válidas na API do laboratório.</p>
+      <p class="viz-caption" style="margin:8px 0 20px">Representação conceitual. As transições permitidas dependem dos requisitos do sistema. Nao presumir que esses sejam os estados reais da API do laboratório.</p>
+
+      <div class="viz-heading" style="margin-bottom:10px"><span class="viz-mark">CONDIÇÕES</span><h3>Um usuário tenta aprovar um pedido. O que o sistema precisa verificar?</h3></div>
+      <div class="cond-grid">
+        <div class="cond-card">
+          <div class="cond-num">1</div>
+          <div class="cond-title">Estado atual</div>
+          <p class="cond-desc">O pedido está na etapa que permite aprovação?</p>
+        </div>
+        <div class="cond-card">
+          <div class="cond-num">2</div>
+          <div class="cond-title">Permissão</div>
+          <p class="cond-desc">O usuário possui autorização para aprovar esse pedido?</p>
+        </div>
+        <div class="cond-card">
+          <div class="cond-num">3</div>
+          <div class="cond-title">Registro</div>
+          <p class="cond-desc">A aprovação ficará associada ao responsável e à data?</p>
+        </div>
+      </div>
+      <p class="viz-caption" style="margin:8px 0 20px">Se alguma condição não for atendida, a aplicação deve impedir a alteração do status.</p>
+
+      <div class="viz-heading" style="margin-bottom:10px"><span class="viz-mark">EXEMPLOS</span><h3>Operações permitidas e rejeitadas</h3></div>
+      <table class="ops-table">
+        <thead><tr><th>Situação</th><th>Comportamento esperado</th></tr></thead>
+        <tbody>
+          <tr><td>Usuário autorizado aprova um pedido na etapa correta</td><td><span class="ops-status ops-ok">Permitida</span></td></tr>
+          <tr><td>Usuário sem permissão tenta aprovar</td><td><span class="ops-status ops-no">Rejeitada</span></td></tr>
+          <tr><td>Alguém tenta aprovar um pedido já finalizado</td><td><span class="ops-status ops-no">Rejeitada</span></td></tr>
+        </tbody>
+      </table>
+      <p class="viz-caption" style="margin:8px 0 16px">Exemplos de regras de um processo fictício, nao requisitos confirmados da API do laboratório.</p>
+
+      <div class="state-question">
+        <strong>Para o revisor:</strong> Se o endpoint simplesmente alterar o campo <code style="background:var(--sunk);padding:1px 5px;border-radius:4px;font-family:var(--f-mono);font-size:.85em">status</code> no banco de dados, sem verificar o estado anterior e a permissão do usuário, a operação é segura?
+      </div>
     </div>
   </div>
 </section>
@@ -979,38 +1077,322 @@
 </section>
 
 <section class="cena" data-nome="Conceito: Checklists são apoio, não substituição de raciocínio" id="conceito-5">
+<style>
+#conceito-5 .wrap{max-width:100% !important;width:100% !important;margin-left:0 !important;margin-right:0 !important}
+#conceito-5 .section-text{width:100%;max-width:none;min-width:0}
+#conceito-5 .learning-grid{width:100%;min-width:0}
+.owasp-explorer{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;width:100%}
+.owasp-explorer-title{font-family:var(--f-disp);font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:12px}
+.owasp-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.owasp-tab{background:var(--sunk);border:1.5px solid var(--line);border-radius:6px;padding:5px 11px;font-size:.74rem;font-weight:700;color:var(--muted);cursor:pointer;line-height:1;transition:border-color .14s,color .14s,background .14s;font-family:var(--f-body)}
+.owasp-tab:hover{border-color:var(--orange);color:var(--orange-ink)}
+.owasp-tab.ot-active{background:var(--orange);border-color:var(--orange);color:#fff}
+.owasp-panel{background:var(--paper);border-radius:10px;border:1.5px solid var(--line);padding:16px 18px;min-height:180px}
+.owasp-panel-id{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:2px}
+.owasp-panel-name{font-family:var(--f-disp);font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.2}
+.owasp-sec{margin-bottom:10px}
+.owasp-sec:last-child{margin-bottom:0}
+.owasp-sec-label{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.owasp-sec-text{font-size:.85rem;line-height:1.6;color:var(--ink-2);margin:0}
+.owasp-sec-q{background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 6px 6px 0;padding:8px 12px;font-size:.84rem;line-height:1.5;color:var(--ink-2);font-style:italic;margin:0}
+.owasp-note{font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.4}
+.owasp-link{font-size:.78rem;display:inline-flex;align-items:center;gap:4px;color:var(--orange-ink);text-decoration:none;font-weight:600;margin-top:8px}
+.owasp-link:hover{text-decoration:underline}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Checklists são apoio, não substituição de raciocínio</h2></div>
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 4</p>
+      <h2>Como orientar uma revisão de código sem deixar passar riscos importantes?</h2>
+    </div>
     <div class="section-text">
+      <p style="font-size:.93rem;line-height:1.65;color:var(--ink-2);margin:0 0 4px">Imagine que você recebeu a tarefa de revisar uma API de gerenciamento de pedidos. A aplicação funciona, possui autenticação e permite consultar pedidos. Mas como saber quais aspectos de segurança devem ser investigados?</p>
       <div class="learning-grid">
-        <article class="study-card"><span class="study-card-no">01</span><p>Uma lista de checagem evita esquecer classes de falha recorrentes. No entanto, ela deve ser complementada pelo conhecimento da aplicação e do cenário de ameaça.</p></article>
-        <article class="study-card"><span class="study-card-no">02</span><p>Utilize o OWASP ASVS 5.0.0 para derivar requisitos verificáveis, registrando edição e identificador quando for usado um requisito específico. Não atribuir números de requisitos de memória.</p></article>
-        <article class="study-card"><span class="study-card-no">03</span><p>O OWASP Top 10:2025 serve para contextualizar categorias de riscos, não para afirmar que a aplicação passou por verificação integral.</p></article>
+        <article class="study-card">
+          <span class="study-card-no">01</span>
+          <h4>O checklist ajuda a saber o que investigar</h4>
+          <p>Uma lista de verificação organiza a revisão e reduz o risco de esquecer problemas recorrentes. Ao revisar <code style="font-family:var(--f-mono);background:var(--sunk);padding:1px 5px;border-radius:4px;font-size:.85em">GET /orders/:id</code>, podemos perguntar:</p>
+          <ul style="margin:6px 0 0;padding-left:1.3rem;font-size:.88rem;line-height:1.65;color:var(--ink-2)">
+            <li>O usuário precisa estar autenticado?</li>
+            <li>Ele pode consultar pedidos de qualquer organização?</li>
+            <li>O sistema verifica se o pedido pertence a ele?</li>
+            <li>O que acontece quando tenta acessar um pedido sem autorização?</li>
+          </ul>
+          <p style="margin:8px 0 0;font-size:.84rem;color:var(--ink-2)">O checklist orienta a investigação. As respostas precisam ser encontradas no código e no comportamento da aplicação.</p>
+        </article>
+        <article class="study-card">
+          <span class="study-card-no">02</span>
+          <h4>O OWASP Top 10 ajuda a reconhecer categorias de risco</h4>
+          <p>O OWASP Top 10 reúne dez categorias relevantes de riscos de segurança em aplicações web. Ele ajuda o revisor a reconhecer problemas que merecem atenção: controle de acesso, injeção, autenticação, configuração e outros.</p>
+          <p style="margin:8px 0 0;font-size:.84rem;color:var(--ink-2)">Por exemplo, permitir que um usuário consulte pedidos de outra organização pode indicar uma falha em <strong>A01:2025, Controle de Acesso Quebrado</strong>.</p>
+        </article>
+        <article class="study-card" style="grid-column:1/-1">
+          <span class="study-card-no">03</span>
+          <h4>O OWASP ASVS ajuda a transformar riscos em verificações</h4>
+          <p>O OWASP Application Security Verification Standard (ASVS) reúne requisitos técnicos que podem orientar o desenvolvimento e a avaliação de aplicações seguras. Enquanto o Top 10 ajuda a reconhecer categorias de risco, o ASVS permite selecionar requisitos verificáveis relacionados à aplicação. Na revisão, não basta afirmar que um requisito foi considerado: precisamos demonstrar, por evidências, se ele foi atendido.</p>
+        </article>
       </div>
     </div>
+
+    <div class="owasp-explorer">
+      <p class="owasp-explorer-title">Explore os riscos de segurança · OWASP Top 10:2025</p>
+      <div class="owasp-tabs" role="tablist" aria-label="Categorias OWASP Top 10:2025" id="owasp-tabs">
+        <button class="owasp-tab ot-active" role="tab" aria-selected="true"  data-oi="0" tabindex="0">A01</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="1" tabindex="-1">A02</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="2" tabindex="-1">A03</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="3" tabindex="-1">A04</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="4" tabindex="-1">A05</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="5" tabindex="-1">A06</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="6" tabindex="-1">A07</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="7" tabindex="-1">A08</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="8" tabindex="-1">A09</button>
+        <button class="owasp-tab" role="tab" aria-selected="false" data-oi="9" tabindex="-1">A10</button>
+      </div>
+      <div class="owasp-panel" id="owasp-panel" role="tabpanel" aria-live="polite"></div>
+      <p class="owasp-note">Exemplos didáticos independentes do projeto avaliativo. Nao constituem achados confirmados no laboratório.</p>
+      <a class="owasp-link" href="https://owasp.org/Top10/" target="_blank" rel="noopener noreferrer">Consultar as categorias oficiais do OWASP Top 10:2025 ↗</a>
+    </div>
+
+    <p style="font-size:.88rem;line-height:1.6;color:var(--ink-2);border-left:3px solid var(--orange);padding:10px 14px;border-radius:0 8px 8px 0;background:var(--sunk);margin:0">A ferramenta aponta padrões, o checklist organiza perguntas e o revisor interpreta as evidências à luz do contexto e dos requisitos de segurança.</p>
   </div>
+  <script>
+  (function(){
+    var owaspCats=[
+      {id:'A01:2025',name:'Controle de Acesso Quebrado',
+       what:'A aplicação nao restringe corretamente o acesso a recursos ou operações. Usuários conseguem realizar ações ou consultar dados além do que seu papel e contexto permitem.',
+       ex:'Um cliente autenticado substitui o ID na URL e consulta o pedido de outro cliente. A API retorna HTTP 200 sem verificar a quem o pedido pertence.',
+       q:'O código verifica se o pedido pertence ao usuário autenticado, além de confirmar que o token é válido?'},
+      {id:'A02:2025',name:'Configuração Insegura',
+       what:'A aplicação, o servidor ou o ambiente estao configurados de forma que expõem informações desnecessárias ou permitem comportamentos nao intencionados.',
+       ex:'A API retorna stack traces detalhados em respostas de erro em produção, revelando estrutura interna, versao do framework ou consultas ao banco.',
+       q:'As respostas de erro retornam apenas o necessário para o cliente, sem expor detalhes de implementação?'},
+      {id:'A03:2025',name:'Falhas na Cadeia de Suprimentos de Software',
+       what:'Dependências de terceiros, bibliotecas ou ferramentas de build introduzem vulnerabilidades que afetam a aplicação sem que a equipe tenha controle direto.',
+       ex:'Uma biblioteca de validação de tokens usada pela API possui uma vulnerabilidade conhecida que permite forjar assinaturas. A versao utilizada nao foi atualizada.',
+       q:'As dependências do projeto sao monitoradas quanto a vulnerabilidades conhecidas, e existe um processo para atualizar versões afetadas?'},
+      {id:'A04:2025',name:'Falhas Criptográficas',
+       what:'Dados sensíveis sao transmitidos ou armazenados sem proteção adequada, seja por uso de algoritmos fracos, transmissao em texto claro ou gerenciamento inadequado de chaves.',
+       ex:'Senhas sao armazenadas em texto claro no banco de dados. Em caso de vazamento, todas as credenciais ficam expostas imediatamente.',
+       q:'Os dados sensíveis estao protegidos adequadamente em trânsito e em repouso, utilizando algoritmos recomendados?'},
+      {id:'A05:2025',name:'Injeção',
+       what:'Dados fornecidos pelo usuário sao interpretados como comandos pela aplicação, pelo banco de dados ou por outro sistema, permitindo execução nao autorizada.',
+       ex:'Um parâmetro de busca nao sanitizado é concatenado diretamente em uma consulta SQL, permitindo extrair ou alterar dados além do permitido.',
+       q:'Os dados externos sao tratados como valores parametrizados, nunca concatenados diretamente em consultas ou comandos?'},
+      {id:'A06:2025',name:'Design Inseguro',
+       what:'A arquitetura e as decisões de design nao contemplam controles de segurança suficientes, tornando a aplicação vulnerável mesmo quando a implementação segue as especificações.',
+       ex:'Uma API permite que o status de um pedido seja alterado por qualquer campo do body sem validação de transição de estado. É uma falha de design, nao apenas de código.',
+       q:'Os fluxos críticos foram projetados considerando quais usuários podem executar quais ações e em quais condições?'},
+      {id:'A07:2025',name:'Falhas de Autenticação',
+       what:'Os mecanismos de verificação de identidade sao implementados incorretamente, permitindo que usuários nao identificados acessem recursos que exigem autenticação.',
+       ex:'Um endpoint sensível nao verifica o token JWT antes de processar a requisição. Um cliente sem token obtém a mesma resposta que um cliente autenticado.',
+       q:'Todos os endpoints que exigem autenticação validam o token antes de executar qualquer operação?'},
+      {id:'A08:2025',name:'Falhas de Integridade de Software ou de Dados',
+       what:'A aplicação processa dados ou código sem verificar sua integridade, possibilitando que conteúdo malicioso seja aceito como legítimo.',
+       ex:'Uma API aceita e executa payloads de atualização sem verificar a origem ou a integridade da requisição, permitindo que dados críticos sejam alterados por requisições forjadas.',
+       q:'A aplicação verifica a integridade e a origem dos dados antes de processá-los?'},
+      {id:'A09:2025',name:'Falhas de Registro e Alerta de Segurança',
+       what:'A aplicação nao registra eventos relevantes para segurança ou nao gera alertas adequados, dificultando a detecção e resposta a incidentes.',
+       ex:'Tentativas de acesso a pedidos de outros usuários nao sao registradas. Um atacante pode realizar centenas de tentativas sem gerar nenhum alerta.',
+       q:'Eventos de acesso negado e tentativas de violação sao registrados com informações suficientes para investigação?'},
+      {id:'A10:2025',name:'Tratamento Incorreto de Condições Excepcionais',
+       what:'A aplicação nao trata adequadamente situações inesperadas, podendo revelar informações sensíveis, interromper serviços ou deixar sistemas em estado inconsistente.',
+       ex:'Quando o banco de dados retorna um erro inesperado, a API propaga a exceção bruta ao cliente, incluindo detalhes da consulta e da estrutura do banco.',
+       q:'As exceções sao tratadas de forma que o cliente receba apenas uma mensagem genérica, enquanto os detalhes sao registrados internamente?'}
+    ];
+    function xEsc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    function owaspRender(i){
+      var c=owaspCats[i];
+      document.getElementById('owasp-panel').innerHTML=
+        '<div class="owasp-panel-id">'+xEsc(c.id)+'</div>'+
+        '<div class="owasp-panel-name">'+xEsc(c.name)+'</div>'+
+        '<div class="owasp-sec"><div class="owasp-sec-label">O que é</div><p class="owasp-sec-text">'+xEsc(c.what)+'</p></div>'+
+        '<div class="owasp-sec"><div class="owasp-sec-label">Exemplo em uma API</div><p class="owasp-sec-text">'+xEsc(c.ex)+'</p></div>'+
+        '<div class="owasp-sec"><div class="owasp-sec-label">Pergunta para o revisor</div><p class="owasp-sec-q">'+xEsc(c.q)+'</p></div>';
+    }
+    var owTabs=document.querySelectorAll('#owasp-tabs .owasp-tab');
+    owTabs.forEach(function(tab){
+      tab.addEventListener('click',function(){
+        owTabs.forEach(function(t){t.classList.remove('ot-active');t.setAttribute('aria-selected','false');t.setAttribute('tabindex','-1');});
+        tab.classList.add('ot-active');tab.setAttribute('aria-selected','true');tab.setAttribute('tabindex','0');
+        owaspRender(parseInt(tab.dataset.oi));
+      });
+      tab.addEventListener('keydown',function(e){
+        var idx=parseInt(tab.dataset.oi);
+        if(e.key==='ArrowRight'){var n=(idx+1)%10;owTabs[n].click();owTabs[n].focus();}
+        if(e.key==='ArrowLeft'){var p=(idx+9)%10;owTabs[p].click();owTabs[p].focus();}
+      });
+    });
+    owaspRender(0);
+  })();
+  </script>
 </section>
 
 <section class="cena viz-scene" data-nome="Visual 4: Checklist por camada" id="visual-4">
+<style>
+/* Slide visual-4 */
+.layer-tabs{display:flex;width:100%;border-bottom:0}
+.layer-tab{flex:1;min-width:0;background:var(--sunk);border:1.5px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 4px;text-align:center;cursor:pointer;font-size:.7rem;font-weight:700;color:var(--muted);transition:background .14s,color .14s,border-color .14s;white-space:nowrap;position:relative;margin-right:-1px;font-family:var(--f-body);line-height:1.2}
+.layer-tab.lt-active{background:var(--paper);border-color:var(--orange);color:var(--orange-ink);z-index:1}
+.layer-tab .lt-num{display:block;font-family:var(--f-disp);font-size:1rem;font-weight:700;line-height:1.1}
+.layer-tab .lt-nm{display:block;margin-top:2px}
+.layer-panel{background:var(--paper);border:1.5px solid var(--orange);border-top:none;border-radius:0 0 10px 10px;padding:16px 18px;min-height:170px}
+.lp-eyebrow{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:3px}
+.lp-name{font-family:var(--f-disp);font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:8px}
+.lp-role{font-size:.86rem;line-height:1.6;color:var(--ink-2);margin-bottom:12px}
+.lp-qlabel{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.lp-q{background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 6px 6px 0;padding:8px 12px;font-size:.85rem;line-height:1.5;color:var(--ink-2);font-style:italic;margin-bottom:10px}
+.lp-code{font-size:.72rem;color:var(--muted);line-height:1.4}
+.lp-code span{font-family:var(--f-mono);background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--ink-2);font-size:.85em}
+.lp-note{font-size:.7rem;color:var(--muted);margin-top:8px;font-style:italic}
+/* Scenario */
+.scenario-box{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.scenario-head{padding:9px 14px;background:var(--sunk);font-size:.78rem;font-weight:700;color:var(--ink)}
+.scenario-tbl{width:100%;border-collapse:collapse;font-size:.84rem}
+.scenario-tbl td{padding:7px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.scenario-tbl td:first-child{font-weight:700;color:var(--ink);width:38%}
+.scenario-tbl td:last-child{color:var(--ink-2)}
+.scenario-tbl tr:last-child td{border-bottom:none}
+.scenario-q{padding:10px 14px;font-size:.87rem;line-height:1.6;color:var(--ink-2);border-top:1.5px solid var(--line);background:var(--sunk)}
+.scenario-reveal-btn{width:100%;background:none;border:1.5px solid var(--line);border-radius:6px;padding:8px 14px;font-size:.84rem;font-weight:700;color:var(--muted);cursor:pointer;text-align:left;transition:border-color .14s,color .14s;font-family:inherit;margin-top:8px}
+.scenario-reveal-btn:hover{border-color:var(--orange);color:var(--orange-ink)}
+.scenario-answer{font-size:.85rem;line-height:1.6;color:var(--ink-2);margin-top:8px;padding:10px 14px;background:var(--sunk);border-radius:8px;border-left:3px solid var(--good)}
+/* Checklist toggle */
+.cl-toggle{width:100%;background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;font-size:.88rem;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color .14s;font-family:inherit}
+.cl-toggle:hover{border-color:var(--orange)}
+.cl-toggle-icon{font-size:.8rem;transition:transform .2s;display:inline-block}
+.cl-toggle.cl-open .cl-toggle-icon{transform:rotate(180deg)}
+.cl-body{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.cl-body.cl-open{max-height:600px}
+@media(max-width:600px){
+  .layer-tabs{flex-wrap:wrap;gap:4px;border-bottom:0}
+  .layer-tab{flex:0 0 auto;border-radius:8px;border:1.5px solid var(--line);border-bottom:1.5px solid var(--line);margin-right:0}
+  .layer-tab.lt-active{border-color:var(--orange)}
+  .layer-panel{border-radius:8px;border-top:1.5px solid var(--orange)}
+}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Checklist por camada para o laboratório</h2></div>
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Como revisar a segurança de uma API organizada em camadas?</h2>
+    </div>
     <div class="visual-panel">
-      <div class="viz-heading"><span class="viz-mark">CHECKLIST</span><h3>Pontos a verificar em cada nível da arquitetura</h3></div>
-      <div class="vtable-scroll">
-        <table class="visual-table">
-          <thead><tr><th>Camada</th><th>O que verificar</th></tr></thead>
-          <tbody>
-            <tr><td>Rota / middleware</td><td>Autenticação obrigatória? Validação do schema aplicada antes do controller?</td></tr>
-            <tr><td>Controller</td><td>Extrai apenas campos esperados? Propaga o usuário autenticado ao service?</td></tr>
-            <tr><td>Service</td><td>Verifica papel, organização e propriedade antes de agir? Regra de transição de estado presente?</td></tr>
-            <tr><td>Repository</td><td>Consultas parametrizadas? Retorna só os campos necessários? Filtra por tenant?</td></tr>
-            <tr><td>Resposta HTTP</td><td>Expõe somente dados autorizados? Inclui campos sensíveis desnecessários?</td></tr>
-          </tbody>
-        </table>
+      <p style="font-size:.88rem;line-height:1.65;color:var(--ink-2);margin:0 0 14px">Imagine que você precisa revisar o endpoint <code style="font-family:var(--f-mono);background:var(--sunk);padding:1px 6px;border-radius:4px;font-size:.9em">GET /orders/:id</code>. O usuário está autenticado e informa o ID do pedido que deseja visualizar. Como garantir que ele nao consiga consultar um pedido de outra pessoa ou organização?</p>
+
+      <div class="viz-heading" style="margin-bottom:12px"><span class="viz-mark">INVESTIGAÇÃO</span><h3>Percurso da requisição pelas camadas</h3></div>
+      <div class="layer-tabs" role="tablist" aria-label="Camadas da aplicação" id="layer-tabs">
+        <button class="layer-tab lt-active" role="tab" aria-selected="true"  data-li="0" tabindex="0"><span class="lt-num">1</span><span class="lt-nm">Route</span></button>
+        <button class="layer-tab" role="tab" aria-selected="false" data-li="1" tabindex="-1"><span class="lt-num">2</span><span class="lt-nm">Controller</span></button>
+        <button class="layer-tab" role="tab" aria-selected="false" data-li="2" tabindex="-1"><span class="lt-num">3</span><span class="lt-nm">Service</span></button>
+        <button class="layer-tab" role="tab" aria-selected="false" data-li="3" tabindex="-1"><span class="lt-num">4</span><span class="lt-nm">Repository</span></button>
+        <button class="layer-tab" role="tab" aria-selected="false" data-li="4" tabindex="-1"><span class="lt-num">5</span><span class="lt-nm">Resposta</span></button>
       </div>
-      <p class="viz-caption">Use como guia, não como garantia. A ausência de alerta em cada linha não equivale à ausência de vulnerabilidade.</p>
+      <div class="layer-panel" id="layer-panel" role="tabpanel" aria-live="polite"></div>
+
+      <div class="viz-heading" style="margin:16px 0 10px"><span class="viz-mark">CENÁRIO</span><h3>Ana tenta consultar um pedido de Bruno</h3></div>
+      <div class="scenario-box">
+        <div class="scenario-head">Situação fictícia para reflexao</div>
+        <table class="scenario-tbl">
+          <tr><td>Autenticação</td><td>O token de Ana é válido.</td></tr>
+          <tr><td>Identificador</td><td>Ana informa o ID de um pedido pertencente a Bruno.</td></tr>
+          <tr><td>Consulta</td><td>O sistema encontra o pedido no banco de dados.</td></tr>
+          <tr><td>Decisao necessária</td><td>Verificar se Ana possui autorização para visualizar aquele pedido.</td></tr>
+        </table>
+        <div class="scenario-q">O fato de Ana estar autenticada e o pedido existir significa que a consulta deve ser permitida?</div>
+        <div style="padding:8px 14px 12px">
+          <button class="scenario-reveal-btn" id="v4-reveal-btn" aria-expanded="false">↓ Ver explicação</button>
+          <div class="scenario-answer" id="v4-reveal-ans" hidden>Nao. Estar autenticada confirma a identidade de Ana, mas nao autoriza o acesso a qualquer recurso. A autorização exige verificar se o pedido pertence a Ana ou se ela possui permissão explícita para consultá-lo. Esse cenário nao aponta uma vulnerabilidade específica da API do laboratório. Ele demonstra uma pergunta que qualquer revisor deveria saber formular.</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <button class="cl-toggle" id="cl-toggle-btn" aria-expanded="false" aria-controls="cl-body">
+          <span>Quadro de consulta: checklist por camada</span>
+          <span class="cl-toggle-icon" aria-hidden="true">▼</span>
+        </button>
+        <div class="cl-body" id="cl-body">
+          <div class="vtable-scroll" style="margin-top:8px">
+            <table class="visual-table">
+              <thead><tr><th>Etapa</th><th>Pergunta central</th><th>Onde procurar evidência</th></tr></thead>
+              <tbody>
+                <tr><td>Route / Middleware</td><td>Quem pode acessar e quais entradas sao verificadas?</td><td>Rotas, middlewares e schemas</td></tr>
+                <tr><td>Controller</td><td>Quais dados e identidades sao encaminhados?</td><td>Parâmetros e chamadas aos services</td></tr>
+                <tr><td>Service</td><td>Quais regras de negócio e permissões sao aplicadas?</td><td>Condições, verificações e exceções</td></tr>
+                <tr><td>Repository</td><td>Quais registros e campos sao recuperados?</td><td>Filtros, consultas e seleções do Prisma</td></tr>
+                <tr><td>Resposta HTTP</td><td>O que o cliente efetivamente recebe?</td><td>JSON retornado e testes de requisição</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <p class="viz-caption" style="margin-top:14px">Revisar uma API exige seguir o caminho da requisição, compreender as decisões em cada etapa e verificar se os controles de segurança realmente impedem comportamentos nao autorizados. Marcar uma verificação como concluída nao significa comprovar segurança: procure evidências no código e, quando possível, teste tanto o cenário permitido quanto o proibido.</p>
     </div>
   </div>
+  <script>
+  (function(){
+    var layerData=[
+      {num:'ETAPA 1',sub:'Entrada da requisição',name:'Route / Middleware',
+       role:'A rota define o endpoint e os middlewares responsáveis por verificar a autenticação e validar os dados recebidos, quando aplicável.',
+       q:'A requisição exige autenticação? Os parâmetros recebidos sao verificados antes de chegarem ao controller?',
+       code:'Definição da rota, middlewares aplicados e schemas de validação'},
+      {num:'ETAPA 2',sub:'Processamento inicial',name:'Controller',
+       role:'O controller recebe a requisição, extrai os parâmetros necessários e encaminha as informações ao service. Ele nao deve tomar decisões de autorização por conta própria.',
+       q:'O controller utiliza a identidade autenticada ou confia em informações de usuário fornecidas pelo próprio cliente?',
+       code:'Extração de parâmetros, origem do usuário autenticado e chamadas ao service'},
+      {num:'ETAPA 3',sub:'Regras de negócio',name:'Service',
+       role:'O service coordena a operação e as regras de negócio, incluindo verificações contextuais de autorização: o pedido pertence ao usuário? O papel permite a operação?',
+       q:'Existe uma verificação que impeça o usuário de acessar recursos que nao deveria consultar?',
+       code:'Condições de autorização, verificações de propriedade e organização'},
+      {num:'ETAPA 4',sub:'Acesso aos dados',name:'Repository',
+       role:'O repository utiliza o ORM para buscar os dados no banco. As consultas precisam filtrar corretamente pelo contexto autorizado do usuário.',
+       q:'A consulta restringe os registros ao contexto autorizado, como usuário ou organização?',
+       code:'Filtros de consulta, campos selecionados e escopo organizacional'},
+      {num:'ETAPA 5',sub:'Resultado ao cliente',name:'Resposta HTTP',
+       role:'Após a consulta, a aplicação constrói a resposta enviada ao cliente. O que é retornado é a última oportunidade de limitar a exposição de dados.',
+       q:'O retorno contém apenas as informações que o usuário está autorizado a visualizar?',
+       code:'Campos do JSON retornado e comportamento em caso de acesso negado'}
+    ];
+    function xEsc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    function renderLayer(i){
+      var l=layerData[i];
+      document.getElementById('layer-panel').innerHTML=
+        '<div class="lp-eyebrow">'+xEsc(l.num)+' · '+xEsc(l.sub)+'</div>'+
+        '<div class="lp-name">'+xEsc(l.name)+'</div>'+
+        '<p class="lp-role">'+xEsc(l.role)+'</p>'+
+        '<div class="lp-qlabel">Pergunta do revisor</div>'+
+        '<p class="lp-q">'+xEsc(l.q)+'</p>'+
+        '<p class="lp-code">O que examinar: <span>'+xEsc(l.code)+'</span></p>'+
+        '<p class="lp-note">Exemplo conceitual. A localizacao dos controles pode variar conforme a arquitetura adotada.</p>';
+    }
+    var ltabs=document.querySelectorAll('#layer-tabs .layer-tab');
+    ltabs.forEach(function(tab){
+      tab.addEventListener('click',function(){
+        ltabs.forEach(function(t){t.classList.remove('lt-active');t.setAttribute('aria-selected','false');t.setAttribute('tabindex','-1');});
+        tab.classList.add('lt-active');tab.setAttribute('aria-selected','true');tab.setAttribute('tabindex','0');
+        renderLayer(parseInt(tab.dataset.li));
+      });
+      tab.addEventListener('keydown',function(e){
+        var idx=parseInt(tab.dataset.li);
+        if(e.key==='ArrowRight'){var n=(idx+1)%5;ltabs[n].click();ltabs[n].focus();}
+        if(e.key==='ArrowLeft'){var p=(idx+4)%5;ltabs[p].click();ltabs[p].focus();}
+      });
+    });
+    renderLayer(0);
+    var revBtn=document.getElementById('v4-reveal-btn');
+    var revAns=document.getElementById('v4-reveal-ans');
+    revBtn.addEventListener('click',function(){
+      var open=revAns.hasAttribute('hidden');
+      if(open){revAns.removeAttribute('hidden');revBtn.textContent='↑ Ocultar explicação';revBtn.setAttribute('aria-expanded','true');}
+      else{revAns.setAttribute('hidden','');revBtn.textContent='↓ Ver explicação';revBtn.setAttribute('aria-expanded','false');}
+    });
+    var clBtn=document.getElementById('cl-toggle-btn');
+    var clBody=document.getElementById('cl-body');
+    clBtn.addEventListener('click',function(){
+      var open=clBody.classList.toggle('cl-open');
+      clBtn.classList.toggle('cl-open',open);
+      clBtn.setAttribute('aria-expanded',open?'true':'false');
+    });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Conceito: Anatomia de um achado" id="conceito-6">
