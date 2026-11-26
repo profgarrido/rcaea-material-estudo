@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <title>Preparação do ambiente | Laboratório</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/laura-guia.css">
+  <link rel="stylesheet" href="../assets/css/instalacao.css">
+  <script src="../assets/js/instalacao.js" defer></script>
+</head>
+<body class="instalacao-page">
+
+<div class="topo-movel" id="topo-movel">
+  <span class="topo-movel-titulo">Preparação do ambiente</span>
+  <button aria-expanded="false" aria-controls="nav-movel" class="topo-toggle" id="btn-nav-movel" type="button">Menu</button>
+</div>
+<nav aria-label="Índice móvel" class="nav-movel" id="nav-movel" hidden>
+  <ul class="lat-nav">
+    <li><a href="#sistemas">Escolha seu sistema operacional</a></li>
+    <li><a href="#windows">Windows</a></li>
+    <li><a href="#macos">macOS</a></li>
+    <li><a href="#linux">Linux</a></li>
+    <li><a href="#executar">Executar o laboratório</a></li>
+    <li><a href="#problemas">Problemas frequentes</a></li>
+    <li><a href="#seguranca">Cuidados de segurança</a></li>
+  </ul>
+</nav>
+
+<div class="livro">
+
+  <nav class="lateral" aria-label="Índice do guia de instalação">
+    <div class="lateral-header">
+      <a href="../index.html" class="voltar-inicio" aria-label="Voltar à página inicial">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 0 0-1.414 0l-7 7a1 1 0 0 0 1.414 1.414L4 10.414V17a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-3h2v3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-6.586l.293.293a1 1 0 0 0 1.414-1.414l-7-7z"/></svg>
+        Início
+      </a>
+    </div>
+    <strong class="lateral-titulo-bloco">Preparação do ambiente</strong>
+    <ul class="lat-nav">
+      <li><a href="#sistemas">Escolha seu sistema operacional</a>
+        <ul class="lat-nav">
+          <li><a href="#windows">Windows</a></li>
+          <li><a href="#macos">macOS</a></li>
+          <li><a href="#linux">Linux</a></li>
+        </ul>
+      </li>
+      <li><a href="#executar">Executar o laboratório</a></li>
+      <li><a href="#problemas">Problemas frequentes</a></li>
+      <li><a href="#seguranca">Cuidados de segurança</a></li>
+    </ul>
+  </nav>
+
+  <main class="conteudo">
+
+    <nav aria-label="Navegação estrutural" class="breadcrumb">
+      <a href="../index.html">Disciplina</a> <span>/</span>
+      <a href="index.html">Laboratório</a> <span>/</span>
+      <span>Preparação do ambiente</span>
+    </nav>
+
+    <header class="pagina-header">
+      <h1>Prepare seu computador para o laboratório</h1>
+      <p class="lead">Nosso projeto utiliza uma API em Node.js, TypeScript e Express, com banco de dados PostgreSQL executado pelo Docker. Para trabalhar no código, você também utilizará o Git e um editor de sua preferência.</p>
+    </header>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="o-que-instalar">
+      <p>Escolha abaixo o sistema operacional do computador em que pretende executar a aplicação. Abra cada etapa para encontrar o link oficial de instalação, os comandos de verificação e o que fazer depois.</p>
+      <p><strong>Você não precisa instalar tudo de uma vez nem ler as instruções dos outros sistemas.</strong></p>
+
+      <h2>O que será necessário</h2>
+
+      <table class="inst-tools-table">
+        <thead>
+          <tr>
+            <th>Ferramenta</th>
+            <th>Para que serve</th>
+            <th>Necessidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Node.js + npm</td>
+            <td>Executar a API e instalar bibliotecas</td>
+            <td><span class="badge-nec">Necessário</span></td>
+          </tr>
+          <tr>
+            <td>Git</td>
+            <td>Clonar o repositório privado e registrar alterações</td>
+            <td><span class="badge-nec">Necessário</span></td>
+          </tr>
+          <tr>
+            <td>Docker com Compose</td>
+            <td>Executar o PostgreSQL em container</td>
+            <td><span class="badge-nec">Necessário para rodar localmente</span></td>
+          </tr>
+          <tr>
+            <td>VS Code ou outro editor</td>
+            <td>Ler, editar e investigar o código</td>
+            <td><span class="badge-rec">Recomendado</span></td>
+          </tr>
+          <tr>
+            <td>REST Client, Postman ou Insomnia</td>
+            <td>Enviar requisições HTTP</td>
+            <td><span class="badge-opc">Opcional</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="inst-nota">
+        <p><strong>Não instale separadamente PostgreSQL, TypeScript, Prisma ou Express.</strong> O banco é executado pelo Docker e o script do projeto instala as dependências necessárias.</p>
+        <p><strong>Sobre o Node.js:</strong> a API aceita versões a partir de <strong>20.19.0</strong>. Para preparar um computador hoje, prefira a linha <strong>24 LTS</strong>, desde que atenda aos requisitos de sua máquina. Versões antigas podem funcionar no laboratório mesmo após o fim do suporte de segurança, mas não são recomendadas para novas instalações.</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="sistemas" aria-labelledby="titulo-sistemas">
+      <h2 id="titulo-sistemas">Escolha seu sistema operacional</h2>
+
+      <!-- ── Windows ── -->
+      <details class="os-accordion" name="sistema" id="windows">
+        <summary>
+          <span class="os-nome">Windows</span>
+          <span class="os-desc">Instalação pelo navegador, PowerShell e Docker Desktop. Pode exigir WSL 2 e virtualização.</span>
+          <span class="os-etapas">5 etapas</span>
+        </summary>
+        <div class="os-accordion__content">
+
+          <details class="step-accordion" id="windows-node">
+            <summary><span class="step-num">1.</span> Instalar Node.js e npm</summary>
+            <div class="step-accordion__content">
+              <p>O Node.js é o ambiente utilizado para executar nossa API. O npm, instalado junto com ele, é responsável por obter as bibliotecas do projeto.</p>
+              <ol>
+                <li>Acesse o <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">site oficial de download do Node.js</a>.</li>
+                <li>Escolha a versão <strong>LTS</strong> compatível, preferencialmente a linha 24, e o instalador para Windows (<code>.msi</code>).</li>
+                <li>Execute a instalação mantendo as opções padrão adequadas ao seu ambiente.</li>
+                <li>Feche e reabra o PowerShell ou o terminal do Visual Studio Code.</li>
+                <li>Execute:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>PowerShell</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Node.js" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> os dois comandos mostram números de versão. Se o Node.js instalado for anterior a <code>20.19.0</code>, atualize-o antes de executar o laboratório.</p>
+              <p class="resultado">Não é necessário instalar npm separadamente, nem instalar TypeScript ou Prisma de modo global.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="windows-git">
+            <summary><span class="step-num">2.</span> Instalar Git</summary>
+            <div class="step-accordion__content">
+              <p>O Git permitirá obter o código da equipe e enviar alterações ao repositório privado.</p>
+              <ol>
+                <li>Acesse <a href="https://git-scm.com/install/windows" target="_blank" rel="noopener noreferrer">Git para Windows</a>.</li>
+                <li>Baixe o instalador compatível com o computador e execute-o.</li>
+                <li>Após concluir, abra um terminal novo e verifique:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>PowerShell</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando de verificação do Git" style="display:none">Copiar</button>
+                </div>
+                <pre><code>git --version</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> uma mensagem iniciada por <code>git version</code>.</p>
+              <p>O GitHub exige autenticação para acessar repositórios privados. O convite à equipe e o acesso ao repositório são explicados no <a href="github.html">guia de GitHub da disciplina</a>. Não utilize sua senha da conta como senha de operações Git por HTTPS.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="windows-docker">
+            <summary><span class="step-num">3.</span> Instalar e iniciar Docker Desktop</summary>
+            <div class="step-accordion__content">
+              <p>O Docker executará o banco PostgreSQL em um container. Não é necessário instalar o PostgreSQL separadamente.</p>
+              <ol>
+                <li>Consulte a <a href="https://docs.docker.com/desktop/setup/install/windows-install/" target="_blank" rel="noopener noreferrer">documentação oficial do Docker Desktop para Windows</a>.</li>
+                <li>Confira os requisitos de sistema, virtualização e WSL 2 informados na documentação.</li>
+                <li>Instale o Docker Desktop e reinicie o computador se solicitado.</li>
+                <li>Abra o <strong>Docker Desktop</strong> e aguarde a inicialização do Docker Engine.</li>
+                <li>No PowerShell, execute:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>PowerShell</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Docker" style="display:none">Copiar</button>
+                </div>
+                <pre><code>docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> os comandos mostram a versão do Docker, a versão do Compose e informações do Engine. O comando <code>docker info</code> não deve terminar com erro de conexão.</p>
+              <div class="inst-nota">
+                <p><strong>Se o instalador exigir WSL 2:</strong> siga a documentação do Docker. Em computadores pessoais compatíveis, a instalação pode exigir a configuração do WSL com permissões administrativas. Em computador institucional, não altere configurações de virtualização ou políticas de segurança sem autorização.</p>
+                <p><strong>Importante:</strong> apenas ter o comando <code>docker</code> instalado não significa que o Docker Engine esteja rodando. Verifique <code>docker info</code> com o Docker Desktop aberto.</p>
+              </div>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="windows-editor">
+            <summary><span class="step-num">4.</span> Preparar editor e ferramentas opcionais</summary>
+            <div class="step-accordion__content">
+              <p>Para ler e editar código, recomendamos o <a href="https://code.visualstudio.com/download" target="_blank" rel="noopener noreferrer">Visual Studio Code</a>, mas você pode utilizar outro editor de sua preferência.</p>
+              <p>Se utilizar o VS Code, algumas extensões úteis são <strong>Prisma</strong>, <strong>ESLint</strong>, <strong>Prettier</strong> e <strong>REST Client</strong>. Elas não são exigidas para executar a API.</p>
+              <p>Para testar requisições HTTP, o projeto disponibiliza <code>docs/requests.http</code>, que pode ser usado com REST Client. Também é possível usar Postman ou Insomnia.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="windows-verificar">
+            <summary><span class="step-num">5.</span> Conferir a instalação no Windows</summary>
+            <div class="step-accordion__content">
+              <p>Abra um PowerShell ou um terminal integrado novo e execute:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>PowerShell</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar todos os comandos de verificação" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v
+git --version
+docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Se todos responderem sem erro, avance para <a href="#executar"><strong>Depois de instalar: executar o laboratório</strong></a>, abaixo dos sistemas operacionais.</p>
+              <p>Se algum comando não for reconhecido, tente primeiro fechar e reabrir o terminal. Consulte a seção <a href="#problemas"><strong>Problemas frequentes</strong></a> ao final desta página.</p>
+            </div>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ── macOS ── -->
+      <details class="os-accordion" name="sistema" id="macos">
+        <summary>
+          <span class="os-nome">macOS</span>
+          <span class="os-desc">Instalação adequada ao processador Apple Silicon ou Intel, Terminal e Docker Desktop.</span>
+          <span class="os-etapas">5 etapas</span>
+        </summary>
+        <div class="os-accordion__content">
+
+          <details class="step-accordion" id="macos-node">
+            <summary><span class="step-num">1.</span> Instalar Node.js e npm</summary>
+            <div class="step-accordion__content">
+              <ol>
+                <li>Acesse o <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">download oficial do Node.js</a>.</li>
+                <li>Selecione uma versão LTS compatível, preferencialmente da linha 24, e o instalador adequado ao macOS.</li>
+                <li>Conclua a instalação e abra uma nova janela do Terminal.</li>
+                <li>Verifique:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Node.js" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> versões identificadas para Node.js e npm. A API aceita Node.js a partir de <code>20.19.0</code>.</p>
+              <p>Se você utiliza um gerenciador de versões do Node.js, como nvm, confirme qual versão está efetivamente ativa na janela do terminal antes de executar o projeto.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="macos-git">
+            <summary><span class="step-num">2.</span> Verificar ou instalar Git</summary>
+            <div class="step-accordion__content">
+              <p>Muitos Macs já possuem Git ou oferecem sua instalação por meio das ferramentas de linha de comando da Apple.</p>
+              <p>Execute:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando de verificação do Git" style="display:none">Copiar</button>
+                </div>
+                <pre><code>git --version</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Se o sistema solicitar as ferramentas de desenvolvimento, acompanhe a instalação oficial. Você também pode iniciar essa instalação com:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando xcode-select" style="display:none">Copiar</button>
+                </div>
+                <pre><code>xcode-select --install</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Outra alternativa é consultar <a href="https://git-scm.com/install/mac" target="_blank" rel="noopener noreferrer">as opções de instalação do Git no macOS</a>, incluindo Homebrew e MacPorts.</p>
+              <p class="resultado"><strong>Resultado esperado:</strong> <code>git version ...</code>.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="macos-docker">
+            <summary><span class="step-num">3.</span> Instalar e iniciar Docker Desktop</summary>
+            <div class="step-accordion__content">
+              <p>O Docker será responsável pelo PostgreSQL utilizado no laboratório.</p>
+              <ol>
+                <li>Acesse a <a href="https://docs.docker.com/desktop/setup/install/mac-install/" target="_blank" rel="noopener noreferrer">documentação oficial do Docker Desktop para Mac</a>.</li>
+                <li>Escolha o instalador adequado ao seu computador: <strong>Apple Silicon</strong> (chips da família M) ou <strong>Intel</strong>.</li>
+                <li>Instale, abra o Docker Desktop e conclua as autorizações necessárias.</li>
+                <li>Aguarde o Docker Engine iniciar.</li>
+                <li>No Terminal, execute:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Docker" style="display:none">Copiar</button>
+                </div>
+                <pre><code>docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> o Docker e o Compose estão instalados e <code>docker info</code> consegue consultar o Engine.</p>
+              <p>Não há necessidade de instalar manualmente o PostgreSQL no macOS.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="macos-editor">
+            <summary><span class="step-num">4.</span> Preparar editor e ferramentas opcionais</summary>
+            <div class="step-accordion__content">
+              <p>Baixe o <a href="https://code.visualstudio.com/download" target="_blank" rel="noopener noreferrer">Visual Studio Code para macOS</a> ou utilize um editor equivalente.</p>
+              <p>Se optar pelo VS Code, as extensões <strong>Prisma</strong>, <strong>ESLint</strong>, <strong>Prettier</strong> e <strong>REST Client</strong> podem auxiliar a análise. Também é possível testar a API com Postman ou Insomnia.</p>
+              <p>Essas ferramentas são opcionais e não precisam ser instaladas para executar os scripts do projeto.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="macos-verificar">
+            <summary><span class="step-num">5.</span> Conferir a instalação no macOS</summary>
+            <div class="step-accordion__content">
+              <p>Em uma nova janela do Terminal, execute:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar todos os comandos de verificação" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v
+git --version
+docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Se todos responderem sem erro, vá para <a href="#executar"><strong>Depois de instalar: executar o laboratório</strong></a>.</p>
+              <p>Se o terminal não encontrar um comando recém-instalado, reinicie a sessão do terminal ou consulte a seção <a href="#problemas"><strong>Problemas frequentes</strong></a>.</p>
+            </div>
+          </details>
+
+        </div>
+      </details>
+
+      <!-- ── Linux ── -->
+      <details class="os-accordion" name="sistema" id="linux">
+        <summary>
+          <span class="os-nome">Linux</span>
+          <span class="os-desc">Orientações para Ubuntu e Debian, com links para outras distribuições; Docker Engine e Compose plugin.</span>
+          <span class="os-etapas">5 etapas</span>
+        </summary>
+        <div class="os-accordion__content">
+
+          <details class="step-accordion" id="linux-node">
+            <summary><span class="step-num">1.</span> Instalar Node.js e npm</summary>
+            <div class="step-accordion__content">
+              <p>A versão do Node.js disponibilizada pelo gerenciador de pacotes da sua distribuição pode ser antiga. Por isso, verifique sempre a versão instalada e prefira uma versão LTS com suporte.</p>
+              <ol>
+                <li>Acesse o <a href="https://nodejs.org/en/download" target="_blank" rel="noopener noreferrer">site oficial do Node.js</a>.</li>
+                <li>Selecione um método apropriado à sua distribuição e arquitetura, preferencialmente para a linha 24 LTS.</li>
+                <li>Conclua a instalação e execute:</li>
+              </ol>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Node.js" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> ambos os comandos exibem versões. A API exige pelo menos <code>20.19.0</code>, mas uma linha LTS com suporte é preferível.</p>
+              <p>Não use <code>sudo npm install -g</code> para instalar Prisma, TypeScript ou Express. Essas dependências são específicas do projeto e serão instaladas pelo setup.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="linux-git">
+            <summary><span class="step-num">2.</span> Instalar Git</summary>
+            <div class="step-accordion__content">
+              <p>Para Ubuntu e Debian, abra o terminal e execute:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de instalação do Git" style="display:none">Copiar</button>
+                </div>
+                <pre><code>sudo apt update
+sudo apt install -y git</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Depois confira:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando de verificação do Git" style="display:none">Copiar</button>
+                </div>
+                <pre><code>git --version</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> <code>git version ...</code>.</p>
+              <p>Se utilizar Fedora, Arch ou outra distribuição, consulte o <a href="https://git-scm.com/download/linux" target="_blank" rel="noopener noreferrer">guia oficial do Git para Linux</a> e utilize o procedimento correspondente à sua distribuição.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="linux-docker">
+            <summary><span class="step-num">3.</span> Instalar Docker Engine e Compose plugin</summary>
+            <div class="step-accordion__content">
+              <p>No Linux, recomendamos o <strong>Docker Engine</strong> com o <strong>plugin Docker Compose v2</strong>. Não é necessário instalar o Docker Desktop.</p>
+              <ol>
+                <li>Identifique sua distribuição Linux.</li>
+                <li>Siga o procedimento oficial completo da documentação do Docker, incluindo configuração do repositório e instalação dos componentes indicados.</li>
+                <li>Certifique-se de instalar o <strong>Compose plugin</strong>, e não apenas a versão antiga <code>docker-compose</code>.</li>
+              </ol>
+              <p><strong>Documentação por distribuição:</strong></p>
+              <ul>
+                <li><strong>Ubuntu:</strong> <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank" rel="noopener noreferrer">Instalar Docker Engine no Ubuntu</a>.</li>
+                <li><strong>Debian:</strong> <a href="https://docs.docker.com/engine/install/debian/" target="_blank" rel="noopener noreferrer">Instalar Docker Engine no Debian</a>.</li>
+                <li><strong>Fedora:</strong> <a href="https://docs.docker.com/engine/install/fedora/" target="_blank" rel="noopener noreferrer">Instalar Docker Engine no Fedora</a>.</li>
+                <li><strong>Outras distribuições:</strong> <a href="https://docs.docker.com/engine/install/" target="_blank" rel="noopener noreferrer">Documentação geral do Docker Engine</a>.</li>
+                <li><strong>Compose:</strong> <a href="https://docs.docker.com/compose/install/linux/" target="_blank" rel="noopener noreferrer">Instalar o plugin Docker Compose</a>.</li>
+              </ul>
+              <p>Em distribuições que utilizam <code>systemd</code>, você pode verificar o serviço com:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando de status do Docker" style="display:none">Copiar</button>
+                </div>
+                <pre><code>sudo systemctl status docker</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Se a instalação foi concluída, mas o serviço está parado, pode ser necessário iniciá-lo:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando para iniciar Docker" style="display:none">Copiar</button>
+                </div>
+                <pre><code>sudo systemctl start docker</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p>Depois teste <strong>com seu usuário habitual</strong>:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de verificação do Docker" style="display:none">Copiar</button>
+                </div>
+                <pre><code>docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> os três comandos funcionam. O script <code>npm run setup</code> utiliza o comando <code>docker</code> sem <code>sudo</code>.</p>
+              <div class="inst-nota">
+                <p><strong>Se houver erro de permissão:</strong> consulte as <a href="https://docs.docker.com/engine/install/linux-postinstall/" target="_blank" rel="noopener noreferrer">orientações oficiais de pós-instalação do Docker no Linux</a>. A participação no grupo <code>docker</code> concede privilégios elevados. Não altere permissões do socket Docker indiscriminadamente.</p>
+              </div>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="linux-editor">
+            <summary><span class="step-num">4.</span> Preparar editor e ferramentas opcionais</summary>
+            <div class="step-accordion__content">
+              <p>O <a href="https://code.visualstudio.com/download" target="_blank" rel="noopener noreferrer">Visual Studio Code</a> está disponível para diversas distribuições Linux. Outros editores podem ser utilizados.</p>
+              <p>Extensões recomendadas: <strong>Prisma</strong>, <strong>ESLint</strong>, <strong>Prettier</strong> e <strong>REST Client</strong>. Também é possível utilizar Postman ou Insomnia para testar endpoints.</p>
+              <p>O editor e essas extensões não fazem parte da instalação obrigatória da API.</p>
+            </div>
+          </details>
+
+          <details class="step-accordion" id="linux-verificar">
+            <summary><span class="step-num">5.</span> Conferir a instalação no Linux</summary>
+            <div class="step-accordion__content">
+              <p>Em um novo terminal, com o usuário que executará o projeto, rode:</p>
+              <div class="command-block" data-command-block>
+                <div class="command-block__top">
+                  <span>Terminal</span>
+                  <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar todos os comandos de verificação" style="display:none">Copiar</button>
+                </div>
+                <pre><code>node -v
+npm -v
+git --version
+docker --version
+docker compose version
+docker info</code></pre>
+                <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+              </div>
+              <p class="resultado"><strong>Resultado esperado:</strong> comandos reconhecidos e Docker Engine acessível pelo usuário sem erro de permissão.</p>
+              <p>Se algum deles falhar, consulte <a href="#problemas"><strong>Problemas frequentes</strong></a> antes de iniciar o setup.</p>
+            </div>
+          </details>
+
+        </div>
+      </details>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="executar" aria-labelledby="titulo-executar">
+      <h2 id="titulo-executar">Depois de instalar: executar o laboratório</h2>
+      <p><strong>Esta sequência é igual em Windows, macOS e Linux.</strong> Não é necessário repetir a preparação completa a cada aula.</p>
+
+      <ol class="exec-steps">
+        <li>
+          <div>
+            <h3>Acesse o repositório da sua equipe</h3>
+            <p>O código será disponibilizado em repositórios <strong>privados</strong> da organização: <a href="https://github.com/appsec-labs-cesar-school" target="_blank" rel="noopener noreferrer">github.com/appsec-labs-cesar-school</a>.</p>
+            <p>Você precisará receber e aceitar o convite correspondente à sua equipe. Ter o link da organização não significa ter acesso automático aos repositórios privados.</p>
+            <p>Se ainda não conseguir acessar seu repositório, consulte o <a href="github.html">guia "Como acessar o GitHub"</a> e verifique se o convite foi aceito.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Clone o repositório</h3>
+            <p>No GitHub, abra o repositório da equipe, escolha <strong>Code &rarr; HTTPS</strong> e copie sua URL.</p>
+            <p>No terminal, execute:</p>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de clone" style="display:none">Copiar</button>
+              </div>
+              <pre><code>git clone URL_DO_REPOSITORIO_DA_EQUIPE
+cd NOME_DA_PASTA_CLONADA</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Substitua os textos em maiúsculas pelos valores reais apresentados no GitHub.</p>
+            <p>Confirme que está na pasta que contém o arquivo <code>package.json</code> antes de executar comandos <code>npm run</code>. Caso o template tenha uma pasta interna chamada <code>case-auditoria-api</code>, entre nela.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Execute o diagnóstico de ambiente</h3>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando doctor" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run doctor</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Esse script verifica os requisitos do laboratório e informa o que precisa ser corrigido caso alguma ferramenta não esteja disponível.</p>
+            <p><strong>Se falhar:</strong> não pule diretamente para o <code>setup</code>. Corrija o requisito indicado ou procure orientação com a mensagem do erro.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Prepare o ambiente pela primeira vez</h3>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando setup" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run setup</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>O script realiza a preparação do ambiente: verifica pré-requisitos, cria o <code>.env</code> local, instala dependências do npm, inicializa o PostgreSQL via Docker Compose, gera o Prisma Client, aplica migrations e carrega dados fictícios.</p>
+            <p><strong>Atenção:</strong> não precisa executar <code>npm install</code> antes. O <code>setup</code> já instala as dependências.</p>
+            <p class="resultado"><strong>Mensagem esperada ao terminar:</strong> <code>AMBIENTE PREPARADO. Execute: npm run dev</code>.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Inicie a API</h3>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando dev" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run dev</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Mantenha esse terminal aberto enquanto utilizar a aplicação.</p>
+            <p>Abra no navegador: <a href="http://127.0.0.1:3000/health" target="_blank" rel="noopener noreferrer">http://127.0.0.1:3000/health</a></p>
+            <p>A resposta esperada é:</p>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Resposta JSON</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar resposta esperada" style="display:none">Copiar</button>
+              </div>
+              <pre><code>{"status":"ok","environment":"laboratory"}</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Esse retorno confirma que o servidor HTTP está respondendo. Ele <strong>não</strong> comprova que todas as funcionalidades ou requisitos de segurança foram validados.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Teste a compilação e o funcionamento básico</h3>
+            <p>Em outro terminal, aberto na mesma pasta do projeto, execute:</p>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de build e smoke test" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run build
+npm run test:smoke</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>O build compila o TypeScript. Os testes smoke verificam operações funcionais básicas, como o endpoint de saúde, a autenticação e a leitura de dados autorizados.</p>
+            <p><strong>Importante:</strong> os testes smoke não são uma auditoria de segurança e não identificam deliberadamente todos os problemas que deverão ser investigados na disciplina.</p>
+          </div>
+        </li>
+
+        <li>
+          <div>
+            <h3>Próximas execuções</h3>
+            <p>Depois da primeira configuração, você poderá utilizar:</p>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando lab" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run lab</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Esse comando auxilia a iniciar o banco, se necessário, e executar a API.</p>
+            <p>Para parar o container de banco de dados sem excluir seu volume:</p>
+            <div class="command-block" data-command-block>
+              <div class="command-block__top">
+                <span>Terminal</span>
+                <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comando db:stop" style="display:none">Copiar</button>
+              </div>
+              <pre><code>npm run db:stop</code></pre>
+              <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+            </div>
+            <p>Não execute comandos que removam volumes ou recriem o banco de forma destrutiva sem orientação. Se estiver trabalhando com outra pessoa, lembre-se de registrar mudanças e evidências no repositório da equipe.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="problemas" aria-labelledby="titulo-problemas">
+      <h2 id="titulo-problemas">Problemas frequentes</h2>
+      <p>Esta seção é compartilhada por todos os sistemas operacionais. Abra o erro que mais se aproxima da mensagem do seu terminal.</p>
+
+      <details class="faq-item" id="erro-node-nao-reconhecido">
+        <summary><code>node</code> ou <code>npm</code> não é reconhecido</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> o terminal informa que <code>node</code>, <code>npm</code> ou um dos comandos não existe.</p>
+          <p><strong>Causas possíveis:</strong> Node.js não foi instalado, instalação incompleta, terminal aberto antes da instalação ou variável PATH incorreta.</p>
+          <p><strong>Como verificar:</strong> feche e reabra o terminal, execute <code>node -v</code> e <code>npm -v</code> novamente e confira a instalação pelo site oficial. No macOS/Linux, se utilizar um gerenciador de versões, confirme se ele está carregado no terminal atual.</p>
+          <p class="faq-nao-faca"><strong>Não faça:</strong> instalar pacotes globais aleatórios ou copiar arquivos executáveis de fontes desconhecidas para solucionar o PATH.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-powershell-bloqueado">
+        <summary>PowerShell bloqueia a execução de <code>npm.ps1</code></summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> mensagem semelhante a "running scripts is disabled on this system".</p>
+          <p><strong>Orientação:</strong> esse comportamento está relacionado às políticas de execução do PowerShell, não necessariamente ao Node.js. Experimente abrir o <strong>Prompt de Comando (cmd)</strong> ou executar <code>npm.cmd -v</code> / <code>npm.cmd run doctor</code> no PowerShell. Em computadores administrados pela instituição, siga a política local. Evite alterar permanentemente as políticas de segurança apenas para executar o laboratório.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-git-nao-reconhecido">
+        <summary><code>git</code> não é reconhecido</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> comando <code>git</code> não encontrado.</p>
+          <p><strong>Como resolver:</strong> confirme a instalação pelo site oficial, feche e reabra o terminal, execute <code>git --version</code> e verifique a integração do Git ao PATH. No macOS, as ferramentas de linha de comando podem resolver a ausência de Git.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-docker-compose-nao-reconhecido">
+        <summary><code>docker compose</code> não é reconhecido</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> <code>docker</code> funciona, mas <code>docker compose version</code> falha.</p>
+          <p><strong>Causa possível:</strong> Compose plugin ausente ou instalação incompleta do Docker. Não confunda o comando moderno <code>docker compose</code> com a versão antiga <code>docker-compose</code>.</p>
+          <p><strong>Como resolver:</strong> atualize ou instale o Docker Desktop, no Windows/macOS, ou o Compose plugin, no Linux, usando a documentação oficial. Depois abra novo terminal e repita o comando.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-docker-daemon">
+        <summary>Cannot connect to the Docker daemon</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> <code>docker info</code> não consegue se comunicar com o Docker Engine.</p>
+          <p><strong>Windows/macOS:</strong> abra o Docker Desktop e aguarde sua inicialização. Confira os requisitos da máquina e a virtualização.</p>
+          <p><strong>Linux:</strong> confirme se o serviço está ativo com <code>sudo systemctl status docker</code> quando a distribuição utilizar systemd.</p>
+          <p><strong>Importante:</strong> <code>docker --version</code> pode funcionar mesmo com o Engine parado. O diagnóstico relevante é <code>docker info</code>.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-wsl2-virtualizacao">
+        <summary>WSL 2 ou virtualização indisponível no Windows</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> o Docker Desktop não inicia e solicita WSL 2, virtualização ou recurso de sistema.</p>
+          <p><strong>Como proceder:</strong> consulte os pré-requisitos oficiais do Docker Desktop. Uma instalação ou alteração de configuração pode exigir permissão de administrador e reinicialização. Se você utiliza computador corporativo/institucional, não contorne restrições de segurança. Utilize temporariamente a máquina de outro integrante da equipe e registre o impedimento.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-permissao-docker-linux">
+        <summary>permission denied ao usar Docker no Linux</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> seu usuário não consegue acessar o Docker daemon, mesmo com o serviço ativo.</p>
+          <p><strong>Como proceder:</strong> consulte a documentação oficial de pós-instalação e verifique a política de permissões da máquina. O acesso ao grupo <code>docker</code> equivale a conceder privilégios importantes no sistema. Não utilize <code>chmod 666</code> no socket Docker nem altere permissões indiscriminadamente.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-github-404">
+        <summary>GitHub retorna 404 no repositório da equipe</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> o link do repositório privado abre uma página <code>404</code> ou o clone indica ausência de acesso.</p>
+          <p><strong>O que verificar:</strong> você está logado na conta GitHub correta? O convite para a organização foi aceito? Seu usuário foi associado ao Team certo? Sua equipe já recebeu permissão no repositório?</p>
+          <p><strong>Como resolver:</strong> consulte o <a href="github.html">guia de acesso ao GitHub</a> e, se necessário, informe seu <strong>username GitHub</strong> ao responsável pela disciplina. Não compartilhe sua senha ou token para obter acesso.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-npm-install-falha">
+        <summary><code>npm install</code> / <code>npm ci</code> falha durante o setup</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> a instalação de dependências para com erro de conexão, permissão, pacote não encontrado ou incompatibilidade.</p>
+          <p><strong>Como investigar:</strong> confira a versão do Node.js com <code>node -v</code>, sua conexão com a internet e a mensagem exata de erro. Se houver rede corporativa, proxy ou certificados institucionais, procure o suporte adequado; não desative verificações TLS para contornar o problema.</p>
+          <p><strong>Se o erro indicar <code>package-lock.json</code>:</strong> confirme que está usando a pasta e o repositório corretos e que os arquivos do projeto estão íntegros. Não apague ou modifique o lockfile às cegas.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-postgres-migrations">
+        <summary>Falha ao iniciar PostgreSQL ou aplicar migrations</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> o setup falha ao iniciar container, conectar ao banco ou executar migrations do Prisma.</p>
+          <p><strong>Como verificar:</strong></p>
+          <div class="command-block" data-command-block>
+            <div class="command-block__top">
+              <span>Terminal</span>
+              <button type="button" class="command-block__copy-btn" data-copy-command aria-label="Copiar comandos de diagnóstico do Docker" style="display:none">Copiar</button>
+            </div>
+            <pre><code>docker compose ps
+docker compose logs --tail=50</code></pre>
+            <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+          </div>
+          <p>Confirme que o Engine está ativo, que o banco iniciou e que o arquivo <code>.env</code> está coerente com o <code>compose.yaml</code>. Não publique seu <code>.env</code> para pedir ajuda.</p>
+          <p><strong>Porta do banco:</strong> a configuração do laboratório utiliza <code>55433</code> no computador. Se já estiver ocupada por outro processo, procure orientação antes de alterar a configuração do Docker e a string de conexão.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-porta-3000">
+        <summary>Porta <code>3000</code> já está em uso</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> a API não inicia e informa algo como <code>EADDRINUSE</code>.</p>
+          <p><strong>Causa provável:</strong> outro processo já está usando a porta <code>3000</code>, possivelmente outra execução da própria API.</p>
+          <p><strong>Como resolver:</strong> verifique se existe outro terminal com <code>npm run dev</code> ativo e encerre apenas a execução que você reconhece. Se necessário, a configuração de porta pode ser ajustada no <code>.env</code>, mas nesse caso o endereço do <code>/health</code> também mudará.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-health-nao-abre">
+        <summary><code>/health</code> não abre ou retorna erro</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> o navegador não abre <a href="http://127.0.0.1:3000/health" target="_blank" rel="noopener noreferrer">http://127.0.0.1:3000/health</a>.</p>
+          <p><strong>O que verificar:</strong> o <code>npm run dev</code> está em execução? Houve erro no terminal? A aplicação está na porta <code>3000</code>? Você está acessando o mesmo computador em que a API foi iniciada?</p>
+          <p><strong>Importante:</strong> <code>127.0.0.1</code> significa o <strong>computador em que o navegador está rodando</strong>. Se você abrir o link no celular, ele não apontará automaticamente para a API do notebook. Não exponha a API vulnerável na rede para contornar essa situação.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-401-token">
+        <summary>Requisição recebe <code>401</code> ou token inválido</summary>
+        <div class="faq-item__content">
+          <p><strong>Sintoma:</strong> endpoints protegidos respondem com erro de autenticação.</p>
+          <p><strong>Como verificar:</strong> faça login novamente utilizando a conta fictícia disponibilizada na documentação do projeto e inclua o token retornado no cabeçalho <code>Authorization: Bearer SEU_TOKEN</code>. Confira se o token pertence ao ambiente atual e não foi copiado com aspas ou espaços extras.</p>
+          <p class="faq-nao-faca"><strong>Cuidados:</strong> não cole tokens em páginas públicas, prints de suporte ou commits.</p>
+        </div>
+      </details>
+
+      <details class="faq-item" id="erro-sem-docker">
+        <summary>O computador não consegue executar Docker</summary>
+        <div class="faq-item__content">
+          <p><strong>Situação:</strong> restrições institucionais, limitações de hardware, ausência de virtualização ou falta de privilégios administrativos impedem a configuração local.</p>
+          <p><strong>Plano alternativo:</strong> participe da investigação do código diretamente no repositório privado da equipe e trabalhe, quando possível, no computador de outro integrante. Registre o problema e procure orientação para os testes que dependem da API em execução.</p>
+          <p><strong>O foco da disciplina é revisão de código e análise de segurança.</strong> A instalação local é um meio para trabalhar no projeto, não um critério de nota isolado.</p>
+        </div>
+      </details>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="seguranca" aria-labelledby="titulo-seguranca">
+      <h2 id="titulo-seguranca">Cuidados de segurança e encerramento</h2>
+      <p>O projeto foi construído para estudo e contém vulnerabilidades intencionais. Por isso, mantenha a API restrita ao ambiente local e utilize somente os dados fictícios fornecidos.</p>
+
+      <ul class="inst-security-list">
+        <li><strong>Não publique</strong> o servidor em hospedagens externas ou na internet.</li>
+        <li><strong>Não compartilhe</strong> <code>.env</code>, credenciais, tokens JWT ou informações pessoais.</li>
+        <li><strong>Não utilize</strong> bases de dados reais ou de sistemas corporativos.</li>
+        <li><strong>Não execute</strong> comandos destrutivos como remoção de volumes de banco sem orientação.</li>
+        <li><strong>Não confunda</strong> testes smoke aprovados com comprovação de segurança da API.</li>
+      </ul>
+
+      <h3>Antes de começar a atividade prática</h3>
+      <p>Confira se você consegue:</p>
+
+      <ul class="inst-checklist">
+        <li>Identificar seu sistema operacional e acessar as instruções correspondentes.</li>
+        <li>Executar <code>node -v</code>, <code>npm -v</code>, <code>git --version</code>, <code>docker compose version</code> e <code>docker info</code>.</li>
+        <li>Acessar o repositório privado da equipe.</li>
+        <li>Executar <code>npm run doctor</code> e, se for a primeira instalação, <code>npm run setup</code>.</li>
+        <li>Iniciar a API e consultar o endpoint <code>/health</code>.</li>
+      </ul>
+
+      <div class="inst-footer-links">
+        <a class="primario" href="github.html">Guia de acesso ao GitHub</a>
+        <a href="index.html">Orientações do laboratório</a>
+        <a href="../index.html">Voltar à disciplina</a>
+      </div>
+    </section>
+
+  </main>
+
+</div><!-- /.livro -->
+
+</body>
+</html>
