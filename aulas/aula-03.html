@@ -81,6 +81,15 @@
 .bar-fill.confirmed{background:var(--good)}
 .bar-fill.unconf{background:var(--warn)}
 .bar-label{font-size:.8rem;color:var(--ink-2);margin-top:4px}
+/* Comparacao de ferramentas */
+.wu-tools{margin:0 0 6px}
+.wu-tools-lead{font-size:.95rem;line-height:1.65;color:var(--ink-2);margin:0 0 14px}
+.wu-tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 14px}
+.wu-tool-card{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:20px;text-align:center}
+.wu-tool-name{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.wu-tool-num{font-family:var(--f-disp);font-size:3.5rem;font-weight:700;color:var(--orange-ink);line-height:1}
+.wu-tool-desc{font-size:.88rem;color:var(--ink-2);margin-top:4px}
+@media(max-width:460px){.wu-tools-grid{grid-template-columns:1fr}}
 </style>
   <div class="wrap pilha">
     <div>
@@ -89,14 +98,40 @@
     </div>
 
     <div class="wu-caso">
-      <p class="eyebrow">Referência · Google Static Analysis Tools, 2018</p>
-      <p>Sadowski et al. (2018) descrevem a experiência de incorporar análise estática ao processo de desenvolvimento no Google, enfatizando a necessidade de produzir resultados <em>úteis e relevantes</em> para quem recebe os alertas.</p>
-      <p><a href="https://doi.org/10.1145/3188720" target="_blank" rel="noopener">DOI: 10.1145/3188720</a></p>
+      <p class="eyebrow">Referência real · Análise estática no Google, 2018</p>
+      <p>Quando uma ferramenta encontra muitos problemas, isso significa que ela está fazendo um bom trabalho?</p>
+      <p>Imagine uma empresa como o Google, com milhares de desenvolvedores modificando continuamente o código de diferentes sistemas. Para identificar problemas antes que essas alterações fossem incorporadas aos produtos, a empresa passou a integrar ferramentas de análise estática ao processo de desenvolvimento e revisão de código.</p>
+      <p>Mas surgiu um desafio: encontrar um problema automaticamente não significa que o alerta será útil para o desenvolvedor.</p>
+      <p>Em um estudo publicado em 2018, Sadowski e colaboradores descrevem essa experiência e destacam uma lição importante: ferramentas de análise estática precisam produzir resultados confiáveis, compreensíveis e que ajudem os desenvolvedores a tomar decisões.</p>
+      <p><strong>A questão não é apenas quantos alertas uma ferramenta encontra, mas o que conseguimos fazer com eles.</strong></p>
+      <p>Sadowski et al. (2018). <em>Lessons from Building Static Analysis Tools at Google</em>. <a href="https://doi.org/10.1145/3188720" target="_blank" rel="noopener">DOI: 10.1145/3188720</a></p>
     </div>
 
     <div class="wu-provoc">
-      <p>Uma ferramenta analisou milhares de linhas de código e encontrou <strong>120 alertas</strong>. Outra analisou o mesmo projeto e encontrou apenas <strong>15</strong>.</p>
-      <p><strong>Qual delas fez o melhor trabalho?</strong></p>
+      <p>Alertas incorretos, pouco relevantes ou difíceis de compreender podem <strong>consumir tempo, dificultar a priorização e diminuir a confiança</strong> nas ferramentas.</p>
+    </div>
+
+    <div class="wu-tools">
+      <p class="wu-tools-lead">Agora pense na seguinte situação. Duas ferramentas de análise estática examinaram exatamente o mesmo projeto.</p>
+      <div class="wu-tools-grid">
+        <div class="wu-tool-card">
+          <div class="wu-tool-name">Ferramenta A</div>
+          <div class="wu-tool-num">120</div>
+          <p class="wu-tool-desc">alertas encontrados no código</p>
+        </div>
+        <div class="wu-tool-card">
+          <div class="wu-tool-name">Ferramenta B</div>
+          <div class="wu-tool-num">15</div>
+          <p class="wu-tool-desc">alertas encontrados no mesmo código</p>
+        </div>
+      </div>
+      <p class="wu-tools-lead">Ambas afirmam ter identificado possíveis problemas que merecem atenção da equipe.</p>
+      <div class="wu-provoc">
+        <p><strong>Qual delas fez o melhor trabalho?</strong></p>
+        <p>Será que encontrar mais alertas significa detectar mais problemas reais? Ou uma ferramenta que apresenta menos resultados pode ser mais útil?</p>
+        <p>Antes de responder, pense: o que você precisaria saber sobre esses alertas para comparar as ferramentas de maneira fundamentada?</p>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted);margin:6px 0 0">Os números são hipotéticos e não correspondem aos resultados do estudo do Google.</p>
     </div>
 
     <!-- Interação 1: Triagem -->
