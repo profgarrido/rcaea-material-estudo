@@ -81,6 +81,15 @@
 .bar-fill.confirmed{background:var(--good)}
 .bar-fill.unconf{background:var(--warn)}
 .bar-label{font-size:.8rem;color:var(--ink-2);margin-top:4px}
+/* wu-caso enhancements */
+.wu-lead-q{font-size:1.05rem;font-weight:800;color:var(--orange-ink);line-height:1.5;margin:0 0 14px}
+.wu-icon-row{display:flex;align-items:flex-start;gap:12px;margin:0 0 10px}
+.wu-icon-row p{margin:0;flex:1;min-width:0}
+.wu-icon{flex-shrink:0;line-height:1;padding-top:2px}
+.wu-conclusion{border:1.5px solid var(--orange);border-radius:14px;padding:16px 20px;margin:12px 8% 10px;background:var(--orange-soft)}
+.wu-conclusion p{margin:0 0 8px;font-size:.93rem;color:var(--ink);line-height:1.6}
+.wu-conclusion p:last-child{margin:0}
+@media(max-width:600px){.wu-conclusion{margin:12px 0 10px}}
 /* Comparacao de ferramentas */
 .wu-tools{margin:0 0 6px}
 .wu-tools-lead{font-size:.95rem;line-height:1.65;color:var(--ink-2);margin:0 0 14px}
@@ -99,11 +108,19 @@
 
     <div class="wu-caso">
       <p class="eyebrow">Referência real · Análise estática no Google, 2018</p>
-      <p>Quando uma ferramenta encontra muitos problemas, isso significa que ela está fazendo um bom trabalho?</p>
-      <p>Imagine uma empresa como o Google, com milhares de desenvolvedores modificando continuamente o código de diferentes sistemas. Para identificar problemas antes que essas alterações fossem incorporadas aos produtos, a empresa passou a integrar ferramentas de análise estática ao processo de desenvolvimento e revisão de código.</p>
-      <p>Mas surgiu um desafio: encontrar um problema automaticamente não significa que o alerta será útil para o desenvolvedor.</p>
-      <p>Em um estudo publicado em 2018, Sadowski e colaboradores descrevem essa experiência e destacam uma lição importante: ferramentas de análise estática precisam produzir resultados confiáveis, compreensíveis e que ajudem os desenvolvedores a tomar decisões.</p>
-      <p><strong>A questão não é apenas quantos alertas uma ferramenta encontra, mas o que conseguimos fazer com eles.</strong></p>
+      <p class="wu-lead-q">Quando uma ferramenta encontra muitos problemas, isso significa que ela está fazendo um bom trabalho?</p>
+      <div class="wu-icon-row">
+        <span class="wu-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+        <p>Imagine uma empresa como o Google, com milhares de desenvolvedores modificando continuamente o código de diferentes sistemas. Para identificar problemas antes que essas alterações fossem incorporadas aos produtos, a empresa passou a integrar ferramentas de análise estática ao processo de desenvolvimento e revisão de código.</p>
+      </div>
+      <div class="wu-icon-row">
+        <p>Mas surgiu um desafio: encontrar um problema automaticamente não significa que o alerta será útil para o desenvolvedor.</p>
+        <span class="wu-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      </div>
+      <div class="wu-conclusion">
+        <p>Em um estudo publicado em 2018, Sadowski e colaboradores descrevem essa experiência e destacam uma lição importante: ferramentas de análise estática precisam produzir resultados confiáveis, compreensíveis e que ajudem os desenvolvedores a tomar decisões.</p>
+        <p><strong>A questão não é apenas quantos alertas uma ferramenta encontra, mas o que conseguimos fazer com eles.</strong></p>
+      </div>
       <p>Sadowski et al. (2018). <em>Lessons from Building Static Analysis Tools at Google</em>. <a href="https://doi.org/10.1145/3188720" target="_blank" rel="noopener">DOI: 10.1145/3188720</a></p>
     </div>
 
