@@ -279,19 +279,175 @@ await prisma.$queryRawUnsafe(sql);</pre>
 </script>
 
 <section class="cena" data-nome="Objetivos e dinâmica" id="roteiro">
+<style>
+/* Roteiro: introducao */
+.rot-intro p{margin:0 0 10px;font-size:.93rem;line-height:1.65;color:var(--ink-2)}
+.rot-intro p:last-child{margin:0}
+/* Fluxo de etapas */
+.step-flow{display:flex;align-items:stretch;gap:4px;margin:0 0 14px}
+.step-card{flex:1;min-width:0;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:18px 15px;display:flex;flex-direction:column;gap:8px}
+.step-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px}
+.step-info{flex:1;min-width:0}
+.step-num{font-family:var(--f-disp);font-size:2rem;font-weight:700;color:var(--orange-ink);line-height:1;display:block}
+.step-verb{font-size:.68rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;margin-top:3px}
+.step-icon{color:var(--orange-ink);flex-shrink:0;margin-top:5px}
+.step-title{font-size:.93rem;font-weight:700;color:var(--ink);line-height:1.3;margin:0}
+.step-desc{flex:1}
+.step-desc p{font-size:.83rem;line-height:1.56;color:var(--ink-2);margin:0 0 6px}
+.step-desc p:last-child{margin:0}
+.step-q{font-size:.78rem;line-height:1.5;border-top:1.5px solid var(--line);padding-top:9px;color:var(--ink-2);margin-top:auto}
+.step-q-label{font-weight:700;color:var(--orange-ink)}
+.step-arr{flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0 5px;color:var(--orange-ink);font-size:1.3rem}
+/* Faixa de evidencias */
+.ev-strip{background:var(--sunk);border:1.5px solid var(--line);border-left:4px solid var(--orange);border-radius:0 12px 12px 0;padding:13px 16px;display:flex;align-items:flex-start;gap:12px;margin:0 0 10px}
+.ev-strip-icon{flex-shrink:0;padding-top:1px;color:var(--orange-ink)}
+.ev-strip-body{flex:1;min-width:0}
+.ev-strip-label{font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 5px;display:block}
+.ev-strip-chain{font-size:.83rem;color:var(--ink-2);line-height:1.6;margin:0 0 4px}
+.ev-strip-chain strong{color:var(--orange-ink)}
+.ev-strip-note{font-size:.78rem;color:var(--muted);margin:0;line-height:1.5}
+/* Bloco de entrega */
+.entrega-block{border:1.5px solid var(--line);border-radius:12px;padding:15px 18px;background:var(--surface);display:flex;gap:12px;align-items:flex-start}
+.entrega-badge{background:var(--orange);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.entrega-body h3{font-size:.93rem;font-weight:700;margin:0 0 5px;color:var(--ink)}
+.entrega-body p{font-size:.83rem;color:var(--ink-2);line-height:1.55;margin:0 0 4px}
+.entrega-body p:last-child{margin:0}
+/* Tooltips */
+.tt-term{border-bottom:1.5px dotted var(--orange-ink);cursor:help;position:relative;display:inline}
+.tt-box{position:absolute;z-index:200;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a1512;color:#f5ede3;font-family:var(--f-body);font-weight:400;font-size:.79rem;line-height:1.55;padding:10px 14px;border-radius:10px;width:260px;max-width:calc(100vw - 20px);pointer-events:none;opacity:0;transition:opacity .14s;text-align:left;white-space:normal;box-shadow:0 4px 20px rgba(0,0,0,.35)}
+.tt-box::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#1a1512}
+.tt-term[data-tt="open"] .tt-box{opacity:1;pointer-events:auto}
+@media(max-width:860px){.step-flow{display:grid;grid-template-columns:1fr 1fr;gap:10px}.step-arr{display:none}}
+@media(max-width:460px){.step-flow{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Antes de começar</p><h2>Da varredura automática à decisão fundamentada</h2></div>
-    <p class="lede">Regras, AST, padrões, alertas, falsos positivos e falsos negativos, com triagem e criação de uma regra simples.</p>
-    <div class="obj-grid">
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><p>Distinguir análise estática de análise dinâmica e de SCA</p></div>
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><p>Compreender como o Semgrep representa código como AST para aplicar regras de padrão</p></div>
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><p>Classificar alertas como verdadeiro positivo, falso positivo ou falso negativo com justificativa</p></div>
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div><p>Escrever uma regra Semgrep simples com caso positivo e caso negativo</p></div>
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><p>Registrar resultados com ferramenta, versão, regra, arquivo, linha e decisão de triagem</p></div>
-      <div class="obj-item"><div class="obj-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--orange-ink)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><p>Entregar a revisão manual parcial formal no Moodle conforme o plano de ensino</p></div>
+    <div>
+      <p class="eyebrow">Antes de começar</p>
+      <h2>Da varredura automática à decisão fundamentada</h2>
     </div>
-    <div class="cartao" style="margin-top:14px"><h3>Como participar</h3><p>Explore os exemplos, responda às questões e consulte as explicações. As entregas oficiais ficam no Moodle.</p></div>
+
+    <div class="rot-intro">
+      <p>Na aula anterior, investigamos o código manualmente para identificar possíveis falhas de segurança.</p>
+      <p>Agora vamos utilizar o <span class="tt-term" tabindex="0">Semgrep<span class="tt-box">Ferramenta de análise estática que utiliza regras para identificar padrões no código e apoiar investigações de segurança.</span></span> para automatizar parte dessa investigação. Mas encontrar alertas é apenas o começo: precisamos compreender como foram detectados, avaliar sua relevância e justificar nossas conclusões.</p>
+      <p><strong>Nesta aula, seguiremos quatro etapas:</strong></p>
+    </div>
+
+    <div class="step-flow">
+
+      <div class="step-card">
+        <div class="step-head">
+          <div class="step-info">
+            <span class="step-num">01</span>
+            <span class="step-verb">Entender</span>
+          </div>
+          <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <p class="step-title">Como funciona a análise estática?</p>
+        <div class="step-desc">
+          <p>Antes de utilizar uma ferramenta, vamos compreender como ela examina o código sem executar a aplicação.</p>
+          <p>Também diferenciaremos <span class="tt-term" tabindex="0">SAST<span class="tt-box">Static Application Security Testing. Analisa o código sem executar a aplicação, procurando padrões que possam indicar problemas de segurança.</span></span>, <span class="tt-term" tabindex="0">DAST<span class="tt-box">Dynamic Application Security Testing. Testa a aplicação em execução, observando seu comportamento diante de requisições e entradas.</span></span> e <span class="tt-term" tabindex="0">SCA<span class="tt-box">Software Composition Analysis. Analisa componentes e dependências utilizados pelo projeto, incluindo vulnerabilidades conhecidas.</span></span> e conheceremos a <span class="tt-term" tabindex="0">AST<span class="tt-box">Abstract Syntax Tree, ou Árvore Sintática Abstrata. Representação estruturada dos elementos sintáticos de um código.</span></span>, estrutura utilizada para representar e reconhecer elementos da sintaxe do código.</p>
+        </div>
+        <p class="step-q"><span class="step-q-label">Pergunta orientadora:</span> O que uma ferramenta consegue identificar apenas analisando o código?</p>
+      </div>
+
+      <div class="step-arr" aria-hidden="true">&#8594;</div>
+
+      <div class="step-card">
+        <div class="step-head">
+          <div class="step-info">
+            <span class="step-num">02</span>
+            <span class="step-verb">Executar</span>
+          </div>
+          <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        </div>
+        <p class="step-title">O que o Semgrep consegue detectar?</p>
+        <div class="step-desc">
+          <p>Vamos executar uma varredura na API do laboratório e observar como as regras do <span class="tt-term" tabindex="0">Semgrep<span class="tt-box">Ferramenta de análise estática que utiliza regras para identificar padrões no código e apoiar investigações de segurança.</span></span> identificam padrões suspeitos.</p>
+          <p>Para cada alerta, verificaremos qual regra foi acionada e em qual arquivo e linha o problema foi sinalizado.</p>
+        </div>
+        <p class="step-q"><span class="step-q-label">Pergunta orientadora:</span> Por que a ferramenta sinalizou esse trecho de código?</p>
+      </div>
+
+      <div class="step-arr" aria-hidden="true">&#8594;</div>
+
+      <div class="step-card">
+        <div class="step-head">
+          <div class="step-info">
+            <span class="step-num">03</span>
+            <span class="step-verb">Investigar</span>
+          </div>
+          <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <p class="step-title">O alerta representa uma vulnerabilidade?</p>
+        <div class="step-desc">
+          <p>Nem todo alerta corresponde a uma vulnerabilidade real.</p>
+          <p>Vamos analisar os resultados, distinguir <span class="tt-term" tabindex="0">verdadeiros positivos<span class="tt-box">Alerta emitido pela ferramenta que corresponde a um problema real confirmado pela análise.</span></span> de <span class="tt-term" tabindex="0">falsos positivos<span class="tt-box">Alerta emitido pela ferramenta que não corresponde ao problema indicado após a investigação.</span></span> e compreender por que algumas vulnerabilidades podem não ser detectadas, produzindo <span class="tt-term" tabindex="0">falsos negativos<span class="tt-box">Problema existente que a ferramenta não identificou. Não é um alerta encontrado, mas uma falha de detecção.</span></span>.</p>
+        </div>
+        <p class="step-q"><span class="step-q-label">Pergunta orientadora:</span> Que evidências precisamos encontrar para confirmar ou descartar um alerta?</p>
+      </div>
+
+      <div class="step-arr" aria-hidden="true">&#8594;</div>
+
+      <div class="step-card">
+        <div class="step-head">
+          <div class="step-info">
+            <span class="step-num">04</span>
+            <span class="step-verb">Aprimorar</span>
+          </div>
+          <svg class="step-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <p class="step-title">Como criar uma regra de detecção?</p>
+        <div class="step-desc">
+          <p>Depois de compreender os resultados, vamos criar uma regra simples no <span class="tt-term" tabindex="0">Semgrep<span class="tt-box">Ferramenta de análise estática que utiliza regras para identificar padrões no código e apoiar investigações de segurança.</span></span> para identificar um padrão específico.</p>
+          <p>Testaremos a regra com um exemplo que deve ser detectado e outro que não deve gerar alerta.</p>
+        </div>
+        <p class="step-q"><span class="step-q-label">Pergunta orientadora:</span> Como verificar se nossa regra identifica o padrão esperado sem sinalizar código indevidamente?</p>
+      </div>
+
+    </div>
+
+    <div class="ev-strip">
+      <svg class="ev-strip-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <div class="ev-strip-body">
+        <span class="ev-strip-label">Durante todo o processo: registrar evidências</span>
+        <p class="ev-strip-chain"><strong>Ferramenta e versão</strong> &#8594; <strong>Regra</strong> &#8594; <strong>Arquivo e linha</strong> &#8594; <strong>Evidência</strong> &#8594; <strong>Classificação</strong> &#8594; <strong>Justificativa</strong></p>
+        <p class="ev-strip-note">O objetivo não é apenas produzir uma lista de alertas, mas demonstrar como a equipe chegou às suas conclusões.</p>
+      </div>
+    </div>
+
+    <div class="entrega-block">
+      <span class="entrega-badge">Entrega</span>
+      <div class="entrega-body">
+        <h3>Revisão manual parcial</h3>
+        <p>Neste encontro também será realizada a entrega formal da revisão manual desenvolvida nas aulas anteriores, conforme as orientações da atividade no Moodle.</p>
+        <p>Essa entrega é distinta dos registros da análise automatizada que começaremos a produzir hoje.</p>
+      </div>
+    </div>
+
   </div>
+  <script>
+  (function(){
+    var cur = null;
+    document.querySelectorAll('#roteiro .tt-term').forEach(function(el){
+      var box = el.querySelector('.tt-box');
+      function reposition(){
+        box.style.cssText = '';
+        var r = box.getBoundingClientRect();
+        if(r.left < 8){ box.style.left = '0'; box.style.transform = 'none'; }
+        else if(r.right > window.innerWidth - 8){ box.style.left = 'auto'; box.style.right = '0'; box.style.transform = 'none'; }
+      }
+      function open(){ if(cur && cur !== el){ cur.removeAttribute('data-tt'); } reposition(); el.setAttribute('data-tt','open'); cur = el; }
+      function close(){ el.removeAttribute('data-tt'); if(cur === el) cur = null; }
+      el.addEventListener('mouseenter', open);
+      el.addEventListener('mouseleave', close);
+      el.addEventListener('focus', open);
+      el.addEventListener('blur', close);
+      el.addEventListener('click', function(e){ e.stopPropagation(); el.hasAttribute('data-tt') ? close() : open(); });
+      el.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+    });
+    document.addEventListener('click', function(){ if(cur){ cur.removeAttribute('data-tt'); cur = null; } });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Conceito: O que é e o que não é análise estática" id="conceito-1">
