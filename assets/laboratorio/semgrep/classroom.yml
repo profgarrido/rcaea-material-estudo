@@ -1,0 +1,44 @@
+rules: # Conjunto de regras que o Semgrep executará
+
+  - id: aula3-consulta-sql-bruta # Regra 1: localizar consultas SQL brutas
+    languages: [typescript] # Linguagem analisada
+    severity: WARNING # Nível de atenção do alerta
+    message: "Consulta SQL bruta encontrada. Investigue a origem dos dados." # Orientação exibida no resultado
+    pattern-regex: '\$queryRawUnsafe\b' # Procura referências ao método $queryRawUnsafe
+    metadata: # Informações complementares
+      cwe: "CWE-89" # Categoria relacionada à injeção de SQL
+      tema: consultas-sql # Tema investigado
+
+  - id: aula3-validacao-permissiva # Regra 2: identificar validação permissiva
+    languages: [typescript] # Linguagem analisada
+    severity: WARNING # Nível de atenção do alerta
+    message: "Schema permissivo encontrado. Verifique os campos recebidos." # Orientação exibida no resultado
+    pattern: $SCHEMA.passthrough() # $SCHEMA captura a expressão antes de .passthrough()
+    metadata: # Informações complementares
+      cwe: "CWE-20" # Categoria relacionada à validação inadequada
+      tema: validacao-entrada # Tema investigado
+
+  - id: aula3-execucao-comandos # Regra 3: localizar execução de comandos
+    languages: [typescript] # Linguagem analisada
+    severity: WARNING # Nível de atenção do alerta
+    message: "Execução de comando encontrada. Investigue a origem do argumento." # Orientação exibida no resultado
+    pattern: exec($COMMAND, ...) # $COMMAND captura o primeiro argumento; ... aceita outros argumentos
+    metadata: # Informações complementares
+      cwe: "CWE-78" # Categoria relacionada à injeção de comandos
+      tema: execucao-comandos # Tema investigado
+
+  - id: aula3-consulta-por-identificador # Regra 4: localizar consultas por identificador
+    languages: [typescript] # Linguagem analisada
+    severity: INFO # Ocorrência informativa, não vulnerabilidade confirmada
+    message: "Consulta por identificador encontrada. Verifique a autorização." # Orientação exibida no resultado
+    pattern: prisma.$MODEL.findUnique(...) # $MODEL captura o modelo; ... aceita os argumentos
+    metadata: # Informações complementares
+      tema: controle-acesso # Tema investigado
+
+  - id: aula3-atualizacao-de-registro # Regra 5: localizar atualizações no banco
+    languages: [typescript] # Linguagem analisada
+    severity: INFO # Ocorrência informativa, não vulnerabilidade confirmada
+    message: "Atualização encontrada. Verifique autorização e validação." # Orientação exibida no resultado
+    pattern: prisma.$MODEL.update(...) # Localiza chamadas de update() no cliente chamado prisma
+    metadata: # Informações complementares
+      tema: escrita-banco # Tema investigado

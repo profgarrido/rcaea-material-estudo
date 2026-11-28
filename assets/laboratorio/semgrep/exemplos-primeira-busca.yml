@@ -1,0 +1,19 @@
+rules:
+  - id: alerta-console-log
+    languages: [typescript, javascript]
+    severity: INFO
+    message: >
+      Chamada a console.log() encontrada. Em producao, remova ou substitua
+      por um sistema de log com controle de nivel (CWE-200).
+    patterns:
+      - pattern: console.log(...)
+
+  - id: alerta-res-json
+    languages: [typescript, javascript]
+    severity: INFO
+    message: >
+      Resposta JSON detectada. Verifique se dados sensiveis nao estao sendo
+      incluidos na resposta sem filtragem adequada (CWE-200).
+    patterns:
+      - pattern: $RES.json(...)
+      - pattern: $RES.send(...)

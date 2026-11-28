@@ -47,6 +47,112 @@
     .fluxo-projeto .seta { color: var(--orange); font-weight: 700; }
     .tipos-evidencia { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
     @media (max-width: 600px) { .tipos-evidencia { grid-template-columns: 1fr; } }
+    /* Etapa 3: accordions */
+    .e3-steps { margin: 1.25rem 0; }
+    .e3-step { border: 1px solid var(--line); border-radius: .5rem; margin-bottom: .4rem; }
+    .e3-step > summary { font-weight: 600; padding: .8rem 1rem; cursor: pointer; list-style: none; display: flex; align-items: center; gap: .65rem; }
+    .e3-step > summary::-webkit-details-marker { display: none; }
+    .e3-num { display: inline-flex; align-items: center; justify-content: center; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--orange); color: #fff; font-family: var(--f-disp); font-size: .72rem; font-weight: 700; flex-shrink: 0; }
+    .e3-step > summary::after { content: '+'; font-size: 1.1rem; color: var(--orange); font-weight: 700; margin-left: auto; flex-shrink: 0; }
+    .e3-step[open] > summary::after { content: '\2212'; }
+    .e3-corpo { padding: .25rem 1rem 1rem 3rem; }
+    .e3-corpo h4 { font-family: var(--f-disp); font-size: .95rem; font-weight: 700; margin: .9rem 0 .35rem; color: var(--ink); }
+    .e3-corpo p { margin: 0 0 .65rem; }
+    .e3-corpo p:last-child { margin-bottom: 0; }
+    .e3-corpo ul, .e3-corpo ol { padding-left: 1.25rem; margin: .35rem 0 .65rem; }
+    .e3-corpo li { margin-bottom: .3rem; font-size: .9rem; }
+    .e3-corpo .table-wrap { overflow-x: auto; margin: .5rem 0 .75rem; }
+    .e3-corpo table { width: 100%; border-collapse: collapse; font-size: .86rem; min-width: 480px; }
+    .e3-corpo th { background: var(--sunk); font-weight: 700; padding: .45rem .65rem; text-align: left; border: 1px solid var(--line); }
+    .e3-corpo td { padding: .4rem .65rem; border: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+    /* OS selector */
+    .os-sel { display: flex; gap: .4rem; margin: .75rem 0 .5rem; flex-wrap: wrap; }
+    .os-btn { background: var(--sunk); border: 1.5px solid var(--line); border-radius: .35rem; padding: .35rem .75rem; font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--ink-2); transition: border-color .15s, background .15s; }
+    .os-btn.ativo { background: var(--orange-soft); border-color: var(--orange); color: var(--orange-ink); }
+    .e3-corpo .pre-wrap { margin: .4rem 0; }
+    /* criteria list */
+    .e3-criterios { list-style: none; padding: 0; margin: .75rem 0; counter-reset: crit; }
+    .e3-criterios li { counter-increment: crit; padding: .5rem 0 .5rem 2.2rem; position: relative; border-bottom: 1px solid var(--line); font-size: .9rem; }
+    .e3-criterios li:last-child { border-bottom: none; }
+    .e3-criterios li::before { content: counter(crit); position: absolute; left: 0; top: .4rem; width: 1.4rem; height: 1.4rem; background: var(--sunk); border: 1px solid var(--line); border-radius: 50%; font-family: var(--f-disp); font-weight: 700; font-size: .72rem; display: flex; align-items: center; justify-content: center; color: var(--orange-ink); }
+    @media (max-width: 600px) { .e3-corpo { padding-left: .75rem; } }
+    /* File download card */
+    .arq-dl-card { border: 1.5px solid var(--line); border-radius: .5rem; padding: .65rem .9rem .75rem; margin: .5rem 0; background: var(--surface); }
+    .arq-dl-hd { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: .3rem; }
+    .arq-dl-nome { font-family: var(--f-mono); font-size: .82rem; font-weight: 700; color: var(--orange-ink); }
+    .arq-dl-desc { font-size: .86rem; color: var(--ink-2); margin: 0 0 .5rem; line-height: 1.5; }
+    .arq-dl-desc code { font-family: var(--f-mono); font-size: .85em; background: var(--sunk); padding: .1rem .3rem; border-radius: .2rem; color: var(--orange-ink); }
+    /* Download controls */
+    .dl-controls { display: flex; gap: .3rem; justify-content: flex-end; margin: 0 0 .3rem; }
+    .dl-btn { background: var(--sunk); border: 1.5px solid var(--line); border-radius: .3rem; padding: 0; width: 28px; height: 28px; cursor: pointer; color: var(--ink-2); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color .15s, background .15s, color .15s; }
+    .dl-btn:hover { border-color: var(--orange); background: var(--orange-soft); color: var(--orange-ink); }
+    .dl-btn svg { pointer-events: none; }
+    .dl-preview { display: block; background: var(--sunk); border: 1px solid var(--line); border-radius: .4rem; padding: .6rem .9rem; margin: 0; font-size: .78rem; font-family: var(--f-mono); white-space: pre-wrap; overflow-x: auto; max-height: 240px; }
+    /* 3-option OS selector */
+    .os-sel-3 { display: flex; gap: .4rem; margin: .75rem 0 .5rem; flex-wrap: wrap; }
+    .os-sel-3 .os-btn { background: var(--sunk); border: 1.5px solid var(--line); border-radius: .35rem; padding: .35rem .75rem; font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--ink-2); transition: border-color .15s, background .15s; }
+    .os-sel-3 .os-btn.ativo { background: var(--orange-soft); border-color: var(--orange); color: var(--orange-ink); }
+    /* Fluxo etapa 3 */
+    .e3-fluxo { display: flex; flex-wrap: wrap; gap: .3rem; align-items: center; margin: .75rem 0 1rem; font-size: .8rem; }
+    .e3-fluxo-no { background: var(--surface); border: 1.5px solid var(--line); border-radius: .35rem; padding: .28rem .65rem; font-weight: 600; white-space: nowrap; color: var(--ink); }
+    .e3-fluxo-no.ativo { background: var(--orange-soft); border-color: var(--orange); color: var(--orange-ink); }
+    .e3-fluxo-seta { color: var(--orange); font-weight: 700; }
+    /* Override laura-guia max-width on paragraphs/lists so content uses full column width */
+    .cap p, .pagina p { max-width: none; }
+    .cap ul, .cap ol, .pagina ul, .pagina ol { max-width: none; }
+    /* Tooltip */
+    .tt { position: relative; cursor: help; border-bottom: 1px dashed var(--orange); }
+    .tt::after { content: attr(data-tip); position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--paper); font-size: .74rem; font-family: var(--f-body); font-weight: 400; padding: .3rem .6rem; border-radius: .3rem; white-space: normal; text-align: center; line-height: 1.35; pointer-events: none; opacity: 0; transition: opacity .15s; z-index: 20; min-width: 140px; max-width: 220px; }
+    .tt:hover::after { opacity: 1; }
+    /* SARIF Viewer install button */
+    .sarif-install-btn { display: inline-flex; align-items: center; gap: .4rem; background: var(--orange); color: #fff; border-radius: .35rem; padding: .4rem .9rem; font: inherit; font-size: .86rem; font-weight: 600; text-decoration: none; transition: opacity .15s; }
+    .sarif-install-btn:hover { opacity: .88; color: #fff; }
+    /* SARIF example card (didactic) */
+    .sarif-ex { border: 1.5px solid var(--orange); border-radius: .5rem; padding: .75rem 1rem .85rem; margin: .75rem 0; background: var(--orange-soft); }
+    .sarif-ex-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--orange-ink); margin: 0 0 .6rem; }
+    .sarif-ex-grid { display: grid; grid-template-columns: auto 1fr; gap: .22rem .8rem; font-size: .85rem; margin-bottom: .65rem; }
+    .sarif-ex-k { font-family: var(--f-mono); font-size: .77rem; color: var(--muted); white-space: nowrap; }
+    .sarif-ex-v { font-family: var(--f-mono); font-size: .82rem; color: var(--ink); }
+    .sarif-ex-warn { display: inline-block; background: #c85000; color: #fff; font-size: .72rem; font-weight: 700; padding: .1rem .4rem; border-radius: .2rem; }
+    .sarif-interp { border-top: 1px solid color-mix(in srgb, var(--orange) 40%, transparent); margin-top: .6rem; padding-top: .65rem; display: flex; flex-direction: column; gap: .25rem; font-size: .85rem; }
+    .sarif-interp dt { font-weight: 700; color: var(--orange-ink); }
+    .sarif-interp dd { margin: 0 0 .2rem; color: var(--ink-2); }
+    /* CWE glossary */
+    .cwe-busca-wrap { margin: .75rem 0 .5rem; position: relative; }
+    .cwe-busca { width: 100%; padding: .4rem .75rem; font: inherit; font-size: .88rem; border: 1.5px solid var(--line); border-radius: .4rem; background: var(--paper); color: var(--ink); box-sizing: border-box; }
+    .cwe-busca:focus { outline: none; border-color: var(--orange); }
+    /* higher specificity to beat laura-guia .cap ul padding-left */
+    .cap .cwe-lista, .pagina .cwe-lista { list-style: none; padding: 0; margin: .5rem 0; }
+    .cwe-item { border: 1px solid var(--line); border-radius: .45rem; margin-bottom: .4rem; }
+    .cwe-item details summary { padding: .65rem .9rem; cursor: pointer; list-style: none; display: flex; align-items: center; gap: .6rem; font-weight: 600; font-size: .88rem; }
+    .cwe-item details summary::-webkit-details-marker { display: none; }
+    .cwe-item details summary { list-style: none; }
+    .cwe-id { font-family: var(--f-mono); font-size: .78rem; font-weight: 700; color: var(--orange-ink); background: var(--orange-soft); border: 1px solid var(--orange); border-radius: .25rem; padding: .1rem .4rem; flex-shrink: 0; }
+    .cwe-item details summary::after { content: '▶'; font-size: .7rem; color: var(--orange); margin-left: auto; flex-shrink: 0; transition: transform .15s; }
+    .cwe-item details[open] summary::after { transform: rotate(90deg); }
+    .cwe-corpo { padding: .15rem .9rem .85rem 2.4rem; font-size: .86rem; line-height: 1.55; }
+    .cwe-corpo h5 { font-family: var(--f-disp); font-size: .82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin: .7rem 0 .2rem; }
+    .cwe-corpo p { margin: 0 0 .5rem; }
+    .cwe-corpo code { font-family: var(--f-mono); font-size: .85em; background: var(--sunk); padding: .1rem .3rem; border-radius: .2rem; color: var(--orange-ink); }
+    .cwe-corpo a { color: var(--orange-ink); font-size: .8rem; }
+    .cwe-nenhum { display: none; color: var(--muted); font-size: .88rem; padding: .5rem 0; }
+    /* Problemas frequentes */
+    .prob-lista { list-style: none; padding: 0; margin: .75rem 0; }
+    .prob-item { border: 1px solid var(--line); border-radius: .45rem; margin-bottom: .4rem; }
+    .prob-item > summary { padding: .7rem .9rem; cursor: pointer; list-style: none; display: flex; align-items: center; gap: .55rem; font-weight: 600; font-size: .88rem; }
+    .prob-item > summary::-webkit-details-marker { display: none; }
+    .prob-tag { font-size: .68rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; padding: .15rem .5rem; border-radius: .25rem; flex-shrink: 0; }
+    .prob-tag.win { background: #dbeafe; color: #1d4ed8; }
+    .prob-tag.git { background: #fef9c3; color: #854d0e; }
+    .prob-tag.unix { background: #dcfce7; color: #166534; }
+    .prob-tag.geral { background: var(--sunk); color: var(--muted); border: 1px solid var(--line); }
+    .prob-item > summary::after { content: '+'; font-size: 1rem; color: var(--orange); font-weight: 700; margin-left: auto; flex-shrink: 0; }
+    .prob-item[open] > summary::after { content: '\2212'; }
+    .prob-corpo { padding: .15rem .9rem .85rem 1rem; font-size: .86rem; line-height: 1.55; }
+    .prob-corpo p { margin: 0 0 .5rem; }
+    .prob-corpo p:last-child { margin-bottom: 0; }
+    .prob-corpo code { font-family: var(--f-mono); font-size: .85em; background: var(--sunk); padding: .1rem .3rem; border-radius: .2rem; color: var(--orange-ink); }
+    .prob-corpo .pre-wrap { margin: .35rem 0; }
   </style>
   <script>
   window.CIBERSAST_CONFIG = window.CIBERSAST_CONFIG || {};
@@ -707,44 +813,1156 @@ Authorization: Bearer &lt;TOKEN_RETORNADO_PELO_LOGIN&gt;</code></pre>
         <span class="num">3</span>
         <p class="eyebrow">Etapa 3</p>
         <h2>Análise estática com Semgrep</h2>
-        <p class="enc">Pergunta orientadora: o que uma ferramenta encontrou e o que isso significa?</p>
+        <p class="enc">Tutorial guiado: da primeira busca didática à análise do projeto, passando pela criação de regra personalizada e documentação dos resultados.</p>
       </div>
       <article class="cap">
         <div class="pagina">
 
-          <p>A análise estática de segurança examina o código sem precisar executar todos os caminhos da aplicação. Ferramentas como Semgrep podem procurar padrões sintáticos, estruturas de código e certos fluxos de dados. Os resultados são <strong>alertas a investigar</strong>; a análise não equivale automaticamente à confirmação de exploração.</p>
+          <p>Até aqui, nossa investigação foi conduzida manualmente. Agora utilizaremos o <strong>Semgrep</strong> para analisar o código automaticamente e identificar padrões que merecem investigação. A ferramenta é executada por meio do <strong>Docker</strong> — sem instalação local do Semgrep.</p>
 
-          <h3>Percurso de trabalho</h3>
-          <ol class="passos">
-            <li>Preserve o arquivo da revisão manual e o commit anterior à introdução do SAST.</li>
-            <li>Consulte no Moodle as instruções e regras Semgrep liberadas para essa etapa. Elas não precisam estar disponíveis na versão inicial do repositório.</li>
-            <li>Verifique como a ferramenta será executada no ambiente adotado para a disciplina. Quando a CLI e a regra já estiverem disponíveis, o comando poderá seguir o formato <code>semgrep scan --config rules/classroom.yml src</code>.</li>
-            <li>Registre versão da ferramenta, regras usadas, diretório analisado e commit. Se utilizar relatório fornecido, descreva-o como <strong>resultado fornecido</strong>, não como execução da equipe.</li>
-            <li>Para cada alerta, identifique qual expressão foi sinalizada, qual regra o detectou, se o código é alcançável e quais dados influenciam a operação.</li>
-            <li>Classifique o resultado como confirmado, hipótese, falso positivo ou inconclusivo, sempre com justificativa.</li>
-            <li>Experimente uma regra personalizada simples, quando disponibilizada a atividade, e compare um trecho que deveria disparar a regra com outro que não deveria.</li>
-            <li>Compare preliminarmente seus alertas com a revisão manual registrada na etapa anterior.</li>
-          </ol>
-
-          <h3>Exemplo didático de triagem</h3>
-          <p>Considere uma regra fictícia que procura chamadas a <code>exec(...)</code>:</p>
-          <div class="pre-wrap">
-            <button class="copy-btn" type="button">Copiar</button>
-            <pre><code class="language-typescript">exec("date", callback);</code></pre>
+          <div class="e3-fluxo" aria-label="Fluxo de trabalho">
+            <span class="e3-fluxo-no">1 · Preparar</span><span class="e3-fluxo-seta">›</span>
+            <span class="e3-fluxo-no">2 · Primeira busca</span><span class="e3-fluxo-seta">›</span>
+            <span class="e3-fluxo-no">3 · Analisar API</span><span class="e3-fluxo-seta">›</span>
+            <span class="e3-fluxo-no">4 · Investigar</span><span class="e3-fluxo-seta">›</span>
+            <span class="e3-fluxo-no">5 · Criar regra</span><span class="e3-fluxo-seta">›</span>
+            <span class="e3-fluxo-no">6 · Registrar</span>
           </div>
-          <p>A detecção sintática dessa função, sem outras informações, não demonstra injeção de comando. É necessário investigar se a instrução recebe dados não confiáveis, se existe controle do caminho de execução e como o comando é construído. Um uso de argumento constante pode exigir revisão por outras razões, mas não é evidência suficiente da vulnerabilidade específica de injeção de comandos.</p>
-          <p>Agora imagine outra construção genérica:</p>
-          <div class="pre-wrap">
-            <button class="copy-btn" type="button">Copiar</button>
-            <pre><code class="language-typescript">exec(`processar ${valorRecebido}`, callback);</code></pre>
-          </div>
-          <p>Se <code>valorRecebido</code> for controlado externamente e chegar à execução de comandos sem proteção apropriada, existe um risco que precisa ser investigado no fluxo completo. O objetivo é aprender a distinguir <strong>padrão, condição de risco, alcançabilidade e evidência</strong>.</p>
 
-          <h3>O registro esperado</h3>
-          <p>Em <code>entregas/03_semgrep.md</code>, documente execução ou origem do relatório, versão/configuração, tabela de alertas, tratamento de duplicatas, justificativas, exemplo da regra própria e seus testes. Não preencha o relatório apenas com uma captura de tela ou uma cópia da saída da ferramenta.</p>
+          <p>Selecione o terminal que será utilizado para ver os comandos corretos em cada passo:</p>
+          <div class="os-sel-3" id="e3-os-sel" aria-label="Selecionar terminal">
+            <button class="os-btn ativo" data-os="psh" type="button">Windows · PowerShell</button>
+            <button class="os-btn" data-os="git" type="button">Windows · Git Bash</button>
+            <button class="os-btn" data-os="unix" type="button">macOS / Linux</button>
+          </div>
+
+          <div class="e3-steps">
+
+            <!-- 1: Verificar Docker -->
+            <details class="e3-step" open>
+              <summary><span class="e3-num">1</span> Verificar o ambiente</summary>
+              <div class="e3-corpo">
+                <p>Antes de tudo, confirme que o Docker está instalado e em execução. Abra o terminal na <strong>raiz do projeto</strong> (onde está o <code>package.json</code>).</p>
+                <h4>Verificar a instalação</h4>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker --version</code></pre>
+                </div>
+                <h4>Verificar a versão do Semgrep via Docker</h4>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm semgrep/semgrep semgrep --version</code></pre>
+                </div>
+                <p>Registre a versão exibida. Ela será incluída no relatório para garantir reprodutibilidade.</p>
+                <h4>Identificar o commit atual</h4>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>git rev-parse HEAD</code></pre>
+                </div>
+                <p>Registre o hash. Ele identifica exatamente qual versão do código foi analisada.</p>
+                <div class="q cuidado">
+                  <p class="rot">Docker não iniciado?</p>
+                  <p>Se aparecer "Cannot connect to the Docker daemon", abra o Docker Desktop e aguarde o ícone ficar verde na bandeja do sistema antes de executar novamente.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 2: Primeira busca didática -->
+            <details class="e3-step">
+              <summary><span class="e3-num">2</span> Primeira busca: arquivo didático</summary>
+              <div class="e3-corpo">
+                <p>Antes de analisar o projeto real, vamos fazer uma busca em um arquivo de exemplo para entender como o Semgrep funciona e o que esperar na saída.</p>
+
+                <h4>Arquivos utilizados</h4>
+                <p>Faça o download dos dois arquivos abaixo e coloque-os em qualquer pasta temporária.</p>
+
+                <div class="arq-dl-card">
+                  <div class="arq-dl-hd">
+                    <span class="arq-dl-nome">exemplos-primeira-busca.yml</span>
+                  </div>
+                  <p class="arq-dl-desc">Regras didáticas que reconhecem chamadas a <code>console.log(...)</code> e respostas <code>.json(...)</code>.</p>
+                  <div class="dl-controls">
+                    <button class="dl-btn" type="button" data-dl-copy="exemplos-primeira-busca.yml" title="Copiar conteúdo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <a class="dl-btn" href="../assets/laboratorio/semgrep/exemplos-primeira-busca.yml" download title="Baixar arquivo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                  <pre class="dl-preview" id="prev-exemplos-yml">rules:
+  - id: alerta-console-log
+    languages: [typescript, javascript]
+    severity: INFO
+    message: &gt;
+      Chamada a console.log() encontrada. Em producao, remova ou substitua
+      por um sistema de log com controle de nivel (CWE-200).
+    patterns:
+      - pattern: console.log(...)
+
+  - id: alerta-res-json
+    languages: [typescript, javascript]
+    severity: INFO
+    message: &gt;
+      Resposta JSON detectada. Verifique se dados sensiveis nao estao sendo
+      incluidos na resposta sem filtragem adequada (CWE-200).
+    patterns:
+      - pattern: $RES.json(...)
+      - pattern: $RES.send(...)</pre>
+                </div>
+
+                <div class="arq-dl-card">
+                  <div class="arq-dl-hd">
+                    <span class="arq-dl-nome">primeira-busca.ts</span>
+                  </div>
+                  <p class="arq-dl-desc">Arquivo TypeScript didático com chamadas que devem ser sinalizadas pelas regras acima e um caso negativo que não deve.</p>
+                  <div class="dl-controls">
+                    <button class="dl-btn" type="button" data-dl-copy="primeira-busca.ts" title="Copiar conteúdo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <a class="dl-btn" href="../assets/laboratorio/semgrep/primeira-busca.ts" download title="Baixar arquivo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                  <pre class="dl-preview" id="prev-busca-ts">// primeira-busca.ts
+// Arquivo didatico para ilustrar o comportamento da analise estatica.
+// Nao faz parte do projeto avaliado.
+
+import express from 'express';
+const app = express();
+
+// Rota de ping — console.log deve ser sinalizado
+app.get('/ping', (req, res) =&gt; {
+  const name = req.query.name as string;
+  console.log('Requisicao recebida de:', name);  // deve ser sinalizado
+  res.json({ message: 'pong', user: name });     // deve ser sinalizado
+});
+
+// Rota de saude — res.json deve ser sinalizado
+app.get('/health', (req, res) =&gt; {
+  res.json({ status: 'ok' });  // deve ser sinalizado
+});
+
+// Funcao auxiliar sem chamadas mapeadas pelas regras — nao deve ser sinalizada
+function calcular(a: number, b: number): number {
+  return a + b;
+}
+
+export { app, calcular };</pre>
+                </div>
+
+                <h4>Executar a busca</h4>
+                <p>Com os dois arquivos na mesma pasta, abra o terminal nessa pasta e execute:</p>
+
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm `
+  -v "${PWD}:/src" `
+  -w /src `
+  semgrep/semgrep `
+  semgrep scan `
+  --config exemplos-primeira-busca.yml `
+  primeira-busca.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config exemplos-primeira-busca.yml \
+  primeira-busca.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm \
+  -v "$(pwd):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config exemplos-primeira-busca.yml \
+  primeira-busca.ts</code></pre>
+                </div>
+
+                <h4>O que esperar</h4>
+                <p>O Semgrep deve sinalizar as linhas com <code>console.log()</code> e <code>res.json()</code>/<code>res.send()</code> e ignorar a função <code>calcular()</code>, que não contém nenhum dos padrões mapeados.</p>
+                <p>Se os alertas esperados não aparecerem, verifique se os dois arquivos estão na mesma pasta e se o terminal está aberto nela.</p>
+
+                <h4>Gerar relatório SARIF desta busca (opcional)</h4>
+                <p>Para abrir os resultados no SARIF Viewer, copie os arquivos para a pasta <code>rules/</code> na raiz do projeto e execute com saída SARIF. O relatório será gravado em <code>reports/primeira-busca.sarif</code>.</p>
+
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>New-Item -ItemType Directory -Force -Path reports | Out-Null
+
+docker run --rm `
+  -v "${PWD}:/src" `
+  -w /src `
+  semgrep/semgrep `
+  semgrep scan `
+  --config rules/exemplos-primeira-busca.yml `
+  --sarif `
+  --output reports/primeira-busca.sarif `
+  rules/primeira-busca.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/exemplos-primeira-busca.yml \
+  --sarif \
+  --output reports/primeira-busca.sarif \
+  rules/primeira-busca.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+docker run --rm \
+  -v "$(pwd):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/exemplos-primeira-busca.yml \
+  --sarif \
+  --output reports/primeira-busca.sarif \
+  rules/primeira-busca.ts</code></pre>
+                </div>
+                <p>Use este relatório para praticar a navegação no SARIF Viewer antes de analisar o projeto real. Os alertas aqui são esperados e previamente conhecidos.</p>
+              </div>
+            </details>
+
+            <!-- 3: Analisar a API do projeto -->
+            <details class="e3-step">
+              <summary><span class="e3-num">3</span> Analisar a API do projeto</summary>
+              <div class="e3-corpo">
+                <p>Agora executamos a análise sobre o projeto real. O arquivo <code>classroom.yml</code> contém regras preparadas para esta atividade. Baixe-o e coloque-o na pasta <code>rules/</code> do seu repositório.</p>
+
+                <h4>Estrutura de pastas esperada</h4>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>case-auditoria-api/
+├── src/
+├── rules/
+│   ├── exemplos-primeira-busca.yml
+│   ├── classroom.yml      ← coloque aqui
+│   └── minha-regra.yml    ← será criado depois
+├── reports/               ← criada automaticamente ao executar
+│   ├── primeira-busca.sarif
+│   ├── semgrep.sarif
+│   └── minha-regra.sarif
+├── entregas/
+│   ├── 02_revisao_manual.md
+│   └── 03_semgrep.md
+└── package.json</code></pre>
+                </div>
+                <p><strong>rules/</strong> contém os arquivos YAML que definem o que será procurado. <strong>reports/</strong> contém os relatórios gerados automaticamente pelo Semgrep. <strong>entregas/</strong> contém as investigações e justificativas escritas pela equipe.</p>
+
+                <h4>Arquivo classroom.yml</h4>
+                <div class="arq-dl-card">
+                  <div class="arq-dl-hd">
+                    <span class="arq-dl-nome">classroom.yml</span>
+                  </div>
+                  <p class="arq-dl-desc">Cinco regras com comentários inline. Inclui verificações de <span class="tt" data-tip="Nível WARNING: merece investigação ativa">WARNING</span> e <span class="tt" data-tip="Nível INFO: ocorrência informativa, não vulnerabilidade confirmada">INFO</span>.</p>
+                  <div class="dl-controls">
+                    <button class="dl-btn" type="button" data-dl-copy="classroom.yml" title="Copiar conteúdo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <a class="dl-btn" href="../assets/laboratorio/semgrep/classroom.yml" download title="Baixar arquivo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                  <pre class="dl-preview" id="prev-classroom-yml">rules: # Conjunto de regras que o Semgrep executará
+
+  - id: aula3-consulta-sql-bruta # Regra 1: localizar consultas SQL brutas
+    languages: [typescript] # Linguagem analisada
+    severity: WARNING # Nível de atenção do alerta
+    message: "Consulta SQL bruta encontrada. Investigue a origem dos dados."
+    pattern-regex: '\$queryRawUnsafe\b' # Procura referências ao método $queryRawUnsafe
+    metadata: # Informações complementares
+      cwe: "CWE-89" # Categoria relacionada à injeção de SQL
+      tema: consultas-sql
+
+  - id: aula3-validacao-permissiva # Regra 2: identificar validação permissiva
+    languages: [typescript]
+    severity: WARNING
+    message: "Schema permissivo encontrado. Verifique os campos recebidos."
+    pattern: $SCHEMA.passthrough() # $SCHEMA captura a expressão antes de .passthrough()
+    metadata:
+      cwe: "CWE-20" # Categoria relacionada à validação inadequada
+      tema: validacao-entrada
+
+  - id: aula3-execucao-comandos # Regra 3: localizar execução de comandos
+    languages: [typescript]
+    severity: WARNING
+    message: "Execução de comando encontrada. Investigue a origem do argumento."
+    pattern: exec($COMMAND, ...) # $COMMAND captura o 1º argumento; ... aceita outros
+    metadata:
+      cwe: "CWE-78" # Categoria relacionada à injeção de comandos
+      tema: execucao-comandos
+
+  - id: aula3-consulta-por-identificador # Regra 4: consultas por identificador
+    languages: [typescript]
+    severity: INFO # Ocorrência informativa, não vulnerabilidade confirmada
+    message: "Consulta por identificador encontrada. Verifique a autorização."
+    pattern: prisma.$MODEL.findUnique(...) # $MODEL captura o modelo Prisma
+    metadata:
+      tema: controle-acesso
+
+  - id: aula3-atualizacao-de-registro # Regra 5: atualizações no banco
+    languages: [typescript]
+    severity: INFO
+    message: "Atualização encontrada. Verifique autorização e validação."
+    pattern: prisma.$MODEL.update(...) # Localiza update() no cliente prisma
+    metadata:
+      tema: escrita-banco</pre>
+                </div>
+
+                <div class="q info">
+                  <p class="rot">Comentários inline</p>
+                  <p>Os textos após <code>#</code> são comentários. Eles explicam o arquivo e são ignorados pelo Semgrep. Você pode copiar o YAML completo, incluindo os comentários.</p>
+                </div>
+
+                <h4>O que estamos procurando?</h4>
+                <p>As cinco regras identificam construções relevantes para a investigação de segurança da API. As regras 4 e 5 usam severidade INFO: procuram operações legítimas que podem exigir investigação contextual. Não são cinco vulnerabilidades confirmadas.</p>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Regra</th><th>O que identifica</th><th>O que investigar</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Consulta SQL bruta</td><td>Referências a <code>$queryRawUnsafe</code></td><td>Como a consulta é construída e quais dados a influenciam</td></tr>
+                      <tr><td>Validação permissiva</td><td>Chamadas a <code>.passthrough()</code></td><td>Se propriedades adicionais podem chegar às operações de escrita</td></tr>
+                      <tr><td>Execução de comandos</td><td>Chamadas a <code>exec(...)</code></td><td>Se dados externos podem influenciar o comando</td></tr>
+                      <tr><td>Consulta por identificador</td><td><code>prisma.<span class="tt" data-tip="$MODEL é uma metavariável: captura qualquer nome de modelo Prisma">$MODEL</span>.findUnique(...)</code></td><td>Se existem controles de autorização para acessar o registro</td></tr>
+                      <tr><td>Atualização de registro</td><td><code>prisma.$MODEL.update(<span class="tt" data-tip="Operador elipse: aceita zero ou mais argumentos em qualquer posição">...</span>)</code></td><td>Se existem validação, autorização e regras de negócio</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <details>
+                  <summary>Termos do YAML explicados</summary>
+                  <div style="padding:.5rem 0 .25rem">
+                    <div class="table-wrap">
+                      <table>
+                        <thead><tr><th>Termo</th><th>Significado</th></tr></thead>
+                        <tbody>
+                          <tr><td><code>pattern</code></td><td>Padrão estrutural de código que o Semgrep procura. Funciona como um template, não uma expressão regular.</td></tr>
+                          <tr><td><code>pattern-regex</code></td><td>Expressão regular aplicada ao texto do código. Detecta texto, não estrutura.</td></tr>
+                          <tr><td><code>metadata</code></td><td>Informações extras associadas à regra (CWE, tema). Não afetam a detecção.</td></tr>
+                          <tr><td><code>severity</code></td><td>Nível de atenção: INFO (informativo), WARNING (merece investigação), ERROR (risco elevado).</td></tr>
+                          <tr><td><code>CWE</code></td><td>Common Weakness Enumeration: catálogo de categorias de fraquezas de segurança. Veja o Glossário CWE abaixo.</td></tr>
+                          <tr><td><code>$MODEL</code>, <code>$COMMAND</code>, <code>$SCHEMA</code></td><td>Metavariáveis: capturam qualquer expressão naquela posição do padrão. Começam com <code>$</code>.</td></tr>
+                          <tr><td><code>...</code></td><td>Operador elipse: aceita zero ou mais argumentos em qualquer posição. Permite escrever padrões flexíveis.</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </details>
+
+                <details>
+                  <summary>Limitações importantes dessas regras</summary>
+                  <div style="padding:.5rem 0 .25rem">
+                    <p>As regras 4 e 5 usam o nome literal <code>prisma</code>. Se a aplicação usar outro nome de variável ou um repository que encapsule o cliente, essas regras não produzirão alertas.</p>
+                    <p>A regra de SQL usa uma expressão regular textual. Uma correspondência com <code>$queryRawUnsafe</code> não demonstra por si só a existência de SQL Injection: é necessário investigar como a consulta é construída e quais dados chegam a ela.</p>
+                    <p>Essas limitações fazem parte do aprendizado sobre cobertura e falsos negativos em análise estática.</p>
+                  </div>
+                </details>
+
+                <h4>Instalar o SARIF Viewer no VS Code</h4>
+                <p>Os resultados podem ser visualizados no terminal ou em uma interface gráfica dentro do VS Code. Para usar a interface, instale a extensão antes de executar a análise:</p>
+                <ol>
+                  <li>Abra o VS Code.</li>
+                  <li>Abra a área de extensões: <code>Ctrl+Shift+X</code> no Windows/Linux ou <code>Cmd+Shift+X</code> no macOS.</li>
+                  <li>Pesquise por <code>SARIF Viewer</code>.</li>
+                  <li>Selecione <strong>SARIF Viewer for Visual Studio Code</strong> (ID: <code>MS-SarifVSCode.sarif-viewer</code>).</li>
+                  <li>Clique em <strong>Install</strong>.</li>
+                </ol>
+                <p><a class="sarif-install-btn" href="https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer" target="_blank" rel="noopener">Instalar SARIF Viewer</a></p>
+                <p style="margin-top:.5rem;font-size:.88rem;color:var(--ink-2)">A extensão é instalada no VS Code. O Semgrep continua sendo executado pelo Docker. As duas ferramentas são independentes.</p>
+
+                <h4>Executar a análise e gerar relatório SARIF</h4>
+                <p>Execute na <strong>raiz do projeto</strong>. O comando cria a pasta <code>reports/</code> se ela ainda não existir e grava o relatório automaticamente.</p>
+
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>New-Item -ItemType Directory -Force -Path reports | Out-Null
+
+docker run --rm `
+  -v "${PWD}:/src" `
+  -w /src `
+  semgrep/semgrep `
+  semgrep scan `
+  --config rules/classroom.yml `
+  --sarif `
+  --output reports/semgrep.sarif `
+  src</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/classroom.yml \
+  --sarif \
+  --output reports/semgrep.sarif \
+  src</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+docker run --rm \
+  -v "$(pwd):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/classroom.yml \
+  --sarif \
+  --output reports/semgrep.sarif \
+  src</code></pre>
+                </div>
+
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Parâmetro</th><th>Significado</th></tr></thead>
+                    <tbody>
+                      <tr><td><code>mkdir -p reports</code></td><td>Cria a pasta de relatórios no Bash, se necessário</td></tr>
+                      <tr><td><code>New-Item ... reports</code></td><td>Cria a pasta de relatórios no PowerShell</td></tr>
+                      <tr><td><code>docker run --rm</code></td><td>Executa um container temporário e o remove ao terminar</td></tr>
+                      <tr><td><code>-v</code></td><td>Disponibiliza os arquivos locais dentro do container</td></tr>
+                      <tr><td><code>-w /src</code></td><td>Define o diretório de trabalho dentro do container</td></tr>
+                      <tr><td><code>--config</code></td><td>Informa qual arquivo YAML contém as regras</td></tr>
+                      <tr><td><code>--sarif</code></td><td>Solicita a saída no formato SARIF em vez do texto padrão</td></tr>
+                      <tr><td><code>--output</code></td><td>Define o caminho e o nome do relatório gerado</td></tr>
+                      <tr><td><code>src</code></td><td>Indica a pasta de código a ser analisada</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <p>Após a execução, o arquivo <code>reports/semgrep.sarif</code> será criado automaticamente. Ele utiliza uma estrutura JSON padronizada, mas deve ser aberto pelo SARIF Viewer no VS Code, não lido diretamente como texto. Os resultados variam conforme o código analisado, a versão do Semgrep e as regras configuradas.</p>
+
+                <div class="q cuidado">
+                  <p class="rot">Primeira execução</p>
+                  <p>O Docker pode precisar baixar a imagem <code>semgrep/semgrep</code> (~500 MB). Aguarde o download: a análise começa logo depois. Nas execuções seguintes, a imagem já estará em cache.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 4: Preservar revisão manual -->
+            <details class="e3-step">
+              <summary><span class="e3-num">4</span> Preservar a revisão manual</summary>
+              <div class="e3-corpo">
+                <p>Antes de prosseguir, confirme que <code>entregas/02_revisao_manual.md</code> está atualizado e commitado. Essa etapa precisa estar registrada de forma independente — não altere o documento depois de executar o Semgrep.</p>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>git add entregas/02_revisao_manual.md
+git commit -m "docs: finaliza revisao manual parcial"
+git push</code></pre>
+                </div>
+                <p>Se o documento já estiver commitado e atualizado no repositório remoto, não é necessário criar outro commit.</p>
+                <p>Identifique o commit correspondente à revisão manual e envie o link na atividade específica do Moodle.</p>
+                <div class="q cuidado">
+                  <p class="rot">Importante</p>
+                  <p>Não inclua retroativamente no documento de revisão manual nenhuma descoberta feita pelo Semgrep. O valor está em preservar o que foi identificado de forma independente.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 5: Investigar resultados -->
+            <details class="e3-step">
+              <summary><span class="e3-num">5</span> Investigar os resultados</summary>
+              <div class="e3-corpo">
+                <p>Após a execução, o Semgrep apresenta os alertas encontrados. Não é necessário investigar todas as ocorrências com a mesma profundidade. Selecione os resultados mais relevantes e procure compreender por que foram sinalizados.</p>
+
+                <h4>Abrir os resultados no VS Code</h4>
+                <p>Com a extensão SARIF Viewer instalada (passo 3) e o relatório <code>reports/semgrep.sarif</code> gerado:</p>
+                <ol>
+                  <li><strong>Localize o relatório.</strong> No painel Explorer do VS Code, abra <code>reports/semgrep.sarif</code>.</li>
+                  <li><strong>Abra o visualizador.</strong> A extensão exibe o painel SARIF Results automaticamente. Se não aparecer, use a Paleta de Comandos (<code>Ctrl+Shift+P</code> / <code>Cmd+Shift+P</code>) e selecione <strong>SARIF: Open SARIF log</strong>.</li>
+                  <li><strong>Examine os alertas.</strong> Para cada ocorrência você verá: identificador da regra, mensagem explicativa, nível de severidade, nome do arquivo e linha correspondente. A navegação exata pode variar conforme a versão da extensão.</li>
+                  <li><strong>Abra o código.</strong> Selecione uma ocorrência para localizar o arquivo e a linha. Leia o trecho e procure compreender a operação antes de julgar.</li>
+                  <li><strong>Investigue o contexto.</strong> Verifique a origem dos dados, o caminho de execução, as validações e os controles de autorização. Só então registre uma classificação fundamentada.</li>
+                </ol>
+                <p><strong>Pergunta orientadora:</strong> a ferramenta identificou um padrão. Quais evidências precisamos reunir para concluir se existe uma vulnerabilidade?</p>
+
+                <h4>Exemplo de leitura de um alerta (fictício)</h4>
+                <div class="sarif-ex" aria-label="Exemplo fictício de resultado SARIF">
+                  <p class="sarif-ex-label">Exemplo fictício · nao é um resultado obtido na API do projeto</p>
+                  <div class="sarif-ex-grid">
+                    <span class="sarif-ex-k">Regra</span>
+                    <span class="sarif-ex-v">aula3-execucao-comandos</span>
+                    <span class="sarif-ex-k">Severidade</span>
+                    <span class="sarif-ex-v"><span class="sarif-ex-warn">WARNING</span></span>
+                    <span class="sarif-ex-k">Arquivo</span>
+                    <span class="sarif-ex-v">exemplo.ts</span>
+                    <span class="sarif-ex-k">Linha</span>
+                    <span class="sarif-ex-v">12</span>
+                    <span class="sarif-ex-k">Mensagem</span>
+                    <span class="sarif-ex-v">Execução de comando encontrada. Investigue a origem do argumento.</span>
+                  </div>
+                  <dl class="sarif-interp">
+                    <dt>O que sabemos</dt>
+                    <dd>A regra encontrou uma chamada que corresponde ao padrão configurado.</dd>
+                    <dt>O que ainda não sabemos</dt>
+                    <dd>Se o argumento recebe valores externos ou se existem controles adequados.</dd>
+                    <dt>Próximo passo</dt>
+                    <dd>Inspecionar o fluxo da variável até a chamada.</dd>
+                  </dl>
+                </div>
+
+                <h4>O que registrar para cada alerta</h4>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr><th>Campo</th><th>O que documentar</th><th>Exemplo fictício</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Regra</td><td>Identificador da regra que produziu o alerta</td><td><code>aula3-execucao-comandos</code></td></tr>
+                      <tr><td>Localização</td><td>Arquivo, função e linha</td><td><code>src/services/cmd.service.ts:42</code></td></tr>
+                      <tr><td>Trecho</td><td>Código correspondente à condição da regra</td><td><code>exec(req.query.cmd)</code></td></tr>
+                      <tr><td>Contexto</td><td>Origem dos dados e condições de execução</td><td>Parâmetro de URL sem validação chega diretamente ao exec</td></tr>
+                      <tr><td>Classificação</td><td>Confirmado / Falso positivo / Pendente</td><td>Confirmado</td></tr>
+                      <tr><td>Justificativa</td><td>Explicação técnica sustentada pelo código</td><td>O valor de req.query.cmd não passa por sanitização antes de exec</td></tr>
+                      <tr><td>Recomendação</td><td>Correção proposta ou investigação adicional</td><td>Validar contra lista de comandos permitidos</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="q cuidado">
+                  <p class="rot">Atenção</p>
+                  <p>Não classifique um alerta como falso positivo apenas porque a ferramenta produziu muitos resultados. Também não confirme uma vulnerabilidade só porque uma regra foi acionada. O objetivo é uma conclusão sustentada pelas evidências: leia o código antes de decidir.</p>
+                </div>
+              </div>
+            </details>
+
+            <!-- 6: Criar regra personalizada -->
+            <details class="e3-step">
+              <summary><span class="e3-num">6</span> Criar uma regra personalizada</summary>
+              <div class="e3-corpo">
+                <p>Crie o arquivo <code>rules/minha-regra.yml</code> com um padrão simples e relevante. A regra deve conter no mínimo os campos abaixo:</p>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr><th>Campo YAML</th><th>O que define</th><th>Exemplo</th></tr></thead>
+                    <tbody>
+                      <tr><td><code>id</code></td><td>Identificador único da regra</td><td><code>minha-regra-exec</code></td></tr>
+                      <tr><td><code>languages</code></td><td>Linguagens analisadas</td><td><code>[typescript]</code></td></tr>
+                      <tr><td><code>severity</code></td><td>Nível de risco</td><td><code>WARNING</code></td></tr>
+                      <tr><td><code>message</code></td><td>Texto exibido no alerta</td><td>Uso de exec() detectado</td></tr>
+                      <tr><td><code>pattern</code></td><td>Padrão de código a detectar</td><td><code>exec($CMD)</code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h4>Testar com a regra criada</h4>
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm `
+  -v "${PWD}:/src" `
+  -w /src `
+  semgrep/semgrep `
+  semgrep scan `
+  --config rules/minha-regra.yml `
+  src</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/minha-regra.yml \
+  src</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm \
+  -v "$(pwd):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/minha-regra.yml \
+  src</code></pre>
+                </div>
+
+                <h4>Validar com dois casos</h4>
+                <ul>
+                  <li><strong>Caso positivo:</strong> trecho que deve corresponder ao padrão — a regra deve sinalizar.</li>
+                  <li><strong>Caso negativo:</strong> trecho que não deve corresponder — a regra não deve sinalizar.</li>
+                </ul>
+                <p>Crie arquivos de teste em <code>src/</code> (ex.: <code>src/teste-positivo.ts</code> e <code>src/teste-negativo.ts</code>) e execute a regra sobre eles. Os exemplos devem ser independentes das vulnerabilidades reservadas ao projeto avaliativo.</p>
+                <p>Não basta demonstrar que a regra sinaliza algo — é preciso também entender quando ela não deveria sinalizar e quais são suas limitações.</p>
+
+                <h4>Gerar relatório SARIF da regra personalizada</h4>
+                <p>Execute direcionando apenas para os arquivos de teste, não para <code>src/</code> inteiro. Isso garante que o relatório reflita exclusivamente os casos positivo e negativo criados por você.</p>
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>New-Item -ItemType Directory -Force -Path reports | Out-Null
+
+docker run --rm `
+  -v "${PWD}:/src" `
+  -w /src `
+  semgrep/semgrep `
+  semgrep scan `
+  --config rules/minha-regra.yml `
+  --sarif `
+  --output reports/minha-regra.sarif `
+  src/teste-positivo.ts src/teste-negativo.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/minha-regra.yml \
+  --sarif \
+  --output reports/minha-regra.sarif \
+  src/teste-positivo.ts src/teste-negativo.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>mkdir -p reports
+
+docker run --rm \
+  -v "$(pwd):/src" \
+  -w /src \
+  semgrep/semgrep \
+  semgrep scan \
+  --config rules/minha-regra.yml \
+  --sarif \
+  --output reports/minha-regra.sarif \
+  src/teste-positivo.ts src/teste-negativo.ts</code></pre>
+                </div>
+                <p>O relatório <code>reports/minha-regra.sarif</code> deve mostrar o alerta do caso positivo e nenhum alerta do caso negativo. Esse contraste é a evidência de que a regra funciona conforme esperado.</p>
+              </div>
+            </details>
+
+            <!-- 7: Registrar e versionar -->
+            <details class="e3-step">
+              <summary><span class="e3-num">7</span> Registrar e versionar</summary>
+              <div class="e3-corpo">
+                <p>Crie ou atualize <code>entregas/03_semgrep.md</code>. Baixe o modelo abaixo para ter um ponto de partida com todas as seções necessárias.</p>
+
+                <div class="arq-dl-card">
+                  <div class="arq-dl-hd">
+                    <span class="arq-dl-nome">03_semgrep_MODELO.md</span>
+                  </div>
+                  <p class="arq-dl-desc">Modelo de relatório com todas as seções: identificação, resultados, regra personalizada e comparação com a revisão manual.</p>
+                  <div class="dl-controls">
+                    <button class="dl-btn" type="button" data-dl-copy="03_semgrep_MODELO.md" title="Copiar conteúdo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                    <a class="dl-btn" href="../assets/laboratorio/semgrep/03_semgrep_MODELO.md" download title="Baixar arquivo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a>
+                  </div>
+                  <pre class="dl-preview" id="prev-modelo-md"># Relatório de Análise Estática com Semgrep
+## Etapa 3 - [Nome da equipe]
+
+---
+
+### 1. Identificação da análise
+
+| Campo | Valor |
+|---|---|
+| Equipe | |
+| Data da execução | |
+| Versão do Semgrep | (resultado de `semgrep --version`) |
+| Imagem Docker | `semgrep/semgrep` |
+| Commit analisado | (resultado de `git rev-parse HEAD`) |
+| Configurações utilizadas | `rules/classroom.yml`, `rules/minha-regra.yml` |
+| Diretório analisado | `src/` |
+| Comando executado | (cole o comando Docker completo) |
+| Quantidade de alertas | (número total produzido pela análise) |
+| Regras com correspondência | (ids das regras que produziram alertas) |
+
+### Relatórios gerados
+
+| Análise | Arquivo |
+|---|---|
+| Primeira busca didática | `reports/primeira-busca.sarif` |
+| Análise da API | `reports/semgrep.sarif` |
+| Regra personalizada | `reports/minha-regra.sarif` |
+
+> O arquivo SARIF contém o resultado gerado pela ferramenta. Este relatório Markdown contém a interpretação e as conclusões produzidas pela equipe. Uma captura de tela do SARIF Viewer não substitui a análise escrita.
+
+---
+
+### 2. Resultados da análise com classroom.yml
+
+> Documente os alertas investigados. Nao precisa registrar todos: selecione os mais relevantes.
+
+#### Alerta 1
+
+- **Regra:** (id da regra)
+- **Arquivo:** `src/...`
+- **Linha:**
+- **Trecho de código:**
+  ```
+  (cole o trecho aqui)
+  ```
+- **Contexto:** (de onde vem o dado, qual operação é afetada)
+- **Classificação:** [ ] Confirmado  [ ] Falso positivo  [ ] Pendente
+- **Justificativa:** (explique tecnicamente a decisão)
+- **Recomendação:** (o que corrigir ou investigar)
+
+#### Alerta 2
+
+(repita a estrutura acima para cada alerta investigado)
+
+---
+
+### 3. Regra personalizada
+
+**Arquivo:** `rules/minha-regra.yml`
+
+**Padrão escolhido e motivação:**
+(descreva brevemente qual padrão a regra detecta e por que foi escolhido)
+
+**Conteúdo da regra:**
+```yaml
+(cole o YAML aqui)
+```
+
+#### Caso positivo (deve ser sinalizado)
+
+- **Arquivo de teste:** `src/teste-positivo.ts`
+- **Trecho:**
+  ```typescript
+  (cole o trecho que deve acionar a regra)
+  ```
+- **Resultado:** alerta produzido / alerta nao produzido (inesperado)
+
+#### Caso negativo (nao deve ser sinalizado)
+
+- **Arquivo de teste:** `src/teste-negativo.ts`
+- **Trecho:**
+  ```typescript
+  (cole o trecho que nao deve acionar a regra)
+  ```
+- **Resultado:** nenhum alerta / alerta produzido (inesperado)
+
+**Limitações identificadas na regra:**
+(o que a regra nao consegue detectar; quando pode produzir falsos positivos)
+
+---
+
+### 4. Comparação com a revisão manual
+
+| Achado | Revisão manual | Semgrep | Observação |
+|--------|---------------|---------|------------|
+| (preencher) | Sim / Nao | Sim / Nao | |
+
+**Achados identificados pela revisão manual e confirmados pelo Semgrep:**
+
+**Achados identificados pelo Semgrep e nao mapeados na revisão manual:**
+
+**Achados da revisão manual nao sinalizados pelo Semgrep:**
+(explique o motivo)
+
+**Limitações da análise estática neste projeto:**
+
+---
+
+### 5. Conclusão
+
+(síntese do que foi realizado, principais achados e próximos passos)</pre>
+                </div>
+
+                <p>O relatório deve conter: identificação da análise (versão, commit, comando), alertas investigados com classificação e justificativa, regra personalizada com casos positivo e negativo, e comparação com a revisão manual.</p>
+
+                <h4>Versionar os arquivos</h4>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>git add entregas/03_semgrep.md rules/
+git commit -m "docs: registra analise semgrep e regra personalizada"
+git push</code></pre>
+                </div>
+                <p>Confira se o Markdown e o YAML estão disponíveis no repositório remoto antes de enviar o link. Não inclua arquivos <code>.env</code>, credenciais ou tokens no commit.</p>
+              </div>
+            </details>
+
+          </div>
 
           <h3>Critérios de conclusão</h3>
-          <p>Você consegue explicar pelo menos um alerta com contexto, identificar um caso em que a presença do padrão não basta para confirmar vulnerabilidade e demonstrar como uma regra simples pode produzir acertos e limitações. A <strong>entrega parcial formal</strong> da revisão manual ocorre ao final desta fase, conforme calendário e orientações do Moodle; o texto manual deve permanecer preservado sem incorporar retroativamente descobertas do SAST.</p>
+          <p>A equipe terá concluído a etapa quando conseguir demonstrar:</p>
+          <ol class="e3-criterios">
+            <li>Execução do Semgrep sobre a API usando regras YAML via Docker.</li>
+            <li>Registro da versão da ferramenta, comando executado e commit analisado.</li>
+            <li>Investigação de alertas com localização, contexto, classificação e justificativa.</li>
+            <li>Uma regra personalizada funcional com id, language, severity, message e pattern.</li>
+            <li>Um caso que produz alerta e outro que não produz, com explicação das limitações.</li>
+            <li>Comparação entre revisão manual e SAST com diferenças explicadas.</li>
+            <li>Arquivos <code>03_semgrep.md</code> e <code>minha-regra.yml</code> versionados no GitHub.</li>
+          </ol>
+
+          <h3>Problemas frequentes</h3>
+          <ul class="prob-lista">
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Docker: comando não reconhecido</summary>
+              <div class="prob-corpo">
+                <p>Se o terminal exibir <code>docker: command not found</code> ou <code>'docker' não é reconhecido</code>, o Docker não está instalado ou não foi adicionado ao PATH. Acesse <a href="../laboratorio/instalacao.html">Preparar o ambiente</a> e siga as instruções de instalação do Docker Desktop.</p>
+                <p>Depois de instalar, feche e reabra o terminal para recarregar o PATH.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Docker Engine não iniciado</summary>
+              <div class="prob-corpo">
+                <p>Erro: <code>Cannot connect to the Docker daemon at unix:///var/run/docker.sock</code> ou similar.</p>
+                <p>Abra o Docker Desktop e aguarde o ícone ficar verde na bandeja do sistema. Só então execute o comando novamente.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag git">Git Bash</span> Quebras de linha CRLF no YAML</summary>
+              <div class="prob-corpo">
+                <p>Se o arquivo YAML foi editado no Windows com quebras de linha CRLF, o Semgrep pode falhar ao interpretar o arquivo. Converta para LF antes de executar:</p>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>sed -i 's/\r//' rules/minha-regra.yml</code></pre>
+                </div>
+                <p>No VS Code, clique em "CRLF" no canto inferior direito e selecione "LF" para salvar com as quebras corretas.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag git">Git Bash</span> Conversão automática de caminhos</summary>
+              <div class="prob-corpo">
+                <p>No Git Bash no Windows, o shell converte <code>/src</code> para <code>C:/Program Files/Git/src</code> automaticamente. Para evitar isso, sempre use <code>MSYS_NO_PATHCONV=1</code> antes do comando Docker e <code>$(pwd -W)</code> para o caminho do projeto:</p>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>MSYS_NO_PATHCONV=1 docker run --rm \
+  -v "$(pwd -W):/src" \
+  -w /src \
+  semgrep/semgrep semgrep scan \
+  --config rules/classroom.yml src</code></pre>
+                </div>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Arquivo YAML não encontrado</summary>
+              <div class="prob-corpo">
+                <p>Erro: <code>No config found for path rules/classroom.yml</code>. Verifique se:</p>
+                <ul>
+                  <li>O terminal está aberto na raiz do projeto (onde está o <code>package.json</code>).</li>
+                  <li>O arquivo existe em <code>rules/classroom.yml</code> (use <code>ls rules/</code> para confirmar).</li>
+                  <li>O nome do arquivo está correto, incluindo extensão <code>.yml</code>.</li>
+                </ul>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Erro de sintaxe no YAML</summary>
+              <div class="prob-corpo">
+                <p>Erro: <code>Invalid rule schema</code> ou <code>YAML parse error</code>. Problemas comuns:</p>
+                <ul>
+                  <li>Indentação com tabs em vez de espaços — YAML usa apenas espaços.</li>
+                  <li>Falta de espaço após o <code>:</code> nas chaves.</li>
+                  <li>Aspas desbalanceadas nos valores de <code>message</code>.</li>
+                </ul>
+                <p>Use o <a href="https://semgrep.dev/playground" target="_blank" rel="noopener">Semgrep Playground</a> para validar a regra online antes de executar localmente.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Zero resultados com classroom.yml</summary>
+              <div class="prob-corpo">
+                <p>Isso é esperado. O <code>classroom.yml</code> contém regras genéricas que podem não produzir alertas no projeto específico. O objetivo da etapa está na regra personalizada e na investigação.</p>
+                <p>Se quiser confirmar que a ferramenta funciona, execute primeiro no arquivo didático <code>primeira-busca.ts</code> (passo 2 desta etapa).</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Arquivos ignorados pelo Semgrep</summary>
+              <div class="prob-corpo">
+                <p>O Semgrep ignora por padrão arquivos listados no <code>.gitignore</code> e certos diretórios como <code>node_modules/</code>. Se um arquivo que você espera ver na análise não aparece, verifique se ele está no diretório <code>src/</code> e não está sendo excluído.</p>
+                <p>Para forçar a análise de um arquivo específico, passe o caminho direto:</p>
+                <div class="pre-wrap" data-os-block="psh">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm -v "${PWD}:/src" -w /src semgrep/semgrep `
+  semgrep scan --config rules/classroom.yml src/services/cmd.service.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="git">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/src" -w /src semgrep/semgrep \
+  semgrep scan --config rules/classroom.yml src/services/cmd.service.ts</code></pre>
+                </div>
+                <div class="pre-wrap" data-os-block="unix">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm -v "$(pwd):/src" -w /src semgrep/semgrep \
+  semgrep scan --config rules/classroom.yml src/services/cmd.service.ts</code></pre>
+                </div>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag win">PowerShell</span> Backtick não funciona para continuação de linha</summary>
+              <div class="prob-corpo">
+                <p>No PowerShell, o caractere de continuação de linha é o backtick (<code>`</code>), não a barra invertida. Certifique-se de que não há nenhum espaço ou caractere após o backtick na linha — qualquer caractere invisível quebra a continuação.</p>
+                <p>Alternativa: cole o comando inteiro em uma só linha.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Resultados diferentes entre computadores</summary>
+              <div class="prob-corpo">
+                <p>A versão do Semgrep pode variar se a imagem Docker for atualizada entre execuções. Para garantir reprodutibilidade, fixe a versão da imagem:</p>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>docker run --rm semgrep/semgrep:1.90.0 semgrep --version</code></pre>
+                </div>
+                <p>Registre a versão exata utilizada no relatório.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag unix">macOS/Linux</span> Permissão negada ao montar volume</summary>
+              <div class="prob-corpo">
+                <p>No Linux, o Docker pode exigir permissão para montar diretórios. Se aparecer <code>permission denied</code>, adicione seu usuário ao grupo docker:</p>
+                <div class="pre-wrap">
+                  <button class="copy-btn" type="button">Copiar</button>
+                  <pre><code>sudo usermod -aG docker $USER</code></pre>
+                </div>
+                <p>Após o comando, faça logout e login novamente para que a mudança tenha efeito.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> Primeira execução muito lenta</summary>
+              <div class="prob-corpo">
+                <p>Na primeira execução, o Docker precisa baixar a imagem <code>semgrep/semgrep</code> (~500 MB). Isso pode levar alguns minutos dependendo da conexão. Nas execuções seguintes, a imagem já estará em cache e o início será quase imediato.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> O arquivo semgrep.sarif não foi criado</summary>
+              <div class="prob-corpo">
+                <p>Verifique se:</p>
+                <ul>
+                  <li>O comando foi executado na raiz do projeto (onde está o <code>package.json</code>).</li>
+                  <li>A pasta <code>reports/</code> foi criada (o comando com <code>mkdir -p</code> ou <code>New-Item</code> deve ter rodado sem erro).</li>
+                  <li>O Docker conseguiu gravar no diretório montado (verifique permissões em Linux).</li>
+                </ul>
+                <p>Execute o comando de criação da pasta separadamente e confirme que ela existe antes de rodar o Docker.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> O arquivo SARIF abre como JSON bruto</summary>
+              <div class="prob-corpo">
+                <p>Confirme que a extensão <strong>SARIF Viewer</strong> (<code>MS-SarifVSCode.sarif-viewer</code>) está instalada no VS Code. Após instalar, abra a Paleta de Comandos (<code>Ctrl+Shift+P</code> / <code>Cmd+Shift+P</code>) e execute <strong>SARIF: Open SARIF log</strong>, selecionando o arquivo <code>reports/semgrep.sarif</code>.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> O painel SARIF não apresenta alertas</summary>
+              <div class="prob-corpo">
+                <p>Um relatório SARIF pode ser gerado normalmente mesmo quando o Semgrep encontra zero correspondências. Verifique a saída do terminal: se a execução terminou sem erro, o arquivo foi criado corretamente. Um resultado sem alertas é um resultado válido.</p>
+                <p>Se quiser confirmar que a ferramenta funciona, execute primeiro no arquivo didático <code>primeira-busca.ts</code> (passo 2), que deve produzir alertas conhecidos.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> O SARIF Viewer não encontra o arquivo de código</summary>
+              <div class="prob-corpo">
+                <p>Verifique se o VS Code foi aberto pela <strong>pasta raiz do projeto</strong> (File > Open Folder, não apenas o arquivo). O SARIF Viewer precisa resolver os caminhos relativos do relatório em relação à raiz do projeto aberto.</p>
+                <p>Se os caminhos ainda não baterem, verifique se o relatório foi gerado a partir da raiz correta e se não há um nível extra de pasta no caminho.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag win">PowerShell</span> Comando funciona no PowerShell mas não no Git Bash</summary>
+              <div class="prob-corpo">
+                <p>PowerShell e Git Bash usam sintaxes diferentes para continuação de linha e caminhos:</p>
+                <ul>
+                  <li>PowerShell usa backtick (<code>`</code>) para continuar a linha; Git Bash usa barra invertida (<code>\</code>).</li>
+                  <li>Git Bash converte automaticamente caminhos Unix como <code>/src</code>: use sempre <code>MSYS_NO_PATHCONV=1</code> e <code>$(pwd -W)</code> na versão Git Bash.</li>
+                </ul>
+                <p>Use o seletor de terminal no topo da Etapa 3 para ver o comando correto para cada ambiente.</p>
+              </div>
+            </details></li>
+
+            <li><details class="prob-item">
+              <summary><span class="prob-tag geral">Geral</span> O arquivo foi gerado mas não aparece no Explorer do VS Code</summary>
+              <div class="prob-corpo">
+                <p>Clique com o botão direito no painel Explorer do VS Code e selecione <strong>Refresh Explorer</strong>. Confirme também que o arquivo foi criado dentro da pasta <code>reports/</code> do projeto correto.</p>
+              </div>
+            </details></li>
+          </ul>
+
+          <h3>Glossário CWE</h3>
+          <p>As regras do Semgrep referem-se a categorias de fraquezas do catálogo CWE (Common Weakness Enumeration). Os termos abaixo aparecem com frequência nos alertas e no relatório.</p>
+          <div class="cwe-busca-wrap">
+            <input class="cwe-busca" id="cwe-busca" type="search" placeholder="Buscar por CWE, nome ou termo..." aria-label="Buscar no glossário CWE">
+          </div>
+          <ul class="cwe-lista" id="cwe-lista">
+
+            <li class="cwe-item" data-cwe="cwe-78 injecao de comando os command injection exec shell">
+              <details>
+                <summary><span class="cwe-id">CWE-78</span> Injeção de Comando do SO</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>A aplicação constrói um comando de sistema operacional usando dados controlados pelo usuário sem validação ou sanitização adequada. Um atacante pode inserir argumentos extras ou separadores de comando para executar instruções arbitrárias no servidor.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p><code>exec("ping " + req.query.host)</code> — se <code>host</code> for <code>; rm -rf /</code>, o comando de limpeza será executado no servidor.</p>
+                  <h5>O que investigar</h5>
+                  <p>Rastreie a origem do argumento passado a funções como <code>exec</code>, <code>spawn</code>, <code>execSync</code>. Verifique se existe validação antes da chamada.</p>
+                  <a href="https://cwe.mitre.org/data/definitions/78.html" target="_blank" rel="noopener">MITRE CWE-78</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-89 injecao sql sql injection query banco de dados">
+              <details>
+                <summary><span class="cwe-id">CWE-89</span> Injeção de SQL</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>Dados do usuário são inseridos diretamente em consultas SQL sem parametrização, permitindo manipulação da lógica da consulta.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p><code>"SELECT * FROM users WHERE id = " + req.params.id</code> — com <code>id = 1 OR 1=1</code>, retorna todos os registros.</p>
+                  <h5>O que investigar</h5>
+                  <p>Verifique se as consultas usam prepared statements ou ORM com parâmetros vinculados. Concatenação de strings em queries é um sinal de alerta.</p>
+                  <a href="https://cwe.mitre.org/data/definitions/89.html" target="_blank" rel="noopener">MITRE CWE-89</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-639 referencia direta objeto idor authorization bypass user controlled key">
+              <details>
+                <summary><span class="cwe-id">CWE-639</span> Referência Direta a Objeto (IDOR)</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O sistema usa um identificador controlado pelo usuário (como um ID na URL) para acessar diretamente um recurso sem verificar se o usuário autenticado tem permissão para aquele ID específico.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p><code>GET /api/pedidos/1234</code> — se o backend busca o pedido pelo ID sem verificar se pertence ao usuário da sessão, qualquer usuário pode acessar qualquer pedido.</p>
+                  <h5>O que investigar</h5>
+                  <p>Após buscar o recurso pelo ID da URL, o código verifica se <code>recurso.userId === req.user.id</code> (ou equivalente)?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/639.html" target="_blank" rel="noopener">MITRE CWE-639</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-862 missing authorization autorizacao ausente sem controle acesso">
+              <details>
+                <summary><span class="cwe-id">CWE-862</span> Autorização Ausente</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>Um recurso ou operação não verifica se o usuário autenticado tem permissão para realizá-la. A autenticação confirma quem é o usuário; a autorização confirma o que ele pode fazer.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Rota <code>DELETE /api/usuarios/:id</code> sem verificar se o chamador tem papel de administrador.</p>
+                  <h5>O que investigar</h5>
+                  <p>Existe algum middleware ou guard de autorização aplicado a esta rota? Apenas autenticação (JWT válido) não é suficiente para operações privilegiadas.</p>
+                  <a href="https://cwe.mitre.org/data/definitions/862.html" target="_blank" rel="noopener">MITRE CWE-862</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-863 autorizacao incorreta incorrect authorization papel role permissao">
+              <details>
+                <summary><span class="cwe-id">CWE-863</span> Autorização Incorreta</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O sistema verifica autorização, mas com lógica ou dados incorretos — por exemplo, usando um campo que o usuário pode manipular para elevar seus privilégios.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Verificar o papel do usuário a partir do próprio payload do JWT sem validar a assinatura, permitindo que qualquer pessoa crie um token com <code>"role": "admin"</code>.</p>
+                  <h5>O que investigar</h5>
+                  <p>O dado usado para decidir o nível de acesso vem de uma fonte confiável (banco de dados, sessão do servidor) ou de algo que o usuário pode modificar?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/863.html" target="_blank" rel="noopener">MITRE CWE-863</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-915 mass assignment atribuicao em massa objeto dinamico">
+              <details>
+                <summary><span class="cwe-id">CWE-915</span> Atribuição em Massa</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O sistema copia automaticamente campos do corpo da requisição para um objeto sem filtrar quais campos são permitidos. Um atacante pode enviar campos extras (como <code>role</code> ou <code>isAdmin</code>) que não deveriam ser modificáveis.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p><code>Object.assign(usuario, req.body)</code> — se <code>req.body</code> incluir <code>"isAdmin": true</code>, o campo será atualizado sem validação.</p>
+                  <h5>O que investigar</h5>
+                  <p>O código usa allowlist (lista de campos permitidos) ao atualizar objetos com dados da requisição?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/915.html" target="_blank" rel="noopener">MITRE CWE-915</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-841 fluxo autenticacao workflow enforcement">
+              <details>
+                <summary><span class="cwe-id">CWE-841</span> Fluxo de Autenticação Desrespeitado</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>A aplicação define um fluxo esperado (ex.: verificar email antes de ativar conta), mas permite que etapas obrigatórias sejam puladas acessando diretamente endpoints posteriores.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Um fluxo de redefinição de senha com etapas 1 (email), 2 (código) e 3 (nova senha) que permite acessar a etapa 3 diretamente sem passar pela 2.</p>
+                  <h5>O que investigar</h5>
+                  <p>O backend valida que o estado anterior foi concluído antes de processar a etapa seguinte? Ou confia apenas no que o cliente envia?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/841.html" target="_blank" rel="noopener">MITRE CWE-841</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-20 validacao entrada input validation">
+              <details>
+                <summary><span class="cwe-id">CWE-20</span> Validação de Entrada Insuficiente</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O sistema não verifica suficientemente se os dados recebidos têm o formato, tipo, tamanho ou conteúdo esperado. É a categoria raiz de muitas outras fraquezas.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Um campo numérico que aceita strings arbitrárias, ou um campo de email que aceita qualquer valor sem verificar o formato.</p>
+                  <h5>O que investigar</h5>
+                  <p>Existe validação de schema (ex.: Zod, Joi, class-validator) aplicada antes de usar os dados? A validação cobre todos os campos relevantes?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/20.html" target="_blank" rel="noopener">MITRE CWE-20</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-200 exposicao informacao sensivel sensitive data exposure information disclosure">
+              <details>
+                <summary><span class="cwe-id">CWE-200</span> Exposição de Informação Sensível</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O sistema revela dados que não deveriam ser acessíveis — stack traces em respostas de erro, campos de senha em respostas JSON, logs com dados pessoais ou credenciais.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Resposta de erro que inclui o stack trace completo com caminhos internos do servidor e versões de bibliotecas.</p>
+                  <h5>O que investigar</h5>
+                  <p>O que é retornado nas respostas de erro? Alguma resposta inclui campos como <code>password</code>, <code>hash</code> ou <code>token</code>?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/200.html" target="_blank" rel="noopener">MITRE CWE-200</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-287 autenticacao impropria improper authentication jwt">
+              <details>
+                <summary><span class="cwe-id">CWE-287</span> Autenticação Imprópria</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>O mecanismo de autenticação tem falhas que permitem que um usuário prove identidade de forma incorreta ou inadequada.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p>Verificar apenas se o token JWT existe sem validar sua assinatura, ou aceitar o algoritmo <code>none</code> que não exige assinatura.</p>
+                  <h5>O que investigar</h5>
+                  <p>O código usa <code>jwt.verify()</code> (que valida a assinatura) ou apenas <code>jwt.decode()</code> (que não valida)? O algoritmo é fixo no código ou confiado ao token?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/287.html" target="_blank" rel="noopener">MITRE CWE-287</a>
+                </div>
+              </details>
+            </li>
+
+            <li class="cwe-item" data-cwe="cwe-798 credencial fixa hardcoded credentials senha token secret">
+              <details>
+                <summary><span class="cwe-id">CWE-798</span> Credencial Fixa no Código</summary>
+                <div class="cwe-corpo">
+                  <h5>O que é</h5>
+                  <p>Senhas, tokens, chaves de API ou segredos são embutidos diretamente no código-fonte em vez de serem lidos de variáveis de ambiente ou sistemas de gestão de segredos.</p>
+                  <h5>Exemplo de risco</h5>
+                  <p><code>const JWT_SECRET = "minha-senha-secreta-123"</code> no código — qualquer pessoa com acesso ao repositório obtém o segredo.</p>
+                  <h5>O que investigar</h5>
+                  <p>Existe alguma string que parece uma senha, token ou chave definida como constante no código? Os segredos são lidos de <code>process.env</code>?</p>
+                  <a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener">MITRE CWE-798</a>
+                </div>
+              </details>
+            </li>
+
+          </ul>
+          <p class="cwe-nenhum" id="cwe-nenhum">Nenhum resultado para essa busca.</p>
 
         </div>
       </article>
@@ -1338,6 +2556,67 @@ Não declare vulnerabilidade confirmada sem evidência.</code></pre>
       }).catch(function () {
         btn.textContent = 'Erro';
         setTimeout(function () { btn.textContent = 'Copiar'; }, 2000);
+      });
+    });
+  });
+
+  // OS selector for etapa-3 (3 options: psh / git / unix)
+  var osBtns = document.querySelectorAll('#e3-os-sel .os-btn');
+  if (osBtns.length) {
+    var osBlocks = document.querySelectorAll('[data-os-block]');
+    function setOS(os) {
+      osBtns.forEach(function(b) { b.classList.toggle('ativo', b.dataset.os === os); });
+      osBlocks.forEach(function(b) { b.style.display = b.dataset.osBlock === os ? '' : 'none'; });
+    }
+    osBtns.forEach(function(b) { b.addEventListener('click', function() { setOS(b.dataset.os); }); });
+    setOS('psh');
+  }
+
+  // CWE glossary search
+  var cweBusca = document.getElementById('cwe-busca');
+  var cweItems = document.querySelectorAll('.cwe-item');
+  var cweNenhum = document.getElementById('cwe-nenhum');
+  if (cweBusca && cweItems.length) {
+    cweBusca.addEventListener('input', function() {
+      var q = cweBusca.value.toLowerCase().trim();
+      var visiveis = 0;
+      cweItems.forEach(function(item) {
+        var texto = (item.dataset.cwe || '') + ' ' + item.textContent.toLowerCase();
+        var visivel = !q || texto.indexOf(q) !== -1;
+        item.style.display = visivel ? '' : 'none';
+        if (visivel) visiveis++;
+      });
+      if (cweNenhum) cweNenhum.style.display = visiveis === 0 ? 'block' : 'none';
+    });
+  }
+
+  // Copiar controls — le textContent do <pre> embutido inline
+  var dlPreviewIds = {
+    'exemplos-primeira-busca.yml': 'prev-exemplos-yml',
+    'primeira-busca.ts': 'prev-busca-ts',
+    'classroom.yml': 'prev-classroom-yml',
+    '03_semgrep_MODELO.md': 'prev-modelo-md'
+  };
+  document.querySelectorAll('[data-dl-copy]').forEach(function(btn) {
+    var preEl = document.getElementById(dlPreviewIds[btn.dataset.dlCopy] || '');
+    if (!preEl) return;
+    btn.addEventListener('click', function() {
+      navigator.clipboard.writeText(preEl.textContent).then(function() {
+        btn.dataset.copied = '1';
+        btn.style.borderColor = 'var(--good)';
+        btn.style.color = 'var(--good)';
+        setTimeout(function() {
+          delete btn.dataset.copied;
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 2000);
+      }).catch(function() {
+        btn.style.borderColor = '#c00';
+        btn.style.color = '#c00';
+        setTimeout(function() {
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 2000);
       });
     });
   });
