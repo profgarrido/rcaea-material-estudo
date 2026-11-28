@@ -11,7 +11,7 @@
 .section-text code:not(pre code),.small-code{background:var(--sunk);color:var(--orange-ink);border-radius:5px;padding:.12rem .3rem;font-size:.89em}
 pre code{background:none!important;color:inherit!important;padding:0!important}
 .section-text blockquote{border-left:4px solid var(--orange);padding:.55rem 1rem;background:var(--sunk);margin:1rem 0}
-.section-text table{width:100%;border-collapse:collapse;display:block;overflow-x:auto;font-size:.86rem}
+.section-text table{width:100%;border-collapse:collapse;overflow-x:auto;font-size:.86rem}
 .section-text th,.section-text td{border:1px solid var(--line);padding:.56rem .65rem;text-align:left}
 .section-text th{background:var(--sunk)}
 .ref-mini{color:var(--orange-ink);text-decoration:none;font-size:.8rem;font-weight:600}

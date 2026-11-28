@@ -477,7 +477,7 @@ await prisma.$queryRawUnsafe(sql);</pre>
 .c1-flow-title{font-size:.79rem;font-weight:700;color:var(--ink);line-height:1.2}
 .c1-flow-desc{font-size:.71rem;color:var(--ink-2);line-height:1.4}
 .c1-flow-arr{flex-shrink:0;display:flex;align-items:center;padding:0 3px;color:var(--orange-ink);font-size:1rem}
-.c1-ast{display:flex;gap:14px;align-items:flex-start;margin:10px 0}
+.c1-ast{display:flex;flex-direction:column;gap:10px;margin:10px 0}
 .c1-ast-code pre{background:#22201E;color:#F3EADF;border-radius:9px;padding:11px 13px;font-family:var(--f-mono);font-size:.8rem;line-height:1.6;margin:0;overflow-x:auto}
 .c1-ast-tree{min-width:140px;background:var(--sunk);border:1.5px solid var(--line);border-radius:9px;padding:11px 13px}
 .c1-ast-tree-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 7px;display:block}
@@ -498,7 +498,10 @@ await prisma.$queryRawUnsafe(sql);</pre>
 .v1-closing p{margin:0 0 6px}
 .v1-closing p:last-child{margin:0}
 .v1-closing strong{color:var(--ink)}
-@media(max-width:720px){.c1-flow{flex-direction:column;gap:6px}.c1-flow-arr{transform:rotate(90deg);justify-content:center}.c1-ast{flex-direction:column}}
+#visual-1 .vtable-scroll{overflow:visible}
+.visual-table .tt-box{bottom:auto;top:50%;left:calc(100% + 10px);transform:translateY(-50%);z-index:9999}
+.visual-table .tt-box::after{top:50%;left:auto;right:100%;transform:translateY(-50%);border-top-color:transparent;border-right-color:#1a1512}
+@media(max-width:720px){.c1-flow{flex-direction:column;gap:6px}.c1-flow-arr{transform:rotate(90deg);justify-content:center}}
 @media(max-width:500px){.c1-block{flex-direction:column;gap:8px}.c1-block-side{display:flex;align-items:baseline;gap:10px}}
 </style>
   <div class="wrap pilha">
@@ -644,16 +647,28 @@ await prisma.$queryRawUnsafe(sql);</pre>
   <script>
   document.addEventListener('DOMContentLoaded', function(){
     var cur = null;
-    document.querySelectorAll('#conceito-1 .tt-term, #visual-1 .tt-term').forEach(function(el){
+    document.querySelectorAll('#conceito-1 .tt-term, #visual-1 .tt-term, #conceito-2 .tt-term').forEach(function(el){
       var box = el.querySelector('.tt-box');
       function reposition(){
-        box.style.cssText = '';
-        var r = box.getBoundingClientRect();
-        if(r.left < 8){ box.style.left = '0'; box.style.transform = 'none'; }
-        else if(r.right > window.innerWidth - 8){ box.style.left = 'auto'; box.style.right = '0'; box.style.transform = 'none'; }
+        if(el.closest && el.closest('.visual-table')){
+          var tr = el.getBoundingClientRect();
+          box.style.position = 'fixed';
+          box.style.bottom = 'auto';
+          box.style.top = (tr.top + tr.height / 2) + 'px';
+          box.style.transform = 'translateY(-50%)';
+          var bw = 260;
+          var rightPos = tr.right + 10;
+          if(rightPos + bw > window.innerWidth - 8){ rightPos = tr.left - bw - 10; }
+          box.style.left = rightPos + 'px';
+        } else {
+          box.style.cssText = '';
+          var r = box.getBoundingClientRect();
+          if(r.left < 8){ box.style.left = '0'; box.style.transform = 'none'; }
+          else if(r.right > window.innerWidth - 8){ box.style.left = 'auto'; box.style.right = '0'; box.style.transform = 'none'; }
+        }
       }
       function open(){ if(cur && cur !== el){ cur.removeAttribute('data-tt'); } reposition(); el.setAttribute('data-tt','open'); cur = el; }
-      function close(){ el.removeAttribute('data-tt'); if(cur === el) cur = null; }
+      function close(){ box.style.cssText = ''; el.removeAttribute('data-tt'); if(cur === el) cur = null; }
       el.addEventListener('mouseenter', open);
       el.addEventListener('mouseleave', close);
       el.addEventListener('focus', open);
@@ -714,42 +729,369 @@ await prisma.$queryRawUnsafe(sql);</pre>
   </div>
 </section>
 
-<section class="cena" data-nome="Conceito: Do texto ao modelo" id="conceito-2">
+<section class="cena" data-nome="Conceito: Por que dois códigos geram o mesmo alerta?" id="conceito-2">
+<style>
+.c2-intro p{font-size:.93rem;line-height:1.65;color:var(--ink-2);margin:0 0 10px}
+.c2-intro p:last-child{margin:0}
+.c2-block{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;background:var(--surface);border:1.5px solid var(--line);border-radius:14px}
+.c2-block-side{flex-shrink:0;min-width:46px;text-align:center}
+.c2-block-num{font-family:var(--f-disp);font-size:1.9rem;font-weight:700;color:var(--orange-ink);line-height:1;display:block}
+.c2-block-label{font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-top:3px}
+.c2-block-body{flex:1;min-width:0}
+.c2-block-title{font-size:.95rem;font-weight:700;color:var(--ink);margin:0 0 10px;line-height:1.3}
+.c2-block-body > p{font-size:.85rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+.c2-block-body > p:last-child{margin:0}
+.c2-block-body ul{font-size:.85rem;line-height:1.6;color:var(--ink-2);padding-left:18px;margin:8px 0}
+.c2-block-body li{margin:0 0 4px}
+.c2-block-body code{font-family:var(--f-mono);font-size:.82em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+.c2-hl{background:var(--orange-soft);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:9px 13px;margin:10px 0 0}
+.c2-hl p{margin:0;font-size:.84rem;line-height:1.5;color:var(--orange-ink);font-weight:600}
+.c2-connector{text-align:center;padding:3px 0;color:var(--orange-ink);font-size:1.1rem;line-height:1}
+.c2-ast{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+.c2-ast-code pre{background:#22201E;color:#F3EADF;border-radius:9px;padding:11px 13px;font-family:var(--f-mono);font-size:.8rem;line-height:1.6;margin:0;overflow-x:auto}
+.c2-ast-tree{background:var(--sunk);border:1.5px solid var(--line);border-radius:9px;padding:11px 13px}
+.c2-ast-tree-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 7px;display:block}
+.c2-ast-node{font-size:.82rem;line-height:1.65;color:var(--ink-2)}
+.c2-ast-node strong{color:var(--orange-ink)}
+.c2-ast-note{font-size:.73rem;color:var(--muted);line-height:1.5;margin:8px 0 0;font-style:italic}
+.c2-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.c2-compare-card{background:var(--sunk);border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.c2-compare-head{padding:8px 13px;font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.c2-compare-head.ch-warn{background:var(--orange-soft);color:var(--orange-ink)}
+.c2-compare-head.ch-ok{background:rgba(45,125,79,.12);color:var(--good,#2d7d4f)}
+.c2-compare-body{padding:10px 13px}
+.c2-compare-body pre{background:#22201E;color:#F3EADF;border-radius:7px;padding:9px 11px;font-family:var(--f-mono);font-size:.78rem;line-height:1.55;margin:0 0 7px;overflow-x:auto}
+.c2-compare-note{font-size:.8rem;line-height:1.5;color:var(--ink-2);margin:0}
+.c2-compare-note strong{color:var(--orange-ink)}
+.c2-compare-note.cn-ok strong{color:var(--good,#2d7d4f)}
+.c2-table-wrap{margin:12px 0;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.c2-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.c2-table th{background:var(--sunk);font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:8px 11px;text-align:left;border-bottom:1.5px solid var(--line)}
+.c2-table td{padding:9px 11px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;line-height:1.45}
+.c2-table tr:last-child td{border-bottom:0}
+.c2-table td:first-child{font-weight:600;color:var(--ink);min-width:80px}
+.c2-table code{font-family:var(--f-mono);font-size:.82em;background:var(--surface);padding:1px 4px;border-radius:3px}
+.c2-transition{background:var(--sunk);border:1.5px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:4px;text-align:center}
+.c2-transition p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 4px}
+.c2-transition p strong{color:var(--ink)}
+.c2-transition p:last-child{font-size:.84rem;color:var(--muted);margin:0}
+@media(max-width:600px){.c2-compare{grid-template-columns:1fr}.c2-block{flex-direction:column;gap:8px}.c2-block-side{display:flex;align-items:baseline;gap:10px}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 2</p><h2>Do texto ao modelo: AST e reconhecimento de padrões</h2></div>
-    <div class="section-text"><div class="learning-grid">
-      <article class="study-card"><span class="study-card-no">01</span><p>Uma regra muito simples procura a ocorrência textual <code>exec(</code>. O problema: <code>exec</code> pode nomear uma função inocente, uma importação diferente ou uma chamada com argumento constante sem entrada externa.</p></article>
-      <article class="study-card"><span class="study-card-no">02</span><p>Um reconhecedor baseado em AST considera a estrutura sintática de uma chamada, reduzindo parte do ruído, mas por si só não prova que a entrada é controlável por um adversário.</p></article>
-      <article class="study-card"><span class="study-card-no">03</span><p>Desempenho e precisão variam conforme a regra, a linguagem, o framework e o contexto do projeto. Uma mesma regra pode ter precisão diferente em projetos distintos.</p></article>
-      <article class="study-card"><span class="study-card-no">04</span><p>Uma regra de padrão <code>exec(...)</code> encontra ambas as chamadas abaixo. O primeiro trecho pode ser vulnerabilidade se <code>input</code> for não confiável; o segundo não demonstra injeção por entrada externa. O alerta é uma proposta de investigação, não um juízo final.</p></article>
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 2</p>
+      <h2>Por que dois códigos diferentes podem gerar o mesmo alerta?</h2>
     </div>
-    <div class="case-split" style="margin-top:14px">
-      <div class="case-panel"><div class="case-panel-head head-warn">Entrada a investigar</div><div class="case-panel-body"><pre class="codigo"><code>function concerning(input: string) {
-  exec(input); // origem a rastrear
-}</code></pre><p style="font-size:.88rem;color:var(--warn);margin-top:8px">Fonte de <code>input</code> precisa ser verificada.</p></div></div>
-      <div class="case-panel"><div class="case-panel-head head-info">Argumento literal</div><div class="case-panel-body"><pre class="codigo"><code>function staticCase() {
-  exec('echo lab'); // argumento fixo
-}</code></pre><p style="font-size:.88rem;color:var(--muted);margin-top:8px">Pode gerar alerta pelo mesmo padrão; exige leitura contextual.</p></div></div>
+
+    <div class="c2-intro">
+      <p>Uma ferramenta SAST configura regras para detectar padrões no código. Quando uma regra encontra uma correspondência, ela gera um alerta.</p>
+      <p>Mas o que exatamente a regra está procurando? E por que dois trechos de código muito diferentes podem acionar a mesma regra?</p>
     </div>
+
+    <div class="c2-block">
+      <div class="c2-block-side">
+        <span class="c2-block-num">01</span>
+        <span class="c2-block-label">O problema</span>
+      </div>
+      <div class="c2-block-body">
+        <p class="c2-block-title">Busca textual versus análise sintática</p>
+        <p>A forma mais simples de regra procura uma sequência de texto. Por exemplo, procurar a ocorrência literal <code>exec(</code> em qualquer arquivo TypeScript.</p>
+        <p>O problema é que essa abordagem não distingue contextos diferentes:</p>
+        <ul>
+          <li>Uma função chamada <code>exec</code> importada de uma biblioteca interna segura</li>
+          <li>Uma chamada <code>exec</code> com argumento literal fixo, sem entrada externa</li>
+          <li>Uma chamada <code>exec</code> que recebe dados de uma requisição HTTP</li>
+        </ul>
+        <p>Um analisador que compreende a estrutura sintática do código consegue diferenciar melhor esses casos. Em vez de procurar texto, ele identifica elementos estruturais: o tipo da chamada, o nome da função, o tipo dos argumentos.</p>
+        <div class="c2-hl"><p>Mesmo com análise sintática, a ferramenta não tem acesso completo ao contexto de execução. Ela vê a estrutura do código, não o fluxo real dos dados em tempo de execução.</p></div>
+      </div>
+    </div>
+
+    <div class="c2-connector" aria-hidden="true">&#8595;</div>
+
+    <div class="c2-block">
+      <div class="c2-block-side">
+        <span class="c2-block-num">02</span>
+        <span class="c2-block-label">Estrutura</span>
+      </div>
+      <div class="c2-block-body">
+        <p class="c2-block-title">O que a ferramenta "vê" ao analisar <code>exec(input)</code></p>
+        <p>Considere a instrução abaixo:</p>
+        <div class="c2-ast">
+          <div class="c2-ast-code">
+            <pre>exec(input);</pre>
+          </div>
+          <div class="c2-ast-tree">
+            <span class="c2-ast-tree-label">Representação estrutural (didática)</span>
+            <div class="c2-ast-node"><strong>Tipo:</strong> chamada de função</div>
+            <div class="c2-ast-node"><strong>Função:</strong> exec</div>
+            <div class="c2-ast-node"><strong>Argumento [0]:</strong> identificador <strong>input</strong></div>
+          </div>
+          <p class="c2-ast-note">Representação simplificada para fins didáticos. A AST real produzida por um parser é mais detalhada.</p>
+        </div>
+        <p>Uma regra baseada em <span class="tt-term" tabindex="0">padrão sintático<span class="tt-box">Critério que descreve a estrutura do código que a ferramenta deve reconhecer, como "chamada de função com nome X e argumento do tipo Y".</span></span> pode dizer: "sinalize toda chamada de função chamada <code>exec</code> que receba qualquer argumento". Isso captura <code>exec(input)</code> e <code>exec("echo lab")</code> pelo mesmo motivo: ambas são chamadas da função <code>exec</code>.</p>
+        <p>Para separar os dois casos, seria necessário analisar o tipo e a origem do argumento, o que exige <span class="tt-term" tabindex="0">análise de fluxo de dados<span class="tt-box">Técnica que rastreia como um valor se propaga pelo programa, desde sua origem (source) até o ponto onde é utilizado (sink).</span></span>.</p>
+      </div>
+    </div>
+
+    <div class="c2-connector" aria-hidden="true">&#8595;</div>
+
+    <div class="c2-block">
+      <div class="c2-block-side">
+        <span class="c2-block-num">03</span>
+        <span class="c2-block-label">Dois casos</span>
+      </div>
+      <div class="c2-block-body">
+        <p class="c2-block-title">Uma regra, duas ocorrências diferentes</p>
+        <p>A regra <code>exec(...)</code> encontra ambas as chamadas abaixo:</p>
+        <div class="c2-compare">
+          <div class="c2-compare-card">
+            <div class="c2-compare-head ch-warn">Exemplo A: argumento variável</div>
+            <div class="c2-compare-body">
+              <pre>function run(input: string) {
+  exec(input);
+}</pre>
+              <p class="c2-compare-note"><strong>O argumento é um identificador.</strong> A ferramenta não sabe se <code>input</code> vem de uma fonte confiável ou de uma requisição HTTP.</p>
+            </div>
+          </div>
+          <div class="c2-compare-card">
+            <div class="c2-compare-head ch-ok">Exemplo B: argumento literal</div>
+            <div class="c2-compare-body">
+              <pre>function staticRun() {
+  exec('echo lab');
+}</pre>
+              <p class="c2-compare-note cn-ok"><strong>O argumento é uma string literal fixa.</strong> Não há entrada externa evidente, mas a regra ainda pode gerar um alerta.</p>
+            </div>
+          </div>
+        </div>
+        <div class="c2-table-wrap">
+          <table class="c2-table">
+            <thead>
+              <tr>
+                <th>Aspecto</th>
+                <th>Exemplo A</th>
+                <th>Exemplo B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A regra detecta?</td>
+                <td>Sim</td>
+                <td>Sim</td>
+              </tr>
+              <tr>
+                <td>Argumento</td>
+                <td>Identificador (<code>input</code>)</td>
+                <td>Literal (<code>'echo lab'</code>)</td>
+              </tr>
+              <tr>
+                <td>Ferramenta sabe a origem?</td>
+                <td>Não, sem análise de fluxo</td>
+                <td>Sim (literal fixo)</td>
+              </tr>
+              <tr>
+                <td>Próximo passo</td>
+                <td>Verificar de onde vem <code>input</code></td>
+                <td>Avaliar se o alerta é relevante</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="c2-connector" aria-hidden="true">&#8595;</div>
+
+    <div class="c2-block">
+      <div class="c2-block-side">
+        <span class="c2-block-num">04</span>
+        <span class="c2-block-label">O que concluir</span>
+      </div>
+      <div class="c2-block-body">
+        <p class="c2-block-title">O que a ferramenta pode e não pode concluir</p>
+        <p>Quando a ferramenta gera um alerta, ela está dizendo: "encontrei uma <span class="tt-term" tabindex="0">correspondência<span class="tt-box">Trecho de código que satisfaz os critérios definidos em uma regra, também chamado de match. Uma correspondência gera um alerta que precisa ser investigado.</span></span> com a regra configurada".</p>
+        <p>Isso não significa, automaticamente, que:</p>
+        <ul>
+          <li>Há uma vulnerabilidade confirmada</li>
+          <li>O argumento vem de uma fonte não confiável</li>
+          <li>Existe uma rota de exploração por um atacante</li>
+        </ul>
+        <p>A ferramenta gerou uma proposta de investigação. Cabe ao time verificar o contexto: de onde vem o argumento, existe sanitização, o código é atingível por uma entrada externa.</p>
+        <div class="c2-hl"><p>Um alerta é o início da investigação, não a sua conclusão.</p></div>
+      </div>
+    </div>
+
+    <div class="c2-transition">
+      <p><strong>Como investigar um alerta sistematicamente?</strong></p>
+      <p>O próximo slide apresenta um fluxo de cinco etapas para conduzir essa investigação.</p>
     </div>
   </div>
 </section>
 
-<section class="cena viz-scene" data-nome="Visual 2: Da regra à decisão" id="visual-2">
+<section class="cena viz-scene" data-nome="Visual 2: Do alerta à decisão" id="visual-2">
+<style>
+.v2-subtitle{font-size:.95rem;color:var(--ink-2);line-height:1.6;margin-top:4px}
+.v2-flow{display:flex;align-items:stretch;gap:4px;margin:16px 0 0}
+.v2-step{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:12px 10px;cursor:pointer;text-align:center;background:var(--surface);transition:border-color .15s,background .15s;user-select:none}
+.v2-step:hover{border-color:var(--orange);background:var(--orange-soft)}
+.v2-step[aria-selected="true"]{border-color:var(--orange);background:var(--orange-soft)}
+.v2-step-num{font-family:var(--f-disp);font-size:.9rem;font-weight:700;color:var(--orange-ink);display:block}
+.v2-step-title{font-size:.8rem;font-weight:700;color:var(--ink);line-height:1.2;display:block;margin-top:3px}
+.v2-step-arr{flex-shrink:0;display:flex;align-items:center;padding:0 1px;color:var(--orange-ink);font-size:1rem;user-select:none}
+.v2-panel{margin:12px 0 0;background:var(--surface);border:1.5px solid var(--orange);border-radius:12px;padding:16px 20px}
+.v2-panel-eyebrow{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);margin:0 0 6px;display:block}
+.v2-panel-title{font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 10px}
+.v2-panel-body p{font-size:.86rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+.v2-panel-body p:last-child{margin:0}
+.v2-panel-body ul{font-size:.85rem;line-height:1.6;color:var(--ink-2);padding-left:18px;margin:8px 0}
+.v2-panel-body li{margin:0 0 4px}
+.v2-panel-body code{font-family:var(--f-mono);font-size:.82em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+.v2-panel-q{background:var(--sunk);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:9px 13px;margin:10px 0 0;font-size:.84rem;line-height:1.5;color:var(--orange-ink);font-weight:600}
+.v2-panel-q::before{content:"Pergunta de investigação: ";display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.v2-panel-code pre{background:#22201E;color:#F3EADF;border-radius:8px;padding:10px 12px;font-family:var(--f-mono);font-size:.78rem;line-height:1.55;margin:10px 0 0;overflow-x:auto}
+.v2-closing{font-size:.86rem;line-height:1.65;color:var(--ink-2);border-top:1.5px solid var(--line);padding-top:14px;margin-top:4px}
+.v2-closing p{margin:0 0 6px}
+.v2-closing p:last-child{margin:0}
+.v2-closing strong{color:var(--ink)}
+@media(max-width:620px){.v2-flow{flex-direction:column;gap:6px}.v2-step-arr{transform:rotate(90deg);justify-content:center}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Conceito em perspectiva</p><h2>Da regra à decisão: um alerta precisa de interpretação</h2></div>
+    <div>
+      <p class="eyebrow">Conceito em perspectiva</p>
+      <h2>Do alerta à decisão: como investigar um resultado do SAST?</h2>
+      <p class="v2-subtitle">Encontrar um padrão é apenas a primeira etapa da investigação.</p>
+    </div>
     <div class="visual-panel">
-      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Cinco etapas entre o padrão configurado e o achado</h3></div>
-      <div class="hypo-flow">
-        <div class="hypo-step"><div class="hypo-num">01</div><h4>Regra</h4><p>Padrão configurado na ferramenta</p></div>
-        <div class="hypo-step"><div class="hypo-num">02</div><h4>Ocorrência</h4><p>Trecho de código correspondente</p></div>
-        <div class="hypo-step"><div class="hypo-num">03</div><h4>Contexto</h4><p>Origem, fluxo e alcance do dado</p></div>
-        <div class="hypo-step"><div class="hypo-num">04</div><h4>Validação</h4><p>Teste ou evidência adicional</p></div>
-        <div class="hypo-step"><div class="hypo-num">05</div><h4>Decisão</h4><p>Corrigir, investigar ou justificar descarte</p></div>
+      <div class="viz-heading"><span class="viz-mark">FLUXO</span><h3>Cinco etapas entre o alerta e a decisão</h3></div>
+
+      <div class="v2-flow" role="tablist" aria-label="Etapas da investigação">
+        <div class="v2-step" role="tab" aria-selected="true" tabindex="0" data-step="1">
+          <span class="v2-step-num">01</span>
+          <span class="v2-step-title">Regra</span>
+        </div>
+        <div class="v2-step-arr" aria-hidden="true">&#8594;</div>
+        <div class="v2-step" role="tab" aria-selected="false" tabindex="0" data-step="2">
+          <span class="v2-step-num">02</span>
+          <span class="v2-step-title">Ocorrência</span>
+        </div>
+        <div class="v2-step-arr" aria-hidden="true">&#8594;</div>
+        <div class="v2-step" role="tab" aria-selected="false" tabindex="0" data-step="3">
+          <span class="v2-step-num">03</span>
+          <span class="v2-step-title">Contexto</span>
+        </div>
+        <div class="v2-step-arr" aria-hidden="true">&#8594;</div>
+        <div class="v2-step" role="tab" aria-selected="false" tabindex="0" data-step="4">
+          <span class="v2-step-num">04</span>
+          <span class="v2-step-title">Validação</span>
+        </div>
+        <div class="v2-step-arr" aria-hidden="true">&#8594;</div>
+        <div class="v2-step" role="tab" aria-selected="false" tabindex="0" data-step="5">
+          <span class="v2-step-num">05</span>
+          <span class="v2-step-title">Decisão</span>
+        </div>
       </div>
-      <p class="viz-caption">Não equipare a contagem bruta de alertas ao número de vulnerabilidades comprovadas.</p>
+
+      <div class="v2-panel" id="v2-panel-1" role="tabpanel">
+        <span class="v2-panel-eyebrow">Etapa 01 de 05</span>
+        <p class="v2-panel-title">Regra: qual padrão a ferramenta está procurando?</p>
+        <div class="v2-panel-body">
+          <p>A ferramenta aplica uma regra configurada que define um padrão sintático. No exemplo desta aula, a regra sinaliza toda chamada a <code>exec(...)</code> com qualquer argumento.</p>
+          <p>Entender a regra é o primeiro passo: ela define o que a ferramenta está reconhecendo e o que ela não está avaliando.</p>
+          <div class="v2-panel-q">O que exatamente a regra está procurando? Ela usa padrão textual, sintático ou análise de fluxo de dados?</div>
+          <div class="v2-panel-code"><pre>/* Regra (simplificada): sinalize exec com qualquer argumento */
+pattern: exec($ARG)</pre></div>
+        </div>
+      </div>
+
+      <div class="v2-panel" id="v2-panel-2" role="tabpanel" style="display:none">
+        <span class="v2-panel-eyebrow">Etapa 02 de 05</span>
+        <p class="v2-panel-title">Ocorrência: qual trecho de código foi sinalizado?</p>
+        <div class="v2-panel-body">
+          <p>A ferramenta identificou uma correspondência com a regra. O alerta aponta o arquivo, a linha e o trecho de código.</p>
+          <p>Leia o trecho completo antes de qualquer conclusão. Um alerta na linha 42 pode ter contexto importante nas linhas anteriores e posteriores.</p>
+          <div class="v2-panel-q">Qual é o trecho exato sinalizado? Ele está completo ou preciso de mais contexto no mesmo arquivo?</div>
+          <div class="v2-panel-code"><pre>// arquivo: src/runner.ts, linha 42
+function run(input: string) {
+  exec(input); // &lt;-- alerta aqui
+}</pre></div>
+        </div>
+      </div>
+
+      <div class="v2-panel" id="v2-panel-3" role="tabpanel" style="display:none">
+        <span class="v2-panel-eyebrow">Etapa 03 de 05</span>
+        <p class="v2-panel-title">Contexto: de onde vem o argumento?</p>
+        <div class="v2-panel-body">
+          <p>Esta é a etapa mais crítica. O alerta diz que a regra foi acionada, mas não diz se o argumento vem de uma fonte confiável ou de uma entrada externa não sanitizada.</p>
+          <p>Rastrear o argumento exige ler o código que chama a função <code>run</code>, verificar de onde vem <code>input</code> e se existe sanitização no caminho.</p>
+          <div class="v2-panel-q">De onde vem <code>input</code>? É uma constante, um parâmetro de função, dados de um arquivo de configuração ou de uma requisição HTTP?</div>
+          <div class="v2-panel-code"><pre>// quem chama run()?
+app.post('/execute', (req, res) =&gt; {
+  run(req.body.command); // input vem da requisição
+});</pre></div>
+        </div>
+      </div>
+
+      <div class="v2-panel" id="v2-panel-4" role="tabpanel" style="display:none">
+        <span class="v2-panel-eyebrow">Etapa 04 de 05</span>
+        <p class="v2-panel-title">Validação: existe evidência adicional?</p>
+        <div class="v2-panel-body">
+          <p>Depois de entender o contexto, é possível buscar evidências adicionais: existe sanitização explícita do argumento? Há um teste de segurança que cobre esse caminho? Existe documentação de uma decisão de risco aceito?</p>
+          <p>Um <span class="tt-term" tabindex="0">verdadeiro positivo<span class="tt-box">Alerta que corresponde a um problema real e confirmado segundo critérios definidos pela equipe.</span></span> requer evidência de que o argumento é controlável por um adversário. Um <span class="tt-term" tabindex="0">falso positivo<span class="tt-box">Alerta que sinaliza como problema um caso que não é vulnerável no contexto avaliado. Deve ter justificativa registrada.</span></span> requer justificativa documentada.</p>
+          <div class="v2-panel-q">Há sanitização, teste ou documentação que explique por que esse trecho é ou não é vulnerável?</div>
+          <div class="v2-panel-code"><pre>// não há sanitização aparente no código atual
+// não há teste cobrindo entradas maliciosas
+// não há documentação de risco aceito</pre></div>
+        </div>
+      </div>
+
+      <div class="v2-panel" id="v2-panel-5" role="tabpanel" style="display:none">
+        <span class="v2-panel-eyebrow">Etapa 05 de 05</span>
+        <p class="v2-panel-title">Decisão: corrigir, investigar mais ou justificar descarte?</p>
+        <div class="v2-panel-body">
+          <p>Com base nas etapas anteriores, o time pode tomar uma de três decisões:</p>
+          <ul>
+            <li><strong>Corrigir:</strong> vulnerabilidade confirmada, corrigir o código e registrar a correção.</li>
+            <li><strong>Investigar mais:</strong> contexto <span class="tt-term" tabindex="0">inconclusivo<span class="tt-box">Situação em que o contexto disponível não é suficiente para confirmar ou descartar um alerta. Requer mais informação antes de uma decisão.</span></span>, documentar o que falta e quem é responsável.</li>
+            <li><strong>Descartar (justificado):</strong> <span class="tt-term" tabindex="0">triagem<span class="tt-box">Processo de classificação e priorização de alertas de segurança, determinando quais exigem ação imediata e quais podem ser descartados ou monitorados.</span></span> indica que o caso não é vulnerável no contexto avaliado. Registrar a justificativa.</li>
+          </ul>
+          <div class="v2-panel-q">Qual é a decisão e quem é responsável por ela? A justificativa está registrada de forma rastreável?</div>
+        </div>
+      </div>
+
+      <p class="viz-caption">Não equipare a contagem bruta de alertas ao número de vulnerabilidades comprovadas. Cada alerta é uma proposta de investigação.</p>
+    </div>
+    <div class="v2-closing">
+      <p><strong>A contagem de alertas não é uma métrica de segurança.</strong></p>
+      <p>Uma ferramenta que gera 200 alertas e uma que gera 20 não são, necessariamente, mais ou menos seguras. O que importa é quantos alertas foram investigados, classificados e tratados de forma justificada.</p>
     </div>
   </div>
+  <script>
+  (function(){
+    var steps = document.querySelectorAll('#visual-2 .v2-step[data-step]');
+    var panels = document.querySelectorAll('#visual-2 .v2-panel[id^="v2-panel-"]');
+    function activateStep(n){
+      steps.forEach(function(s){ s.setAttribute('aria-selected', s.dataset.step===String(n) ? 'true' : 'false'); });
+      panels.forEach(function(p){ p.style.display = p.id==='v2-panel-'+n ? '' : 'none'; });
+    }
+    steps.forEach(function(s){
+      s.addEventListener('click', function(){ activateStep(s.dataset.step); });
+      s.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); activateStep(s.dataset.step); } });
+    });
+    var cur2 = null;
+    document.querySelectorAll('#visual-2 .tt-term').forEach(function(el){
+      var box = el.querySelector('.tt-box');
+      function open2(){ if(cur2 && cur2!==el){ cur2.removeAttribute('data-tt'); } el.setAttribute('data-tt','open'); cur2=el; }
+      function close2(){ el.removeAttribute('data-tt'); if(cur2===el) cur2=null; }
+      el.addEventListener('mouseenter', open2);
+      el.addEventListener('mouseleave', close2);
+      el.addEventListener('focus', open2);
+      el.addEventListener('blur', close2);
+      el.addEventListener('click', function(e){ e.stopPropagation(); el.hasAttribute('data-tt') ? close2() : open2(); });
+      el.addEventListener('keydown', function(e){ if(e.key==='Escape') close2(); });
+    });
+    document.addEventListener('click', function(){ if(cur2){ cur2.removeAttribute('data-tt'); cur2=null; } });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Alerta não é prova" id="interacao-1">
@@ -770,156 +1112,1946 @@ await prisma.$queryRawUnsafe(sql);</pre>
 </section>
 
 <section class="cena" data-nome="Conceito: Falsos positivos e falsos negativos" id="conceito-3">
+<style>
+/* c3 + ex: accordion examples shared by conceito-3 and visual-3 */
+.c3-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.c3-item{display:flex;flex-direction:column}
+.c3-item .study-card{flex:1;height:auto;min-height:0;display:flex;flex-direction:column;gap:8px}
+.c3-item:nth-child(2n) .study-card{border-left-color:var(--ink)}
+.ex-btn{display:inline-flex;align-items:center;gap:5px;margin-top:auto;padding-top:12px;padding-bottom:0;border:0;background:none;cursor:pointer;font-size:.77rem;font-weight:700;color:var(--orange-ink);letter-spacing:.03em;line-height:1.3;padding-left:0;padding-right:0}
+.ex-btn:hover{text-decoration:underline}
+.ex-btn svg{width:14px;height:14px;flex-shrink:0;vertical-align:middle}
+.ex-btn .icon-minus{display:none}
+.ex-btn[aria-expanded="true"] .icon-eye{display:none}
+.ex-btn[aria-expanded="true"] .icon-minus{display:inline}
+.ex-panel{margin-top:8px;border:1.5px solid var(--orange);border-radius:12px;background:var(--surface);padding:16px 20px}
+.ex-panel[hidden]{display:none}
+.ex-panel-title{font-size:.9rem;font-weight:700;color:var(--ink);margin:0 0 12px}
+.ex-panel p{font-size:.85rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+.ex-panel p:last-child{margin:0}
+.ex-panel ul{font-size:.85rem;line-height:1.6;color:var(--ink-2);padding-left:18px;margin:4px 0 8px}
+.ex-panel li{margin:0 0 3px}
+.ex-panel strong{color:var(--ink)}
+.ex-panel code{font-family:var(--f-mono);font-size:.82em;background:var(--sunk);padding:1px 5px;border-radius:4px}
+.ex-panel pre{background:#22201E;color:#F3EADF;border-radius:8px;padding:11px 13px;font-family:var(--f-mono);font-size:.79rem;line-height:1.6;margin:6px 0 10px;overflow-x:auto;white-space:pre}
+.ex-block{margin:0 0 10px}
+.ex-block:last-child{margin:0}
+.ex-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.ex-hl{background:var(--orange-soft);border-left:4px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 12px;margin:10px 0 0;font-size:.84rem;color:var(--orange-ink);font-weight:600}
+.ex-warn{background:var(--sunk);border-left:4px solid var(--line);border-radius:0 8px 8px 0;padding:8px 12px;margin:8px 0 0;font-size:.82rem;color:var(--ink-2)}
+.ex-formula{background:var(--sunk);border-radius:8px;padding:9px 13px;margin:4px 0 8px;font-family:var(--f-mono);font-size:.85rem;color:var(--ink)}
+.ex-formula strong{color:var(--orange-ink)}
+.ex-table-wrap{margin:8px 0 10px;border:1.5px solid var(--line);border-radius:8px;overflow:hidden;width:100%}
+.ex-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.ex-table th{background:var(--sunk);font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1.5px solid var(--line)}
+.ex-table td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;line-height:1.4}
+.ex-table tr:last-child td{border-bottom:0}
+.ex-table td:first-child{font-weight:600;color:var(--ink)}
+#visual-3 .triage-card{display:flex;flex-direction:column;gap:6px}
+#visual-3 .triage-card .ex-btn{padding-top:10px}
+.v3-panels{margin-top:12px}
+@media(max-width:720px){.c3-grid{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
     <div><p class="eyebrow">Fundamentação teórica · 3</p><h2>Falsos positivos, falsos negativos e precisão</h2></div>
-    <div class="section-text"><div class="learning-grid">
-      <article class="study-card"><span class="study-card-no">01</span><p><strong>Verdadeiro positivo (VP):</strong> alerta corresponde a um problema confirmado segundo critério definido.</p></article>
-      <article class="study-card"><span class="study-card-no">02</span><p><strong>Falso positivo (FP):</strong> alerta sinaliza como vulnerabilidade um caso não vulnerável no contexto validado. Marcar FP apenas para "limpar painel" sem justificativa é uma prática problemática.</p></article>
-      <article class="study-card"><span class="study-card-no">03</span><p><strong>Falso negativo (FN):</strong> uma vulnerabilidade presente no código não é sinalizada pela regra. Só pode ser contado se houver referência independente.</p></article>
-      <article class="study-card"><span class="study-card-no">04</span><p>Exemplo hipotético: uma regra encontra 8 ocorrências, 5 confirmadas; existem 2 vulnerabilidades não detectadas. Precisão = 5/8 (62,5%). Revocação = 5/7 (71,4%). Não estimar esses valores sem um conjunto de referência validado.</p></article>
-    </div></div>
+    <div class="section-text">
+      <div class="c3-grid">
+
+        <div class="c3-item">
+          <article class="study-card">
+            <span class="study-card-no">01</span>
+            <p><strong>Verdadeiro positivo (VP):</strong> alerta corresponde a um problema confirmado segundo critério definido.</p>
+            <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c3-ex-1" data-open="Ver exemplo" data-close="Ocultar exemplo">
+              <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+              <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              <span class="ex-btn-label">Ver exemplo</span>
+            </button>
+          </article>
+          <div class="ex-panel" id="c3-ex-1" hidden>
+            <p class="ex-panel-title">Cenário: consulta SQL com entrada externa</p>
+            <div class="ex-block">
+              <span class="ex-label">Código sinalizado</span>
+              <pre>const email = req.query.email;
+
+const sql = `
+  SELECT * FROM users
+  WHERE email = '${email}'
+`;
+
+await prisma.$queryRawUnsafe(sql);</pre>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">O que a ferramenta encontrou</span>
+              <p>Uma consulta SQL construída por interpolação de um valor recebido da requisição HTTP.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">O que o analista investigou</span>
+              <p>Verificou se o conteúdo de <code>email</code> é controlável externamente e se existe parametrização adequada antes da execução.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">Conclusão</span>
+              <p>Verdadeiro positivo. A entrada não confiável pode alterar a estrutura da consulta SQL. O alerta corresponde a um problema real.</p>
+            </div>
+            <div class="ex-hl">O verdadeiro positivo exige correspondência entre o alerta e uma condição de vulnerabilidade demonstrada.</div>
+          </div>
+        </div>
+
+        <div class="c3-item">
+          <article class="study-card">
+            <span class="study-card-no">02</span>
+            <p><strong>Falso positivo (FP):</strong> alerta sinaliza como vulnerabilidade um caso não vulnerável no contexto validado. Marcar FP apenas para "limpar painel" sem justificativa é uma prática problemática.</p>
+            <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c3-ex-2" data-open="Ver exemplo" data-close="Ocultar exemplo">
+              <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+              <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              <span class="ex-btn-label">Ver exemplo</span>
+            </button>
+          </article>
+          <div class="ex-panel" id="c3-ex-2" hidden>
+            <p class="ex-panel-title">Cenário: execução de comando constante</p>
+            <div class="ex-block">
+              <span class="ex-label">Código sinalizado</span>
+              <pre>import { exec } from "node:child_process";
+
+exec("date", (error, stdout) =&gt; {
+  if (error) {
+    return;
+  }
+
+  console.log(stdout);
+});</pre>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">O que a ferramenta encontrou</span>
+              <p>Uma regra para detectar possíveis injeções de comandos sinalizou uma chamada a <code>exec</code>.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">O que o analista investigou</span>
+              <p>O argumento é uma string constante e não depende de informações fornecidas pelo usuário.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">Conclusão</span>
+              <p>Falso positivo para a hipótese de injeção investigada. A chamada corresponde ao padrão, mas não demonstra injeção por entrada externa no contexto apresentado.</p>
+            </div>
+            <div class="ex-hl">A presença de uma função potencialmente perigosa não comprova, isoladamente, uma vulnerabilidade.</div>
+            <div class="ex-warn">O descarte é específico ao alerta e à hipótese analisada. Não significa que toda utilização de <code>exec</code> seja segura.</div>
+          </div>
+        </div>
+
+        <div class="c3-item">
+          <article class="study-card">
+            <span class="study-card-no">03</span>
+            <p><strong>Falso negativo (FN):</strong> uma vulnerabilidade presente no código não é sinalizada pela regra. Só pode ser contado se houver referência independente.</p>
+            <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c3-ex-3" data-open="Ver exemplo" data-close="Ocultar exemplo">
+              <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+              <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              <span class="ex-btn-label">Ver exemplo</span>
+            </button>
+          </article>
+          <div class="ex-panel" id="c3-ex-3" hidden>
+            <p class="ex-panel-title">Cenário: desconto acima do limite autorizado</p>
+            <div class="ex-block">
+              <span class="ex-label">Situação</span>
+              <p>Uma aplicação comercial tem a regra: "Descontos superiores a 20% exigem aprovação de um gerente." Durante uma revisão manual, a equipe identifica que o sistema permite aplicar um desconto de 35% sem verificar a autorização. A ferramenta SAST não emitiu nenhum alerta sobre essa operação.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">O que aconteceu</span>
+              <p>Existe uma violação de regra de negócio confirmada, mas a ferramenta não a identificou.</p>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">Conclusão</span>
+              <p>Falso negativo, considerando o escopo da análise. O problema existe, foi demonstrado independentemente e não foi detectado pela regra avaliada.</p>
+            </div>
+            <div class="ex-hl">A ausência de alertas não comprova a ausência de vulnerabilidades.</div>
+            <div class="ex-warn">É necessário um problema conhecido e validado para demonstrar um falso negativo. Não é possível contabilizar vulnerabilidades desconhecidas.</div>
+          </div>
+        </div>
+
+        <div class="c3-item">
+          <article class="study-card">
+            <span class="study-card-no">04</span>
+            <p>Exemplo hipotético: uma regra encontra 8 ocorrências, 5 confirmadas; existem 2 vulnerabilidades não detectadas.</p>
+            <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c3-ex-4" data-open="Ver cálculo" data-close="Ocultar cálculo">
+              <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+              <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+              <span class="ex-btn-label">Ver cálculo</span>
+            </button>
+          </article>
+          <div class="ex-panel" id="c3-ex-4" hidden>
+            <p class="ex-panel-title">Cenário hipotético</p>
+            <p>Uma ferramenta executou uma análise e gerou oito alertas. Após investigação completa:</p>
+            <div class="ex-table-wrap">
+              <table class="ex-table">
+                <thead><tr><th>Indicador</th><th style="text-align:right">Qtd.</th></tr></thead>
+                <tbody>
+                  <tr><td>Verdadeiros positivos (VP)</td><td style="text-align:right">5</td></tr>
+                  <tr><td>Falsos positivos (FP)</td><td style="text-align:right">3</td></tr>
+                  <tr><td>Falsos negativos (FN)</td><td style="text-align:right">2</td></tr>
+                  <tr><td>Total de alertas emitidos</td><td style="text-align:right">8</td></tr>
+                  <tr><td>Vulnerabilidades conhecidas no conjunto</td><td style="text-align:right">7</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">Precisão: dos alertas emitidos, quantos estavam corretos?</span>
+              <div class="ex-formula">Precisão = VP / (VP + FP) = 5 / (5 + 3) = <strong>62,5%</strong></div>
+            </div>
+            <div class="ex-block">
+              <span class="ex-label">Revocação: das vulnerabilidades conhecidas, quantas foram detectadas?</span>
+              <div class="ex-formula">Revocação = VP / (VP + FN) = 5 / (5 + 2) ≈ <strong>71,4%</strong></div>
+            </div>
+            <div class="ex-hl">Os cálculos pressupõem investigação concluída e conjunto de referência validado. Alertas pendentes não devem ser automaticamente considerados falsos positivos.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    ['conceito-3','visual-3'].forEach(function(sid){
+      var sec = document.getElementById(sid);
+      if(!sec) return;
+      var btns = sec.querySelectorAll('.ex-btn');
+      btns.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var panelId = btn.getAttribute('aria-controls');
+          var panel = panelId ? document.getElementById(panelId) : null;
+          var isOpen = btn.getAttribute('aria-expanded') === 'true';
+          btns.forEach(function(b){
+            b.setAttribute('aria-expanded','false');
+            b.querySelector('.ex-btn-label').textContent = b.dataset.open || 'Ver exemplo';
+            var p = document.getElementById(b.getAttribute('aria-controls'));
+            if(p) p.hidden = true;
+          });
+          if(!isOpen && panel){
+            btn.setAttribute('aria-expanded','true');
+            btn.querySelector('.ex-btn-label').textContent = btn.dataset.close || 'Ocultar exemplo';
+            panel.hidden = false;
+          }
+        });
+      });
+    });
+  });
+  </script>
 </section>
 
 <section class="cena viz-scene" data-nome="Visual 3: Quadrantes de classificação" id="visual-3">
   <div class="wrap pilha">
     <div><p class="eyebrow">Conceito em perspectiva</p><h2>Como classificar cada alerta na triagem</h2></div>
     <div class="visual-panel">
-      <div class="viz-heading"><span class="viz-mark">MAPA</span><h3>Quatro categorias possíveis para cada ocorrência</h3></div>
+      <div class="viz-heading"><span class="viz-mark">MAPA</span><h3>Da investigação à decisão: como tratar cada resultado?</h3></div>
       <div class="triage-grid">
-        <div class="triage-card tc-confirm"><div class="triage-tag">Verdadeiro positivo</div><h4>Confirmar</h4><p>Alerta corresponde a problema demonstrável com condição, fluxo e impacto documentados.</p></div>
-        <div class="triage-card tc-fp"><div class="triage-tag">Falso positivo</div><h4>Descartar (justificado)</h4><p>Padrão presente, mas o dado não chega ao interpretador ou existe sanitização adequada. Exige justificativa.</p></div>
-        <div class="triage-card tc-invest"><div class="triage-tag">Necessita investigação</div><h4>Pendente</h4><p>Contexto insuficiente para decidir. Registrar o que falta verificar e quem é responsável.</p></div>
-        <div class="triage-card tc-accept"><div class="triage-tag">Risco aceito</div><h4>Documentar</h4><p>Problema conhecido, correção inviável no momento. Registrar decisão e responsável com data de reavaliação.</p></div>
+        <div class="triage-card tc-confirm">
+          <div class="triage-tag">Verdadeiro positivo</div>
+          <h4>Confirmar</h4>
+          <p>Alerta corresponde a problema demonstrável com condição, fluxo e impacto documentados.</p>
+          <button class="ex-btn" type="button" aria-expanded="false" aria-controls="v3-ex-1" data-open="Ver exemplo" data-close="Ocultar exemplo">
+            <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+            <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+            <span class="ex-btn-label">Ver exemplo</span>
+          </button>
+        </div>
+        <div class="ex-panel" id="v3-ex-1" hidden>
+          <p class="ex-panel-title">Decisão: Confirmar</p>
+          <div class="ex-block">
+            <span class="ex-label">Situação</span>
+            <p>Uma ferramenta identifica uma consulta SQL potencialmente vulnerável. A equipe acompanha a origem dos dados e confirma que uma entrada não confiável chega à construção da consulta sem parametrização adequada.</p>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">O que registrar</span>
+            <ul>
+              <li>Regra que produziu o alerta</li>
+              <li>Arquivo e localização do código</li>
+              <li>Evidência da entrada não confiável</li>
+              <li>Condição que permite a vulnerabilidade</li>
+              <li>Impacto e recomendação de correção</li>
+            </ul>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">Exemplo de justificativa</span>
+            <div class="ex-warn">"Alerta confirmado. Uma entrada externa é utilizada diretamente na construção da instrução SQL, permitindo a possibilidade de alteração da consulta."</div>
+          </div>
+        </div>
+        <div class="triage-card tc-fp">
+          <div class="triage-tag">Falso positivo</div>
+          <h4>Descartar (justificado)</h4>
+          <p>Padrão presente, mas o dado não chega ao interpretador ou existe sanitização adequada. Exige justificativa.</p>
+          <button class="ex-btn" type="button" aria-expanded="false" aria-controls="v3-ex-2" data-open="Ver exemplo" data-close="Ocultar exemplo">
+            <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+            <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+            <span class="ex-btn-label">Ver exemplo</span>
+          </button>
+        </div>
+        <div class="ex-panel" id="v3-ex-2" hidden>
+          <p class="ex-panel-title">Decisão: Descartar com justificativa</p>
+          <div class="ex-block">
+            <span class="ex-label">Situação</span>
+            <p>Uma regra de detecção de possíveis injeções de comandos encontra uma chamada <code>exec("date")</code>. Após a investigação, a equipe verifica que o comando é constante e não recebe dados externos.</p>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">O que registrar</span>
+            <ul>
+              <li>Regra acionada</li>
+              <li>Trecho de código sinalizado</li>
+              <li>Argumentos utilizados</li>
+              <li>Evidência de que não existe fluxo de entrada não confiável</li>
+              <li>Justificativa do descarte</li>
+            </ul>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">Exemplo de justificativa</span>
+            <div class="ex-warn">"Alerta descartado para a hipótese investigada. A chamada utiliza argumento constante e não há influência de entrada externa na composição do comando."</div>
+          </div>
+          <div class="ex-hl">Não classificar como falso positivo apenas para reduzir a quantidade de alertas no relatório.</div>
+        </div>
+        <div class="triage-card tc-invest">
+          <div class="triage-tag">Necessita investigação</div>
+          <h4>Pendente</h4>
+          <p>Contexto insuficiente para decidir. Registrar o que falta verificar e quem é responsável.</p>
+          <button class="ex-btn" type="button" aria-expanded="false" aria-controls="v3-ex-3" data-open="Ver exemplo" data-close="Ocultar exemplo">
+            <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+            <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+            <span class="ex-btn-label">Ver exemplo</span>
+          </button>
+        </div>
+        <div class="ex-panel" id="v3-ex-3" hidden>
+          <p class="ex-panel-title">Decisão: Manter em investigação</p>
+          <div class="ex-block">
+            <span class="ex-label">Situação</span>
+            <p>A ferramenta sinaliza a execução de um comando construído a partir de uma variável.</p>
+            <pre>function runTask(command: string) {
+  exec(command);
+}</pre>
+            <p>A equipe identifica a chamada, mas ainda não descobriu de onde vem o argumento <code>command</code>.</p>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">O que sabemos e o que falta</span>
+            <p><strong>Sabemos:</strong> uma variável chega a uma operação potencialmente sensível.</p>
+            <p><strong>Falta:</strong> identificar quem chama <code>runTask</code>, quais valores são permitidos e se alguma entrada externa consegue controlar o comando.</p>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">Exemplo de justificativa</span>
+            <div class="ex-warn">"Não foi possível confirmar ou descartar o alerta. É necessário rastrear a origem do argumento e verificar as condições de controle de sua entrada."</div>
+          </div>
+          <div class="ex-hl">Não conhecer o contexto ainda não é motivo para confirmar nem para descartar uma vulnerabilidade.</div>
+        </div>
+        <div class="triage-card tc-accept">
+          <div class="triage-tag">Risco aceito</div>
+          <h4>Documentar</h4>
+          <p>Problema conhecido, correção inviável no momento. Registrar decisão e responsável com data de reavaliação.</p>
+          <button class="ex-btn" type="button" aria-expanded="false" aria-controls="v3-ex-4" data-open="Ver exemplo" data-close="Ocultar exemplo">
+            <svg class="icon-eye" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><ellipse cx="8" cy="8" rx="7" ry="4.5"/><circle cx="8" cy="8" r="2"/></svg>
+            <svg class="icon-minus" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="3" y1="8" x2="13" y2="8"/></svg>
+            <span class="ex-btn-label">Ver exemplo</span>
+          </button>
+        </div>
+        <div class="ex-panel" id="v3-ex-4" hidden>
+          <p class="ex-panel-title">Decisão de tratamento: Documentar a aceitação</p>
+          <div class="ex-block">
+            <span class="ex-label">Situação</span>
+            <p>Uma equipe identificou uma vulnerabilidade conhecida em uma dependência. A atualização imediata depende de alterações em outro componente. Após análise de impacto e adoção de medidas compensatórias, a autoridade responsável decide aceitar temporariamente o risco.</p>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">O que registrar</span>
+            <ul>
+              <li>Vulnerabilidade confirmada e seu impacto</li>
+              <li>Motivo do adiamento da correção</li>
+              <li>Medidas compensatórias existentes</li>
+              <li>Responsável autorizado pela decisão</li>
+              <li>Prazo de reavaliação e condições de monitoramento</li>
+            </ul>
+          </div>
+          <div class="ex-block">
+            <span class="ex-label">Exemplo de justificativa</span>
+            <div class="ex-warn">"Risco aceito temporariamente mediante aprovação do responsável, com controles compensatórios documentados e reavaliação programada."</div>
+          </div>
+          <div class="ex-hl">Aceitar um risco não elimina a vulnerabilidade e não equivale a descartar o alerta. É uma decisão posterior à confirmação, não uma classificação de triagem.</div>
+        </div>
       </div>
       <p class="viz-caption">Toda decisão de triagem precisa de justificativa registrada e rastreável ao commit analisado.</p>
     </div>
   </div>
 </section>
 
-<section class="cena" data-nome="Conceito: Semgrep, estrutura de uma regra" id="conceito-4">
+<section class="cena" data-nome="Semgrep: como criar e interpretar regras" id="conceito-4">
+<style>
+.c4-step{margin:28px 0 0}
+.c4-step-ey{font-family:var(--f-disp);color:var(--orange-ink);font-size:.9rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px;display:block}
+.c4-step h3{font-family:var(--f-disp);font-size:clamp(1.3rem,2.4vw,1.6rem);margin:0 0 10px;line-height:1.1;color:var(--ink)}
+.c4-step p{font-size:.93rem;line-height:1.6;color:var(--ink-2);margin:0 0 9px}
+.c4-step p:last-child{margin:0}
+.c4-step p strong{color:var(--ink)}
+.c4-step code{font-family:var(--f-mono);font-size:.84em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+.c4-hypo{background:var(--sunk);border-left:4px solid var(--orange);border-radius:0 10px 10px 0;padding:13px 17px;margin:12px 0;font-size:.91rem;line-height:1.6;color:var(--ink-2);font-style:italic}
+.c4-hypo code{font-style:normal;font-family:var(--f-mono);font-size:.84em;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+.c4-obj-box{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:13px 17px;margin:12px 0;display:grid;grid-template-columns:max-content 1fr;gap:5px 14px;align-items:baseline}
+.c4-obj-label{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.c4-obj-value{font-size:.88rem;color:var(--ink);line-height:1.5}
+.c4-obj-value code{font-family:var(--f-mono);font-size:.84em;background:var(--sunk);padding:1px 6px;border-radius:4px;color:var(--orange-ink)}
+.c4-sep{border:0;border-top:1.5px solid var(--line);margin:28px 0 0}
+/* YAML explorer */
+.c4-yaml-explorer{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;align-items:start}
+.c4-yaml-code{background:#1e1c1a;border-radius:12px;padding:15px 17px;font-family:var(--f-mono);font-size:.78rem;line-height:1.75;overflow-x:auto;border:1.5px solid #3e3831;margin:0;cursor:default;color:#f3eadf}
+.c4-yaml-code .yk{color:var(--orange)}
+.c4-yaml-code .yv{color:#9fd5a5}
+.c4-yaml-code .yc{color:#6e6657}
+.c4-yaml-code .ym{color:#e4b97f}
+.c4-field{cursor:pointer;border-radius:3px;padding:0 2px;transition:background .12s;outline:none}
+.c4-field:hover{background:rgba(230,95,0,.2)}
+.c4-field:focus{box-shadow:0 0 0 2px var(--orange)}
+.c4-field[aria-selected="true"]{background:rgba(230,95,0,.3)}
+.c4-panel{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:17px 19px;min-height:190px;display:flex;flex-direction:column}
+.c4-panel-hint{color:var(--muted);font-size:.85rem;line-height:1.6;margin:auto 0;font-style:italic}
+.c4-panel-content{display:none;flex-direction:column;gap:5px}
+.c4-panel-content.active{display:flex}
+.c4-panel-name{font-family:var(--f-mono);font-size:.93rem;font-weight:700;color:var(--orange-ink);margin:0}
+.c4-panel-role{font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.c4-panel-body p{font-size:.85rem;line-height:1.6;color:var(--ink-2);margin:0 0 6px}
+.c4-panel-body p:last-child{margin:0}
+.c4-panel-body code{font-family:var(--f-mono);font-size:.82em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+.c4-panel-value{font-family:var(--f-mono);font-size:.79rem;background:var(--sunk);border-radius:6px;padding:5px 10px;color:var(--ink);margin:3px 0 5px}
+.c4-panel-hl{background:var(--orange-soft);border-left:3px solid var(--orange);border-radius:0 6px 6px 0;padding:6px 10px;font-size:.82rem;color:var(--orange-ink);font-weight:600;line-height:1.5}
+/* examples A/B */
+.c4-examples-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:14px 0}
+.c4-ex-card{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.c4-ex-head{padding:10px 14px;border-bottom:1.5px solid var(--line);background:var(--sunk)}
+.c4-ex-badge{font-size:.63rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px}
+.c4-ex-title{font-size:.85rem;font-weight:700;color:var(--ink)}
+.c4-ex-code{background:#1e1c1a;padding:11px 13px;font-family:var(--f-mono);font-size:.76rem;line-height:1.65;color:#F3EADF;overflow-x:auto;white-space:pre;margin:0;flex:1;display:block}
+.c4-hl{border-radius:2px;transition:background .15s}
+.c4-ex-foot{padding:10px 14px;border-top:1.5px solid var(--line)}
+.c4-see-btn{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--orange);background:none;color:var(--orange-ink);border-radius:8px;padding:6px 11px;font-size:.77rem;font-weight:700;cursor:pointer;transition:background .12s;font-family:var(--f-body)}
+.c4-see-btn:hover{background:var(--orange-soft)}
+.c4-ex-result{margin-top:9px;font-size:.82rem;line-height:1.55;padding:10px 12px;border-radius:8px;background:var(--sunk);display:none}
+.c4-ex-result.show{display:block}
+.c4-result-tag{display:inline-block;font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-bottom:5px;background:var(--orange-soft);color:var(--orange-ink)}
+.c4-ex-result p{font-size:.82rem;line-height:1.55;color:var(--ink-2);margin:0 0 5px}
+.c4-ex-result p:last-child{margin:0}
+.c4-ex-result strong{color:var(--ink)}
+.c4-ex-result code{font-family:var(--f-mono);font-size:.82em;background:var(--surface);padding:1px 4px;border-radius:3px;color:var(--orange-ink)}
+.c4-learning{background:var(--sunk);border:1.5px solid var(--line);border-radius:12px;padding:14px 17px;margin:13px 0}
+.c4-learning h4{font-size:.82rem;font-weight:800;color:var(--ink);margin:0 0 6px;text-transform:uppercase;letter-spacing:.05em}
+.c4-learning p{font-size:.86rem;line-height:1.6;color:var(--ink-2);margin:0 0 5px}
+.c4-learning p:last-child{margin:0}
+.c4-learning code{font-family:var(--f-mono);font-size:.82em;background:var(--surface);padding:1px 4px;border-radius:3px;color:var(--orange-ink)}
+/* refinement toggle */
+.c4-toggle{display:flex;gap:6px;margin:12px 0;flex-wrap:wrap}
+.c4-toggle-btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:7px 13px;font-size:.81rem;font-weight:700;cursor:pointer;transition:all .12s;font-family:var(--f-body)}
+.c4-toggle-btn[aria-pressed="true"]{border-color:var(--orange);color:var(--orange-ink);background:var(--orange-soft)}
+.c4-rule-pane{display:none}
+.c4-rule-pane.active{display:block}
+.c4-ref-table-wrap{margin:13px 0;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.c4-ref-table{width:100%;border-collapse:collapse;font-size:.81rem}
+.c4-ref-table th{background:var(--sunk);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:7px 11px;text-align:left;border-bottom:1.5px solid var(--line)}
+.c4-ref-table td{padding:7px 11px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:middle}
+.c4-ref-table tr:last-child td{border-bottom:0}
+.c4-ref-table td:first-child{font-family:var(--f-mono);font-size:.76rem;color:var(--ink);font-weight:600}
+.c4-cell-match{color:var(--orange-ink);font-weight:700}
+.c4-cell-excl{color:var(--muted)}
+/* taint */
+.c4-taint-step{margin:28px 0 0}
+.c4-taint-accord{border:1.5px solid var(--line);border-radius:12px;margin-top:6px}
+.c4-taint-btn{width:100%;background:var(--surface);border:0;padding:15px 19px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--f-body);font-size:.93rem;font-weight:700;color:var(--ink);line-height:1.4;border-radius:11px}
+.c4-taint-btn[aria-expanded="true"]{border-radius:11px 11px 0 0}
+.c4-taint-btn:hover{background:var(--sunk)}
+.c4-taint-chevron{flex-shrink:0;width:17px;height:17px;transition:transform .2s;stroke:currentColor;fill:none;stroke-width:2}
+.c4-taint-btn[aria-expanded="true"] .c4-taint-chevron{transform:rotate(180deg)}
+.c4-taint-body{padding:19px 21px;background:var(--paper);border-top:1.5px solid var(--line);border-radius:0 0 11px 11px}
+.c4-taint-body[hidden]{display:none}
+.c4-taint-body p{font-size:.89rem;line-height:1.6;color:var(--ink-2);margin:0 0 9px}
+.c4-taint-body p strong{color:var(--ink)}
+.c4-taint-body code{font-family:var(--f-mono);font-size:.83em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+.c4-taint-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.c4-taint-card{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:12px 14px}
+.c4-taint-card-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.c4-taint-card h4{font-family:var(--f-disp);font-size:1.05rem;margin:0 0 5px;color:var(--ink)}
+.c4-taint-card p{font-size:.82rem;line-height:1.5;color:var(--ink-2);margin:0}
+.c4-taint-flow{display:flex;align-items:center;justify-content:center;gap:5px;margin:24px 0;flex-wrap:wrap}
+.c4-taint-node{background:var(--sunk);border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;text-align:center;min-width:95px}
+.c4-taint-node.source{border-color:var(--orange);background:var(--orange-soft)}
+.c4-taint-node.sink{border-color:#a03030;background:#2a1515}
+.c4-taint-node.mid{border-style:dashed}
+.c4-taint-node-label{font-size:.59rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+.c4-taint-node.source .c4-taint-node-label{color:var(--orange-ink)}
+.c4-taint-node.sink .c4-taint-node-label{color:#cc6666}
+.c4-taint-node-text{font-size:.79rem;font-weight:600;color:var(--ink);display:block}
+.c4-taint-node.source .c4-taint-node-text{color:var(--orange-ink)}
+.c4-taint-node.sink .c4-taint-node-text{color:#cc6666}
+.c4-taint-arrow{color:var(--orange-ink);font-size:1.1rem;font-weight:700;line-height:1}
+.c4-taint-warn{background:var(--sunk);border-left:3px solid var(--line);border-radius:0 8px 8px 0;padding:9px 12px;font-size:.83rem;color:var(--ink-2);line-height:1.6;margin:11px 0 0}
+.c4-taint-warn strong{color:var(--ink)}
+/* cmd */
+.c4-cmd-box{background:#1e1c1a;border-radius:10px;padding:11px 15px;font-family:var(--f-mono);font-size:.81rem;color:#F3EADF;margin:11px 0;overflow-x:auto;white-space:pre;border:1.5px solid #3e3831}
+.c4-result-list{list-style:none;padding:0;margin:9px 0;display:flex;flex-direction:column;gap:4px}
+.c4-result-list li{font-size:.86rem;color:var(--ink-2);padding:3px 0 3px 18px;position:relative;line-height:1.5}
+.c4-result-list li::before{content:"";position:absolute;left:5px;top:10px;width:5px;height:5px;border-radius:50%;background:var(--orange)}
+/* callout */
+.c4-callout{background:var(--surface);border:1.5px solid var(--orange);border-radius:12px;padding:12px 16px;margin:16px 0}
+.c4-callout-label{font-size:.63rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:4px}
+.c4-callout p{font-size:.9rem;line-height:1.6;color:var(--ink);margin:0;font-weight:600}
+@media(max-width:720px){
+  .c4-yaml-explorer,.c4-examples-grid,.c4-taint-cards{grid-template-columns:1fr}
+  .c4-obj-box{grid-template-columns:1fr;gap:3px}
+}
+#conceito-4 .section-text{max-width:none}
+#conceito-4 .section-text p{max-width:none}
+.c4-substep{margin-top:24px}
+.c4-substep-hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.c4-substep-no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-family:var(--f-disp);font-size:.75rem;font-weight:700;flex-shrink:0}
+.c4-substep-hd h4{font-family:var(--f-disp);font-size:1.1rem;margin:0;line-height:1.15;color:var(--ink)}
+.c4-substep-sep{border:none;border-top:1px solid var(--line);margin:22px 0 0}
+.c4-change-list{list-style:none;padding:0;margin:10px 0 14px;display:flex;flex-direction:column;gap:6px}
+.c4-change-list li{padding:9px 13px;background:var(--sunk);border-left:3px solid var(--orange);border-radius:0 7px 7px 0;font-size:.88rem;line-height:1.5}
+.c4-change-list code{font-family:var(--f-mono);font-size:.85em;background:rgba(0,0,0,.07);padding:1px 5px;border-radius:3px;color:var(--orange-ink)}
+.c4-msg-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 0}
+.c4-msg-box{border:1.5px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--surface)}
+.c4-msg-box.c4-msg-taint{border-color:var(--orange);background:var(--orange-soft)}
+.c4-msg-label{font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.c4-msg-taint .c4-msg-label{color:var(--orange-ink)}
+.c4-msg-box p{margin:0;font-size:.88rem;line-height:1.55;color:var(--ink-2)}
+.c4-msg-box code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:3px;color:var(--orange-ink)}
+.c4-msg-taint p{color:var(--ink);font-weight:600}
+.c4-ex-foot p{font-size:.82rem;line-height:1.5;color:var(--ink-2);margin:0}
+.c4-ex-foot strong{color:var(--ink)}
+.c4-ex-foot code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:3px;color:var(--orange-ink)}
+@media(max-width:720px){.c4-msg-compare{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 4</p><h2>Semgrep: estrutura de uma regra</h2></div>
-    <div class="section-text"><div class="learning-grid">
-      <article class="study-card"><span class="study-card-no">01</span><p>Uma regra Semgrep declara: <code>id</code>, <code>languages</code>, <code>severity</code>, <code>message</code> e os operadores de padrão (<code>pattern</code>, <code>pattern-not</code>, <code>pattern-inside</code>, <code>patterns</code>, <code>pattern-either</code>).</p></article>
-      <article class="study-card"><span class="study-card-no">02</span><p>Metavariáveis como <code>$VAR</code> representam partes variáveis de expressões. <code>$VAR</code> captura qualquer identificador; <code>...</code> captura argumentos em número variável.</p></article>
-      <article class="study-card"><span class="study-card-no">03</span><p>A análise de taint do Semgrep permite declarar <code>sources</code>, <code>sinks</code> e <code>sanitizers</code> explicitamente, rastreando o fluxo entre eles sem precisar escrever toda a lógica de propagação.</p></article>
-      <article class="study-card"><span class="study-card-no">04</span><p>Uma regra útil equilibra sensibilidade (detectar o problema) e precisão (evitar ruído). Regras muito amplas produzem falsos positivos que reduzem a adoção, como evidenciado pelo estudo de Sadowski et al. sobre integração de análise estática no Google.</p></article>
+    <div>
+      <p class="eyebrow">Fundamentação teórica · 4</p>
+      <h2>Semgrep: como ensinar uma ferramenta a encontrar padrões no código?</h2>
     </div>
-    <div style="margin-top:16px">
-      <pre class="codigo"><code># Exemplo de estrutura de regra Semgrep (YAML)
-rules:
-  - id: exec-with-external-input
-    languages: [typescript]
-    severity: WARNING
-    message: Chamada a exec() com argumento possivelmente externo
-    patterns:
-      - pattern: exec($INPUT)
-      - pattern-not: exec("...")   # descarta literais fixos
-    metadata:
-      cwe: CWE-78</code></pre>
-    </div>
+    <div class="section-text">
+      <p>Até aqui, vimos que uma análise estática consegue identificar estruturas suspeitas no código, mas que seus alertas precisam ser interpretados.</p>
+      <p>Agora vamos conhecer a ferramenta que utilizaremos no laboratório: <strong>Semgrep</strong>. Ela permite analisar código-fonte utilizando regras que descrevem padrões ou condições que desejamos identificar. Além de executar regras existentes, podemos criar nossas próprias verificações.</p>
+      <p><strong>Mas como transformamos uma preocupação de segurança em uma regra que a ferramenta consiga executar?</strong></p>
+
+      <!-- 01 -->
+      <div class="c4-step">
+        <span class="c4-step-ey">01</span>
+        <h3>Primeiro, precisamos definir o que procurar</h3>
+        <p>Imagine que estamos revisando uma API Node.js e queremos identificar chamadas à função <code>exec</code>, que pode executar comandos do sistema operacional.</p>
+        <p><strong>Nossa hipótese de investigação:</strong></p>
+        <div class="c4-hypo">"Quero localizar chamadas à função <code>exec</code> para verificar se os argumentos utilizados podem representar um risco de injeção de comandos."</div>
+        <p>Observe que ainda não estamos afirmando que todas as chamadas são vulneráveis. Queremos apenas identificar ocorrências para analisá-las.</p>
+        <div class="c4-obj-box">
+          <span class="c4-obj-label">Objetivo</span>
+          <span class="c4-obj-value">Encontrar chamadas à função <code>exec</code>.</span>
+          <span class="c4-obj-label">Padrão</span>
+          <span class="c4-obj-value"><code>exec($COMMAND)</code></span>
+          <span class="c4-obj-label">Resultado esperado</span>
+          <span class="c4-obj-value">A ferramenta identifica chamadas que correspondem a essa estrutura. A <span class="tt-term" tabindex="0">metavariável<span class="tt-box">Representação de uma parte variável do código. <code>$COMMAND</code> captura qualquer expressão utilizada como argumento, sem exigir conhecimento antecipado do valor exato.</span></span> <code>$COMMAND</code> representa a expressão utilizada como argumento.</span>
+        </div>
+      </div>
+
+      <hr class="c4-sep">
+
+      <!-- 02 -->
+      <div class="c4-step">
+        <span class="c4-step-ey">02</span>
+        <h3>Como essa regra é escrita?</h3>
+        <p>As regras do Semgrep podem ser declaradas em arquivos <span class="tt-term" tabindex="0">YAML<span class="tt-box">Formato de representação de dados frequentemente utilizado em arquivos de configuração. Legível por humanos e amplamente adotado por ferramentas de desenvolvimento.</span></span>. Selecione um campo no código abaixo para ver o que ele representa.</p>
+        <div class="c4-yaml-explorer" id="c4-yaml-explorer">
+          <pre class="c4-yaml-code" id="c4-yaml-code" aria-label="Regra Semgrep em YAML. Selecione um campo para ver sua explicação."><span class="yk c4-field" data-field="rules" tabindex="0" role="button" aria-selected="false">rules</span>:
+  - <span class="yk c4-field" data-field="id" tabindex="0" role="button" aria-selected="false">id</span>: <span class="yv">review-exec-usage</span>
+    <span class="yk c4-field" data-field="languages" tabindex="0" role="button" aria-selected="false">languages</span>:
+      - <span class="yv">typescript</span>
+    <span class="yk c4-field" data-field="severity" tabindex="0" role="button" aria-selected="false">severity</span>: <span class="ym">MEDIUM</span>
+    <span class="yk c4-field" data-field="message" tabindex="0" role="button" aria-selected="false">message</span>: &gt;-
+      Revise a origem do argumento <span class="ym">$COMMAND</span>
+      utilizado na chamada a exec().
+    <span class="yk c4-field" data-field="pattern" tabindex="0" role="button" aria-selected="false">pattern</span>: <span class="yv">exec(<span class="ym">$COMMAND</span>)</span>
+    <span class="yk c4-field" data-field="metadata" tabindex="0" role="button" aria-selected="false">metadata</span>:
+      <span class="yk">category</span>: <span class="yv">security</span>
+      <span class="yk">cwe</span>: <span class="yv">"<span class="tt-term" tabindex="0" style="color:inherit">CWE-78<span class="tt-box">Common Weakness Enumeration 78: neutralização inadequada de elementos especiais em comandos de sistema operacional.</span></span>"</span></pre>
+          <div class="c4-panel" id="c4-panel">
+            <p class="c4-panel-hint" id="c4-panel-hint">Selecione um campo no código YAML para ver sua explicação.</p>
+            <div class="c4-panel-content" id="c4-panel-content">
+              <p class="c4-panel-name" id="c4-pname"></p>
+              <p class="c4-panel-role" id="c4-prole"></p>
+              <div class="c4-panel-body" id="c4-pbody"></div>
+              <div class="c4-panel-value" id="c4-pvalue" style="display:none"></div>
+              <div class="c4-panel-hl" id="c4-phl" style="display:none"></div>
+            </div>
+          </div>
+        </div>
+        <div class="c4-callout">
+          <span class="c4-callout-label">Para lembrar</span>
+          <p>Uma regra Semgrep transforma uma hipótese de investigação em um padrão que pode ser procurado automaticamente no código.</p>
+        </div>
+      </div>
+
+      <hr class="c4-sep">
+
+      <!-- 03 -->
+      <div class="c4-step">
+        <span class="c4-step-ey">03</span>
+        <h3>O que essa regra realmente identifica?</h3>
+        <p>Vamos analisar duas implementações diferentes e ver o que a regra encontra em cada uma.</p>
+        <div class="c4-examples-grid">
+          <div class="c4-ex-card">
+            <div class="c4-ex-head">
+              <span class="c4-ex-badge">Exemplo A</span>
+              <span class="c4-ex-title">Argumento recebido por parâmetro</span>
+            </div>
+            <pre class="c4-ex-code">import { exec } from "node:child_process";
+
+function runCommand(command: string) {
+  <span class="c4-hl" id="c4-hl-a">exec(command)</span>;
+}</pre>
+            <div class="c4-ex-foot">
+              <button class="c4-see-btn" type="button" data-target="c4-res-a" data-hl="c4-hl-a">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2.5"/></svg>
+                Ver resultado da regra
+              </button>
+              <div class="c4-ex-result" id="c4-res-a">
+                <span class="c4-result-tag">Correspondência encontrada</span>
+                <p>A regra identifica <code>exec(command)</code>. Mas o resultado não comprova que existe uma vulnerabilidade.</p>
+                <p>Precisamos investigar de onde vem <code>command</code>. Se o valor puder ser controlado externamente sem proteção adequada, pode existir risco.</p>
+                <p><strong>Resultado: correspondência encontrada. Investigação necessária.</strong></p>
+              </div>
+            </div>
+          </div>
+          <div class="c4-ex-card">
+            <div class="c4-ex-head">
+              <span class="c4-ex-badge">Exemplo B</span>
+              <span class="c4-ex-title">Argumento constante</span>
+            </div>
+            <pre class="c4-ex-code">import { exec } from "node:child_process";
+
+function showDate() {
+  <span class="c4-hl" id="c4-hl-b">exec("date")</span>;
+}</pre>
+            <div class="c4-ex-foot">
+              <button class="c4-see-btn" type="button" data-target="c4-res-b" data-hl="c4-hl-b">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2.5"/></svg>
+                Ver resultado da regra
+              </button>
+              <div class="c4-ex-result" id="c4-res-b">
+                <span class="c4-result-tag">Correspondência encontrada</span>
+                <p>A mesma regra também pode encontrar <code>exec("date")</code>. Mas o argumento é uma string fixa.</p>
+                <p>Nesse trecho, não existe evidência de que uma entrada externa está sendo utilizada para construir o comando.</p>
+                <p><strong>Resultado: correspondência encontrada, mas sem demonstração de injeção por entrada externa.</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="c4-learning">
+          <h4>O que aprendemos?</h4>
+          <p>A regra reconhece a estrutura <code>exec(...)</code>, mas não foi construída para verificar a origem dos argumentos.</p>
+          <p>Por isso, duas chamadas com características diferentes podem produzir o mesmo alerta. Essa é uma das razões pelas quais a análise automatizada exige triagem.</p>
+        </div>
+      </div>
+
+      <hr class="c4-sep">
+
+      <!-- 04 -->
+      <div class="c4-step">
+        <span class="c4-step-ey">04</span>
+        <h3>Como podemos melhorar nossa regra?</h3>
+        <p>Podemos combinar um padrão positivo com uma exclusão usando <span class="tt-term" tabindex="0"><code>pattern-not</code><span class="tt-box">Condição utilizada para excluir correspondências que atendem a um padrão específico. Deve ser usada em conjunto com <code>patterns</code>.</span></span> para deixar de sinalizar chamadas cujo argumento é um literal de string.</p>
+        <div class="c4-toggle" role="group" aria-label="Versão da regra">
+          <button class="c4-toggle-btn" aria-pressed="true" data-rule="initial" type="button">Regra inicial</button>
+          <button class="c4-toggle-btn" aria-pressed="false" data-rule="refined" type="button">Regra refinada</button>
+        </div>
+        <div class="c4-rule-pane active" id="c4-rule-initial">
+          <pre class="c4-yaml-code"><span class="yk">rules</span>:
+  - <span class="yk">id</span>: <span class="yv">review-exec-usage</span>
+    <span class="yk">languages</span>: [<span class="yv">typescript</span>]
+    <span class="yk">severity</span>: <span class="ym">MEDIUM</span>
+    <span class="yk">message</span>: &gt;-
+      Revise a origem do argumento $COMMAND
+    <span class="yk">pattern</span>: <span class="yv">exec(<span class="ym">$COMMAND</span>)</span>
+    <span class="yk">metadata</span>:
+      <span class="yk">cwe</span>: <span class="yv">"CWE-78"</span></pre>
+        </div>
+        <div class="c4-rule-pane" id="c4-rule-refined">
+          <pre class="c4-yaml-code"><span class="yk">rules</span>:
+  - <span class="yk">id</span>: <span class="yv">review-exec-nonliteral</span>
+    <span class="yk">languages</span>: [<span class="yv">typescript</span>]
+    <span class="yk">severity</span>: <span class="ym">MEDIUM</span>
+    <span class="yk">message</span>: &gt;-
+      Chamada a exec() com argumento que exige investigação
+    <span class="yk">patterns</span>:
+      - <span class="yk">pattern</span>: <span class="yv">exec(<span class="ym">$COMMAND</span>)</span>
+      - <span class="yk">pattern-not</span>: <span class="yv">exec(<span class="yc">"..."</span>)</span>
+    <span class="yk">metadata</span>:
+      <span class="yk">cwe</span>: <span class="yv">"CWE-78"</span></pre>
+        </div>
+        <p style="font-size:.86rem;margin-top:9px;color:var(--ink-2)"><span class="tt-term" tabindex="0"><code>patterns</code><span class="tt-box">Permite combinar condições que devem ser satisfeitas em conjunto para que a correspondência ocorra.</span></span> combina condições. <code>pattern-not: exec("...")</code> exclui chamadas com argumento literal. O <span class="tt-term" tabindex="0"><code>...</code><span class="tt-box">Dentro de aspas (<code>"..."</code>), corresponde ao conteúdo de um literal de string. Seu comportamento depende do contexto sintático.</span></span> dentro das aspas corresponde ao conteúdo de um literal.</p>
+        <div class="c4-ref-table-wrap">
+          <table class="c4-ref-table">
+            <thead>
+              <tr>
+                <th>Código analisado</th>
+                <th id="c4-th-i">Regra inicial</th>
+                <th id="c4-th-r">Regra refinada</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>exec(command)</code></td>
+                <td class="c4-cell-match" id="c4-r1i">Pode sinalizar</td>
+                <td class="c4-cell-match" id="c4-r1r">Pode sinalizar</td>
+              </tr>
+              <tr>
+                <td><code>exec("date")</code></td>
+                <td class="c4-cell-match" id="c4-r2i">Pode sinalizar</td>
+                <td class="c4-cell-excl" id="c4-r2r">Exclui correspondência literal</td>
+              </tr>
+              <tr>
+                <td><code>exec(buildCommand())</code></td>
+                <td class="c4-cell-match" id="c4-r3i">Pode sinalizar</td>
+                <td class="c4-cell-match" id="c4-r3r">Pode sinalizar</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="c4-callout">
+          <span class="c4-callout-label">Atenção</span>
+          <p>Refinar uma regra pode reduzir falsos positivos, mas também pode deixar de detectar situações importantes. Toda alteração precisa ser testada.</p>
+        </div>
+      </div>
+
+      <!-- 05: taint analysis -->
+      <hr class="c4-sep">
+      <div class="c4-step">
+        <span class="c4-step-ey">05</span>
+        <h3>E quando o problema depende do caminho percorrido pelos dados?</h3>
+        <p>Até agora, nossas regras procuraram estruturas específicas do código. Mas determinadas vulnerabilidades dependem do caminho percorrido pelos dados: um valor recebido de uma requisição HTTP, encaminhado entre funções, chega a uma operação sensível sem proteção adequada.</p>
+        <p>Para investigar esse tipo de situação, o Semgrep oferece um modo de <span class="tt-term" tabindex="0">análise de contaminação<span class="tt-box">Taint analysis: rastreia a propagação de dados considerados não confiáveis desde sua origem até operações sensíveis.</span></span>, conhecido como <strong>taint analysis</strong>.</p>
+        <div class="c4-taint-cards">
+          <div class="c4-taint-card">
+            <span class="c4-taint-card-label">Source</span>
+            <h4><span class="tt-term" tabindex="0">Origem<span class="tt-box">Source: ponto em que o dado considerado não confiável entra no fluxo. Exemplo: parâmetro recebido de requisição HTTP.</span></span></h4>
+            <p>Onde o dado não confiável entra no fluxo. Exemplo: parâmetro da requisição HTTP.</p>
+          </div>
+          <div class="c4-taint-card">
+            <span class="c4-taint-card-label">Sink</span>
+            <h4><span class="tt-term" tabindex="0">Destino sensível<span class="tt-box">Sink: operação em que o uso inadequado do dado pode representar um risco. Exemplo: função que executa comandos no sistema operacional.</span></span></h4>
+            <p>A operação em que o uso inadequado do dado pode representar um risco.</p>
+          </div>
+          <div class="c4-taint-card">
+            <span class="c4-taint-card-label">Sanitizer</span>
+            <h4><span class="tt-term" tabindex="0">Proteção reconhecida<span class="tt-box">Sanitizer: operação reconhecida pela análise como capaz de neutralizar o risco relevante para aquele fluxo específico.</span></span></h4>
+            <p>Operação reconhecida pela regra como capaz de neutralizar o risco relevante para aquele fluxo.</p>
+          </div>
+        </div>
+        <div class="c4-taint-flow" aria-label="Diagrama de fluxo de dados">
+          <div class="c4-taint-node source">
+            <span class="c4-taint-node-label">Source</span>
+            <span class="c4-taint-node-text">Entrada HTTP</span>
+          </div>
+          <span class="c4-taint-arrow" aria-hidden="true">&#8594;</span>
+          <div class="c4-taint-node mid">
+            <span class="c4-taint-node-label">Propagação</span>
+            <span class="c4-taint-node-text">Entre funções</span>
+          </div>
+          <span class="c4-taint-arrow" aria-hidden="true">&#8594;</span>
+          <div class="c4-taint-node sink">
+            <span class="c4-taint-node-label">Sink</span>
+            <span class="c4-taint-node-text">Operação sensível</span>
+          </div>
+        </div>
+        <p>No Semgrep, esse tipo de regra utiliza <code>mode: taint</code> e operadores como <code>pattern-sources</code>, <code>pattern-sinks</code> e <code>pattern-sanitizers</code>.</p>
+        <div class="c4-taint-warn">
+          <strong>Importante:</strong> a capacidade de acompanhar os dados depende do mecanismo utilizado, da linguagem e dos limites da análise. Uma regra de padrão simples não equivale automaticamente a uma análise completa de fluxo de dados.
+        </div>
+      </div>
+
+      <hr class="c4-sep">
+      <!-- 06: transformar regra em taint -->
+      <div class="c4-step">
+        <span class="c4-step-ey">06</span>
+        <h3>Como transformar nossa regra em uma análise de fluxo de dados?</h3>
+        <p>Na seção anterior, construímos uma regra que identifica chamadas à função <code>exec()</code>. Entretanto, ela não consegue determinar, apenas pela correspondência sintática, se o argumento utilizado veio de uma requisição HTTP.</p>
+        <p>Vamos acrescentar uma nova capacidade à nossa investigação: acompanhar a origem do dado até a operação sensível.</p>
+
+        <div class="c4-substep">
+          <div class="c4-substep-hd">
+            <span class="c4-substep-no">1</span>
+            <h4>Nossa regra anterior: reconhecimento de padrão</h4>
+          </div>
+          <pre class="c4-yaml-code"><span class="yk">rules</span>:
+  - <span class="yk">id</span>: <span class="yv">review-exec-usage</span>
+    <span class="yk">languages</span>: <span class="yv">[typescript]</span>
+    <span class="yk">severity</span>: <span class="yv">MEDIUM</span>
+    <span class="yk">message</span>: <span class="yv">Revise o argumento utilizado em exec()</span>
+    <span class="yk">pattern</span>: <span class="yv">exec(<span class="ym">$COMMAND</span>)</span></pre>
+          <p>Essa regra procura chamadas a <code>exec</code>, independentemente da origem do argumento. Por isso, pode sinalizar tanto <code>exec(command)</code> quanto <code>exec("date")</code>.</p>
+        </div>
+
+        <hr class="c4-substep-sep">
+
+        <div class="c4-substep">
+          <div class="c4-substep-hd">
+            <span class="c4-substep-no">2</span>
+            <h4>Nova regra: análise de contaminação</h4>
+          </div>
+          <p>Agora vamos configurar onde os dados entram e qual operação queremos monitorar.</p>
+          <pre class="c4-yaml-code"><span class="yk">rules</span>:
+  - <span class="yk">id</span>: <span class="yv">http-input-to-exec</span>
+    <span class="yk">languages</span>: <span class="yv">[typescript]</span>
+    <span class="yk">severity</span>: <span class="yv">HIGH</span>
+    <span class="yk">mode</span>: <span class="yv">taint</span>
+
+    <span class="yk">message</span>: <span class="yv">&gt;-</span>
+      <span class="yv">Dados de uma requisição HTTP podem</span>
+      <span class="yv">alcançar uma execução de comando.</span>
+
+    <span class="yk">pattern-sources</span>:
+      - <span class="yk">pattern</span>: <span class="yv">req.query.command</span>
+        <span class="yk">exact</span>: <span class="yv">true</span>
+
+    <span class="yk">pattern-sinks</span>:
+      - <span class="yk">patterns</span>:
+          - <span class="yk">pattern</span>: <span class="yv">exec(<span class="ym">$COMMAND</span>)</span>
+          - <span class="yk">focus-metavariable</span>: <span class="ym">$COMMAND</span>
+
+    <span class="yk">metadata</span>:
+      <span class="yk">cwe</span>: <span class="yv">"CWE-78"</span></pre>
+          <p>O que mudou?</p>
+          <ul class="c4-change-list">
+            <li><code>mode: taint</code>: Ativa o acompanhamento de dados considerados não confiáveis.</li>
+            <li><code>pattern-sources</code>: Define <code>req.query.command</code> como uma origem de dados que precisam ser investigados.</li>
+            <li><code>pattern-sinks</code>: Define a chamada a <code>exec</code> como uma operação sensível.</li>
+            <li><code>focus-metavariable</code>: Indica que o argumento <code>$COMMAND</code> é a parte relevante para verificar a chegada de dados contaminados.</li>
+          </ul>
+          <p>Diferentemente da regra anterior, essa configuração busca uma relação entre a origem do dado e seu uso na operação sensível.</p>
+        </div>
+
+        <hr class="c4-substep-sep">
+
+        <div class="c4-substep">
+          <div class="c4-substep-hd">
+            <span class="c4-substep-no">3</span>
+            <h4>Vamos observar o comportamento esperado</h4>
+          </div>
+          <div class="c4-examples-grid">
+            <div class="c4-ex-card">
+              <div class="c4-ex-head">
+                <span class="c4-ex-badge">Exemplo A</span>
+                <span class="c4-ex-title">Dado externo chega diretamente ao comando</span>
+              </div>
+              <pre class="c4-ex-code">const command = req.query.command;
+
+exec(command);</pre>
+              <div class="c4-ex-foot">
+                <p><strong>Resultado esperado:</strong> A regra sinaliza o fluxo. O valor recebido da requisição é encaminhado diretamente para a operação sensível.</p>
+              </div>
+            </div>
+            <div class="c4-ex-card">
+              <div class="c4-ex-head">
+                <span class="c4-ex-badge">Exemplo B</span>
+                <span class="c4-ex-title">Comando constante</span>
+              </div>
+              <pre class="c4-ex-code">exec("date");</pre>
+              <div class="c4-ex-foot">
+                <p><strong>Resultado esperado:</strong> A regra não sinaliza esse trecho. Embora exista uma chamada a <code>exec</code>, não há fluxo da origem definida pela regra até o argumento.</p>
+              </div>
+            </div>
+          </div>
+          <div class="c4-msg-compare">
+            <div class="c4-msg-box">
+              <span class="c4-msg-label">Regra de padrão</span>
+              <p>Existe uma chamada a <code>exec</code>?</p>
+            </div>
+            <div class="c4-msg-box c4-msg-taint">
+              <span class="c4-msg-label">Regra de taint</span>
+              <p>Um dado proveniente da origem monitorada consegue chegar a <code>exec</code>?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="c4-sep">
+
+      <!-- 07 -->
+      <div class="c4-step">
+        <span class="c4-step-ey">07</span>
+        <h3>Como executar uma regra personalizada?</h3>
+        <p>Depois de criar o arquivo YAML, podemos utilizar a interface de linha de comando do Semgrep. Considere que a regra foi salva em <code>rules/review-exec.yaml</code>.</p>
+        <div class="c4-cmd-box">semgrep scan --config rules/review-exec.yaml src/</div>
+        <p>O resultado pode apresentar:</p>
+        <ul class="c4-result-list">
+          <li>Identificador da regra acionada</li>
+          <li>Arquivo e localização da ocorrência</li>
+          <li>Trecho de código correspondente</li>
+          <li>Mensagem configurada</li>
+          <li>Severidade atribuída pela regra</li>
+        </ul>
+        <p><strong>O próximo passo é investigar os resultados e registrar as conclusões.</strong> Não basta copiar a saída do terminal: precisamos explicar o que a ferramenta encontrou e por que determinada ocorrência representa, ou não, um problema de segurança.</p>
+        <div class="c4-callout">
+          <span class="c4-callout-label">Conclusão</span>
+          <p>Criar uma regra Semgrep é definir o que procurar, executar a análise, interpretar os resultados e ajustar a detecção com base nas evidências. A ferramenta automatiza parte da investigação. O analista continua responsável por avaliar o contexto e justificar as conclusões.</p>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+(function(){
+  /* YAML explorer */
+  var FIELDS={
+    rules:{name:'rules',role:'Lista de regras do arquivo',body:'<p>Identifica a lista de regras declaradas no arquivo YAML.</p><p>Um mesmo arquivo pode conter uma ou várias regras independentes.</p>',value:null,hl:null},
+    id:{name:'id',role:'Identificador da regra',body:'<p>Permite reconhecer qual verificação produziu determinado alerta. Deve ser descritivo o suficiente para identificar a hipótese investigada.</p>',value:'review-exec-usage',hl:'Nomes claros facilitam a triagem quando uma ferramenta sinaliza dezenas de alertas.'},
+    languages:{name:'languages',role:'Linguagens de aplicação',body:'<p>Define as linguagens às quais a regra será aplicada.</p><p>O Semgrep analisa a árvore sintática do código, não texto simples. Por isso, a linguagem precisa ser declarada explicitamente.</p>',value:'- typescript',hl:null},
+    severity:{name:'severity',role:'Severidade atribuída pelo autor',body:'<p>Indica o nível de severidade configurado pelo autor da regra.</p><p>O valor <code>MEDIUM</code> não significa que toda ocorrência encontrada corresponde automaticamente a uma vulnerabilidade de severidade média. A severidade real depende do contexto investigado.</p>',value:'MEDIUM',hl:null},
+    message:{name:'message',role:'Mensagem de alerta',body:'<p>Apresentada quando a regra encontra uma correspondência.</p><p>Uma boa mensagem orienta a investigação: explica por que o trecho merece atenção e indica o que deve ser verificado.</p>',value:'Revise a origem do argumento $COMMAND utilizado na chamada a exec().',hl:'A mensagem deve ajudar o analista a saber o que fazer a seguir, não apenas registrar que algo foi encontrado.'},
+    pattern:{name:'pattern',role:'Padrão de correspondência',body:'<p>É a estrutura de código que a ferramenta deve procurar.</p><p><code>exec($COMMAND)</code> identifica chamadas à função exec e captura o argumento em uma metavariável.</p><p>A metavariável <code>$COMMAND</code> representa qualquer expressão utilizada como argumento: variáveis, literais ou outras chamadas.</p>',value:'exec($COMMAND)',hl:'Uma metavariável captura partes variáveis do padrão sem exigir conhecimento antecipado do valor exato.'},
+    metadata:{name:'metadata',role:'Informações complementares',body:'<p>Permite adicionar contexto à regra: categoria, referência técnica e classificação de fraqueza.</p><p><code>CWE-78</code> refere-se à neutralização inadequada de elementos especiais utilizados em comandos de sistema operacional.</p>',value:'category: security / cwe: "CWE-78"',hl:null}
+  };
+  var hint=document.getElementById('c4-panel-hint');
+  var content=document.getElementById('c4-panel-content');
+  var pname=document.getElementById('c4-pname');
+  var prole=document.getElementById('c4-prole');
+  var pbody=document.getElementById('c4-pbody');
+  var pvalue=document.getElementById('c4-pvalue');
+  var phl=document.getElementById('c4-phl');
+  var allFields=document.querySelectorAll('#c4-yaml-code .c4-field');
+  function showField(key){
+    var f=FIELDS[key]; if(!f) return;
+    allFields.forEach(function(el){el.setAttribute('aria-selected',el.dataset.field===key?'true':'false');});
+    hint.style.display='none'; content.classList.add('active');
+    pname.textContent=f.name; prole.textContent=f.role; pbody.innerHTML=f.body;
+    if(f.value){pvalue.textContent=f.value;pvalue.style.display='';}else{pvalue.style.display='none';}
+    if(f.hl){phl.textContent=f.hl;phl.style.display='';}else{phl.style.display='none';}
+  }
+  allFields.forEach(function(el){
+    el.addEventListener('click',function(){showField(el.dataset.field);});
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();showField(el.dataset.field);}});
+  });
+  /* examples: see result */
+  document.querySelectorAll('#conceito-4 .c4-see-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var res=document.getElementById(btn.getAttribute('data-target'));
+      var hl=document.getElementById(btn.getAttribute('data-hl'));
+      if(!res) return;
+      var open=res.classList.contains('show');
+      if(open){res.classList.remove('show');if(hl)hl.style.background='';}
+      else{res.classList.add('show');if(hl)hl.style.background='rgba(230,95,0,.4)';}
+    });
+  });
+  /* rule refinement toggle */
+  var toggleBtns=document.querySelectorAll('#conceito-4 .c4-toggle-btn');
+  var paneInitial=document.getElementById('c4-rule-initial');
+  var paneRefined=document.getElementById('c4-rule-refined');
+  var thI=document.getElementById('c4-th-i');
+  var thR=document.getElementById('c4-th-r');
+  function setMode(mode){
+    toggleBtns.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.rule===mode?'true':'false');});
+    if(mode==='initial'){
+      paneInitial.classList.add('active');paneRefined.classList.remove('active');
+      thI.style.background='var(--orange-soft)';thI.style.color='var(--orange-ink)';
+      thR.style.background='';thR.style.color='';
+      ['c4-r1i','c4-r2i','c4-r3i'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.fontWeight='700';el.style.color='var(--orange-ink)';}});
+      ['c4-r1r','c4-r2r','c4-r3r'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.fontWeight='';el.style.color='';}});
+    } else {
+      paneRefined.classList.add('active');paneInitial.classList.remove('active');
+      thR.style.background='var(--orange-soft)';thR.style.color='var(--orange-ink)';
+      thI.style.background='';thI.style.color='';
+      ['c4-r1i','c4-r2i','c4-r3i'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.fontWeight='';el.style.color='';}});
+      ['c4-r1r','c4-r3r'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.fontWeight='700';el.style.color='var(--orange-ink)';el.style.textDecoration='';}});
+      var r2r=document.getElementById('c4-r2r');
+      if(r2r){r2r.style.fontWeight='600';r2r.style.color='var(--muted)';r2r.style.textDecoration='line-through';}
+    }
+  }
+  toggleBtns.forEach(function(btn){btn.addEventListener('click',function(){setMode(btn.dataset.rule);});});
+  setMode('initial');
+  /* tooltips for conceito-4 */
+  var cur4=null;
+  document.querySelectorAll('#conceito-4 .tt-term').forEach(function(el){
+    function open4(){if(cur4&&cur4!==el){cur4.removeAttribute('data-tt');}el.setAttribute('data-tt','open');cur4=el;}
+    function close4(){el.removeAttribute('data-tt');if(cur4===el)cur4=null;}
+    el.addEventListener('mouseenter',open4);el.addEventListener('mouseleave',close4);
+    el.addEventListener('focus',open4);el.addEventListener('blur',close4);
+    el.addEventListener('click',function(e){e.stopPropagation();el.hasAttribute('data-tt')?close4():open4();});
+    el.addEventListener('keydown',function(e){if(e.key==='Escape')close4();});
+  });
+  document.addEventListener('click',function(){if(cur4){cur4.removeAttribute('data-tt');cur4=null;}});
+})();
+  </script>
 </section>
 
 <section class="cena" data-nome="Falso negativo" id="interacao-2">
+<style>
+#interacao-2 .i2-rule-card{background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:12px;padding:16px 20px;margin-bottom:14px}
+#interacao-2 .i2-rule-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:6px}
+#interacao-2 .i2-rule-text{font-weight:700;color:var(--ink);font-size:1rem;line-height:1.5;margin:0}
+#interacao-2 .i2-intro{font-size:.95rem;line-height:1.6;color:var(--ink-2);margin:0 0 12px}
+#interacao-2 .i2-evidence{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 20px}
+#interacao-2 .i2-ev-card{border:1.5px solid var(--line);border-radius:12px;padding:16px;background:var(--surface)}
+#interacao-2 .i2-ev-found{border-left:4px solid var(--good)}
+#interacao-2 .i2-ev-none{border-left:4px solid var(--muted)}
+#interacao-2 .i2-ev-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:8px}
+#interacao-2 .i2-ev-found .i2-ev-label{color:var(--good)}
+#interacao-2 .i2-ev-none .i2-ev-label{color:var(--muted)}
+#interacao-2 .i2-ev-card p{font-size:.88rem;line-height:1.5;color:var(--ink-2);margin:0}
+#interacao-2 .i2-ev-card code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-2 .i2-question{font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 14px}
+#interacao-2 .i2-fb-item{display:none}
+#interacao-2 .i2-fb-item.i2-active{display:block}
+#interacao-2 .i2-final{margin-top:14px;padding:14px 18px;background:var(--sunk);border-left:4px solid var(--orange);border-radius:0 10px 10px 0}
+#interacao-2 .i2-final p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+#interacao-2 .i2-final p:last-child{margin:0}
+#interacao-2 .i2-final strong{color:var(--ink)}
+#interacao-2 .i2-reflection{font-style:italic;color:var(--muted)}
+#interacao-2 .i2-note{font-size:.8rem;color:var(--muted);margin-top:16px}
+@media(max-width:720px){#interacao-2 .i2-evidence{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>E agora, como você decidiria?</h2></div>
-    <div class="lab quiz" data-correct="1" data-explanation="Ausência de alerta não comprova ausência de vulnerabilidade. Ferramentas possuem escopo e modelos limitados.">
-      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Falso negativo</h3></div>
-      <p class="instrucao">Um analisador não detecta uma falha de lógica de aprovação conhecida por inspeção manual. Isso significa que...</p>
-      <div class="choices" role="group">
-        <button class="choice" data-value="0" type="button">A falha não existe</button>
-        <button class="choice" data-value="1" type="button">A ferramenta não a detectou com as regras e modelos utilizados</button>
-        <button class="choice" data-value="2" type="button">A revisão manual deve ser descartada</button>
+    <div><p class="eyebrow">Aplicação rápida · interação 2</p><h2>O relatório está limpo. Mas o sistema está seguro?</h2></div>
+    <div>
+      <div class="i2-rule-card">
+        <span class="i2-rule-label">Regra de negócio</span>
+        <p class="i2-rule-text">Reembolsos acima de R$ 5.000 precisam ser aprovados por um gerente.</p>
       </div>
-      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
-      <div aria-live="polite" class="feedback" role="status"></div>
+      <p class="i2-intro">Durante a revisão manual, a equipe encontra a seguinte implementação:</p>
+      <pre class="codigo"><code>async function approveExpense(
+  expense: Expense,
+  actor: Actor,
+) {
+  await repository.update(expense.id, {
+    status: "APPROVED",
+  });
+}</code></pre>
+      <p class="i2-intro">A função recebe a identidade de quem realiza a operação, mas não demonstra uma verificação da permissão necessária para aprovar reembolsos acima do limite. Ao investigar o fluxo completo, a equipe confirma que um usuário comum consegue aprovar um reembolso de R$ 8.000.</p>
+      <div class="i2-evidence">
+        <div class="i2-ev-card i2-ev-found">
+          <span class="i2-ev-label">Revisão manual</span>
+          <p>A equipe identificou e confirmou uma violação da regra de aprovação: a função não verifica se o <code>actor</code> tem permissão para aprovar reembolsos acima do limite estabelecido.</p>
+        </div>
+        <div class="i2-ev-card i2-ev-none">
+          <span class="i2-ev-label">Varredura SAST</span>
+          <p>Nenhum alerta foi produzido relacionado ao controle de permissão no fluxo de aprovação de reembolsos.</p>
+        </div>
+      </div>
+      <div class="lab">
+        <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>O que podemos concluir?</h3></div>
+        <p class="i2-question">A partir dessas duas evidências, qual conclusão é mais fundamentada?</p>
+        <div class="choices" role="group" aria-label="Escolha uma alternativa">
+          <button class="i2-choice choice" data-i2-value="0" type="button" aria-pressed="false">A. A aplicação está segura, pois a ferramenta não identificou nenhuma vulnerabilidade nesse fluxo.</button>
+          <button class="i2-choice choice" data-i2-value="1" type="button" aria-pressed="false">B. A falha identificada manualmente continua existindo, mas não foi detectada pelas regras e capacidades utilizadas nessa análise.</button>
+          <button class="i2-choice choice" data-i2-value="2" type="button" aria-pressed="false">C. A revisão manual deve ser desconsiderada, pois a análise automatizada é mais confiável.</button>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn prim i2-check-btn" disabled type="button">Conferir minha análise</button>
+          <button class="btn i2-reset-btn" type="button">Refazer</button>
+        </div>
+        <div aria-live="polite" role="status">
+          <div class="feedback i2-fb-item" data-state="incorrect" data-i2-for="0">
+            <strong>Conclusão incorreta.</strong> A ausência de alertas não comprova a ausência de vulnerabilidades. A ferramenta pode não possuir regras capazes de reconhecer determinada condição de negócio, ou a análise pode não conseguir acompanhar todas as relações necessárias para identificá-la. Neste cenário, a revisão manual demonstrou concretamente que a falha existe.
+          </div>
+          <div class="feedback i2-fb-item" data-state="correct" data-i2-for="1">
+            <strong>Conclusão fundamentada.</strong> A revisão manual demonstrou uma violação da regra de aprovação, enquanto a varredura automatizada não identificou o problema. Isso evidencia uma limitação da detecção realizada. Quando uma vulnerabilidade confirmada não é identificada pela análise, ela é contabilizada como <strong>falso negativo</strong>.
+          </div>
+          <div class="feedback i2-fb-item" data-state="incorrect" data-i2-for="2">
+            <strong>Conclusão incorreta.</strong> A revisão manual e a análise automatizada investigam o código por abordagens complementares. Uma evidência técnica obtida manualmente não deixa de ser válida apenas porque uma ferramenta não produziu um alerta correspondente.
+          </div>
+        </div>
+        <div class="i2-final" hidden>
+          <p><strong>Uma ferramenta só consegue identificar problemas que suas regras e capacidades de análise permitem reconhecer.</strong></p>
+          <p>Uma falha de lógica de negócio pode depender de uma política que não está representada explicitamente nas verificações automatizadas. Por isso, a comparação entre SAST e revisão manual é importante: ela permite identificar problemas confirmados, limitações de cobertura e oportunidades de aprimoramento das regras.</p>
+          <p class="i2-reflection">Se conhecemos uma falha que a ferramenta não encontrou, poderíamos desenvolver uma regra para identificar situações semelhantes?</p>
+        </div>
+        <p class="i2-note">Exemplo fictício e independente da API avaliativa da disciplina.</p>
+      </div>
     </div>
   </div>
+  <script>
+  (function(){
+    var sec = document.getElementById('interacao-2');
+    if(!sec) return;
+    var choices = sec.querySelectorAll('.i2-choice');
+    var checkBtn = sec.querySelector('.i2-check-btn');
+    var resetBtn = sec.querySelector('.i2-reset-btn');
+    var feedbacks = sec.querySelectorAll('.i2-fb-item');
+    var finalDiv = sec.querySelector('.i2-final');
+    var selected = null, answered = false, CORRECT = '1';
+    choices.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(answered) return;
+        choices.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        selected = btn.dataset.i2Value;
+        checkBtn.disabled = false;
+      });
+    });
+    checkBtn.addEventListener('click', function(){
+      if(selected === null || answered) return;
+      answered = true;
+      checkBtn.disabled = true;
+      choices.forEach(function(b){ b.disabled = true; });
+      feedbacks.forEach(function(f){ if(f.dataset.i2For === selected) f.classList.add('i2-active'); });
+      if(selected === CORRECT) finalDiv.hidden = false;
+    });
+    resetBtn.addEventListener('click', function(){
+      answered = false; selected = null;
+      checkBtn.disabled = true;
+      choices.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      feedbacks.forEach(function(f){ f.classList.remove('i2-active'); });
+      finalDiv.hidden = true;
+    });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Metavariáveis no Semgrep" id="interacao-3">
+<style>
+#interacao-3 .i3-pattern-box{background:var(--sunk);border:1.5px solid var(--orange);border-radius:12px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
+#interacao-3 .i3-pattern-col{flex-shrink:0}
+#interacao-3 .i3-pattern-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:6px}
+#interacao-3 .i3-pattern-code{font-family:var(--f-mono);font-size:1.1rem;font-weight:700;color:var(--orange-ink);background:var(--paper);border-radius:8px;padding:6px 14px;display:inline-block;border:1.5px solid var(--orange)}
+#interacao-3 .i3-pattern-desc{font-size:.88rem;line-height:1.5;color:var(--ink-2);margin:0;flex:1;min-width:200px;align-self:center}
+#interacao-3 .i3-pattern-desc code{background:var(--paper);color:var(--orange-ink);border-radius:4px;padding:1px 5px;font-size:.88em;font-family:var(--f-mono)}
+#interacao-3 .i3-codes{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+#interacao-3 .i3-code-card{border:1.5px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+#interacao-3 .i3-code-num{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;padding:10px 14px 2px}
+#interacao-3 .i3-code-desc{font-size:.82rem;color:var(--ink-2);padding:2px 14px 6px;line-height:1.4;margin:0}
+#interacao-3 .i3-code-card pre{background:#22201E;color:#F3EADF;padding:10px 14px;margin:0;font-family:var(--f-mono);font-size:.85rem;line-height:1.5;overflow-x:auto;white-space:pre}
+#interacao-3 .i3-hl{color:#E5A23A;font-weight:700}
+#interacao-3 .i3-question{font-size:1rem;font-weight:700;color:var(--ink);margin:0 0 14px}
+#interacao-3 .i3-fb-item{display:none}
+#interacao-3 .i3-fb-item.i3-active{display:block}
+#interacao-3 .i3-table-wrap{margin:10px 0;border:1.5px solid var(--line);border-radius:8px;overflow:hidden;width:100%}
+#interacao-3 .i3-table{width:100%;border-collapse:collapse;font-size:.82rem}
+#interacao-3 .i3-table th{background:var(--sunk);font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:7px 10px;text-align:left;border-bottom:1.5px solid var(--line)}
+#interacao-3 .i3-table td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;font-family:var(--f-mono);font-size:.8rem}
+#interacao-3 .i3-table tr:last-child td{border-bottom:0}
+#interacao-3 .i3-table .i3-hl-cell{color:var(--orange-ink);font-weight:700}
+#interacao-3 .i3-fb-item code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-3 .i3-q2{margin-top:24px;border-top:1.5px solid var(--line);padding-top:20px}
+#interacao-3 .i3-q2-label{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:10px}
+#interacao-3 .i3-fb2-item{display:none}
+#interacao-3 .i3-fb2-item.i3-2-active{display:block}
+#interacao-3 .i3-final{margin-top:14px;padding:14px 18px;background:var(--sunk);border-left:4px solid var(--orange);border-radius:0 10px 10px 0}
+#interacao-3 .i3-final p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+#interacao-3 .i3-final p:last-child{margin:0}
+#interacao-3 .i3-final strong{color:var(--ink)}
+#interacao-3 .i3-final code{font-family:var(--f-mono);font-size:.85em;background:var(--paper);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-3 .i3-fb2-item code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+@media(max-width:720px){#interacao-3 .i3-codes{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Aplicação rápida · interação 3</p><h2>E agora, como você decidiria?</h2></div>
-    <div class="lab quiz" data-correct="0" data-explanation="Metavariáveis representam partes variáveis de expressões que devem corresponder ao padrão, como um identificador, uma expressão ou uma chamada.">
-      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Metavariáveis no Semgrep</h3></div>
-      <p class="instrucao">O que uma metavariável como <code>$VAR</code> permite representar em uma regra de padrão?</p>
-      <div class="choices" role="group">
-        <button class="choice" data-value="0" type="button">Partes variáveis de expressões que devem corresponder ao padrão</button>
-        <button class="choice" data-value="1" type="button">Uma migration do Prisma</button>
-        <button class="choice" data-value="2" type="button">Uma licença do GitHub</button>
+    <div><p class="eyebrow">Aplicação rápida · interação 3</p><h2>Uma regra, diferentes códigos: o que o Semgrep consegue reconhecer?</h2></div>
+    <div>
+      <div class="i3-pattern-box">
+        <div class="i3-pattern-col">
+          <span class="i3-pattern-label">Padrão definido</span>
+          <code class="i3-pattern-code">exec($COMMAND)</code>
+        </div>
+        <p class="i3-pattern-desc">A metavariável <code>$COMMAND</code> representa a expressão presente na posição do argumento da chamada. Com esse padrão, buscamos todas as chamadas a <code>exec</code> independentemente do conteúdo exato do argumento.</p>
       </div>
-      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
-      <div aria-live="polite" class="feedback" role="status"></div>
+      <div class="i3-codes">
+        <div class="i3-code-card">
+          <span class="i3-code-num">Código A</span>
+          <p class="i3-code-desc">Argumento: variável</p>
+          <pre>exec(<span class="i3-hl">command</span>);</pre>
+        </div>
+        <div class="i3-code-card">
+          <span class="i3-code-num">Código B</span>
+          <p class="i3-code-desc">Argumento: literal de string</p>
+          <pre>exec(<span class="i3-hl">"date"</span>);</pre>
+        </div>
+        <div class="i3-code-card">
+          <span class="i3-code-num">Código C</span>
+          <p class="i3-code-desc">Argumento: retorno de função</p>
+          <pre>exec(<span class="i3-hl">buildCommand()</span>);</pre>
+        </div>
+      </div>
+      <div class="lab">
+        <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Metavariáveis no Semgrep</h3></div>
+        <p class="i3-question">Quais desses trechos correspondem ao padrão <code>exec($COMMAND)</code>?</p>
+        <div class="choices" role="group" aria-label="Escolha uma alternativa">
+          <button class="i3-choice choice" data-i3-value="0" type="button" aria-pressed="false">A. Apenas o código A, porque uma metavariável representa exclusivamente nomes de variáveis.</button>
+          <button class="i3-choice choice" data-i3-value="1" type="button" aria-pressed="false">B. Os códigos A, B e C, porque a metavariável pode representar diferentes expressões utilizadas como argumento.</button>
+          <button class="i3-choice choice" data-i3-value="2" type="button" aria-pressed="false">C. Apenas o código C, porque o Semgrep utiliza metavariáveis exclusivamente para identificar chamadas de funções.</button>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn prim i3-check-btn" disabled type="button">Ver correspondências</button>
+          <button class="btn i3-reset-btn" type="button">Refazer</button>
+        </div>
+        <div aria-live="polite" role="status">
+          <div class="feedback i3-fb-item" data-state="incorrect" data-i3-for="0">
+            <strong>Não exatamente.</strong> As metavariáveis do Semgrep não estão limitadas a nomes de variáveis. Elas podem representar expressões, incluindo literais, identificadores e chamadas de funções, conforme a posição e a estrutura do padrão.
+          </div>
+          <div class="feedback i3-fb-item" data-state="correct" data-i3-for="1">
+            <strong>Correto.</strong> O padrão <code>exec($COMMAND)</code> pode reconhecer as três chamadas porque <code>$COMMAND</code> representa o argumento em cada uma delas:
+            <div class="i3-table-wrap">
+              <table class="i3-table">
+                <thead><tr><th>Código analisado</th><th>Capturado em <code>$COMMAND</code></th></tr></thead>
+                <tbody>
+                  <tr><td>exec(command)</td><td class="i3-hl-cell">command</td></tr>
+                  <tr><td>exec("date")</td><td class="i3-hl-cell">"date"</td></tr>
+                  <tr><td>exec(buildCommand())</td><td class="i3-hl-cell">buildCommand()</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="feedback i3-fb-item" data-state="incorrect" data-i3-for="2">
+            <strong>Não exatamente.</strong> Uma metavariável pode capturar uma chamada de função, mas não está restrita a esse tipo de expressão. No padrão apresentado, o Semgrep procura chamadas a <code>exec</code> cujo argumento corresponde à metavariável, independentemente do tipo da expressão.
+          </div>
+        </div>
+        <div class="i3-q2" hidden>
+          <span class="i3-q2-label">Agora, uma segunda questão</span>
+          <p class="i3-question">Se o Semgrep identificou as três chamadas, podemos afirmar que todas possuem uma vulnerabilidade de injeção de comandos?</p>
+          <div class="choices" role="group" aria-label="Escolha uma alternativa">
+            <button class="i3-btn2 choice" data-i3b2-value="0" type="button" aria-pressed="false">A. Sim. A presença da chamada exec é suficiente para comprovar uma vulnerabilidade.</button>
+            <button class="i3-btn2 choice" data-i3b2-value="1" type="button" aria-pressed="false">B. Não. Precisamos investigar a origem dos argumentos, os controles existentes e o contexto de execução.</button>
+          </div>
+          <div class="quiz-actions">
+            <button class="btn prim i3-check2-btn" disabled type="button">Conferir</button>
+            <button class="btn i3-reset2-btn" type="button">Refazer segunda questão</button>
+          </div>
+          <div aria-live="polite" role="status">
+            <div class="feedback i3-fb2-item" data-state="incorrect" data-i3b2-for="0">
+              <strong>Não exatamente.</strong> A correspondência sintática indica que o trecho utiliza a função <code>exec</code>, mas não informa se os dados que chegam a ela são controlados externamente. É necessário investigar o contexto para determinar se existe um risco real.
+            </div>
+            <div class="feedback i3-fb2-item" data-state="correct" data-i3b2-for="1">
+              <strong>Correto.</strong> Uma correspondência sintática mostra que a estrutura está presente, mas não comprova automaticamente que os dados são inseguros. Precisamos investigar como os valores são produzidos e utilizados.
+            </div>
+          </div>
+          <div class="i3-final" hidden>
+            <p><strong>Uma metavariável permite generalizar padrões, mas não comprova automaticamente que os dados são inseguros.</strong></p>
+            <p>O Semgrep pode reconhecer <code>exec(command)</code>, <code>exec("date")</code> e <code>exec(buildCommand())</code> utilizando a mesma regra. Entretanto, para determinar se existe uma vulnerabilidade, precisamos investigar como os valores são produzidos e utilizados.</p>
+            <p>É justamente essa diferença que motiva o refinamento de regras e a utilização de análises de fluxo de dados.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+  (function(){
+    var sec = document.getElementById('interacao-3');
+    if(!sec) return;
+    var choices1 = sec.querySelectorAll('.i3-choice');
+    var check1 = sec.querySelector('.i3-check-btn');
+    var reset1 = sec.querySelector('.i3-reset-btn');
+    var fbs1 = sec.querySelectorAll('.i3-fb-item');
+    var q2div = sec.querySelector('.i3-q2');
+    var sel1 = null, ans1 = false, CORRECT1 = '1';
+    choices1.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(ans1) return;
+        choices1.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        sel1 = btn.dataset.i3Value;
+        check1.disabled = false;
+      });
+    });
+    check1.addEventListener('click', function(){
+      if(sel1 === null || ans1) return;
+      ans1 = true;
+      check1.disabled = true;
+      choices1.forEach(function(b){ b.disabled = true; });
+      fbs1.forEach(function(f){ if(f.dataset.i3For === sel1) f.classList.add('i3-active'); });
+      if(sel1 === CORRECT1) q2div.hidden = false;
+    });
+    reset1.addEventListener('click', function(){
+      ans1 = false; sel1 = null;
+      check1.disabled = true;
+      choices1.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      fbs1.forEach(function(f){ f.classList.remove('i3-active'); });
+      q2div.hidden = true;
+      doReset2();
+    });
+    var choices2 = sec.querySelectorAll('.i3-btn2');
+    var check2 = sec.querySelector('.i3-check2-btn');
+    var reset2 = sec.querySelector('.i3-reset2-btn');
+    var fbs2 = sec.querySelectorAll('.i3-fb2-item');
+    var finalDiv = sec.querySelector('.i3-final');
+    var sel2 = null, ans2 = false, CORRECT2 = '1';
+    choices2.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(ans2) return;
+        choices2.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        sel2 = btn.dataset.i3b2Value;
+        check2.disabled = false;
+      });
+    });
+    check2.addEventListener('click', function(){
+      if(sel2 === null || ans2) return;
+      ans2 = true;
+      check2.disabled = true;
+      choices2.forEach(function(b){ b.disabled = true; });
+      fbs2.forEach(function(f){ if(f.dataset.i3b2For === sel2) f.classList.add('i3-2-active'); });
+      if(sel2 === CORRECT2) finalDiv.hidden = false;
+    });
+    reset2.addEventListener('click', doReset2);
+    function doReset2(){
+      ans2 = false; sel2 = null;
+      if(check2) check2.disabled = true;
+      choices2.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      fbs2.forEach(function(f){ f.classList.remove('i3-2-active'); });
+      if(finalDiv) finalDiv.hidden = true;
+    }
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Conceito: Critérios para triagem" id="conceito-7">
+<style>
+#conceito-7 .c7-ctx{background:var(--sunk);border:1.5px solid var(--line);border-radius:12px;padding:16px 20px;margin-bottom:24px}
+#conceito-7 .c7-ctx-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+#conceito-7 .c7-ctx p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+#conceito-7 .c7-ctx p:last-child{margin:0}
+#conceito-7 .c7-ctx code{font-family:var(--f-mono);font-size:.85em;background:var(--surface);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#conceito-7 .c7-step+.c7-step{border-top:1px solid var(--line);padding-top:24px;margin-top:0}
+#conceito-7 .c7-step{padding-bottom:24px}
+#conceito-7 .c7-step-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+#conceito-7 .c7-no{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0;border-radius:50%;background:var(--orange);color:#fff;font-family:var(--f-disp);font-size:.82rem;font-weight:700;margin-top:2px}
+#conceito-7 .c7-step-hd h3{font-family:var(--f-disp);font-size:1.3rem;margin:0;line-height:1.1;color:var(--ink)}
+#conceito-7 .c7-body p{font-size:.93rem;line-height:1.6;color:var(--ink-2);margin:0 0 10px}
+#conceito-7 .c7-body p:last-child{margin:0}
+#conceito-7 .c7-body code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#conceito-7 .c7-body ul{font-size:.93rem;line-height:1.6;color:var(--ink-2);padding-left:18px;margin:4px 0 10px}
+#conceito-7 .c7-body li{margin-bottom:4px}
+#conceito-7 .c7-body strong{color:var(--ink)}
+#conceito-7 .c7-orient{background:var(--surface);border-left:3px solid var(--orange);padding:9px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.88rem;line-height:1.5;color:var(--ink-2)}
+#conceito-7 .c7-orient strong{color:var(--orange-ink)}
+#conceito-7 .c7-decide-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+#conceito-7 .c7-decide-card{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px}
+#conceito-7 .c7-decide-card h4{font-size:.86rem;font-weight:700;color:var(--ink);margin:0 0 4px}
+#conceito-7 .c7-decide-card p{font-size:.82rem;line-height:1.5;color:var(--ink-2);margin:0}
+#conceito-7 .c7-repro{margin-top:4px;border-top:1.5px dashed var(--line);padding-top:20px}
+#conceito-7 .c7-repro-label{font-size:.88rem;font-weight:700;color:var(--ink);display:block;margin-bottom:8px}
+#conceito-7 .c7-repro p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 12px}
+#conceito-7 .c7-repro-flow{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:10px 0}
+#conceito-7 .c7-repro-node{background:var(--sunk);border:1.5px solid var(--line);border-radius:8px;padding:5px 11px;font-size:.8rem;font-weight:600;color:var(--ink-2)}
+#conceito-7 .c7-repro-arrow{color:var(--orange-ink);font-size:.85rem;font-weight:700;padding:0 2px}
+#conceito-7 .c7-closing{margin-top:20px;background:var(--surface);border-left:4px solid var(--orange);padding:12px 18px;border-radius:0 10px 10px 0}
+#conceito-7 .c7-closing p{font-size:.92rem;line-height:1.6;color:var(--ink);font-weight:600;margin:0}
+@media(max-width:720px){#conceito-7 .c7-decide-grid{grid-template-columns:1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Fundamentação teórica · 5</p><h2>Critérios para triagem de alertas</h2></div>
-    <div class="section-text"><div class="learning-grid">
-      <article class="study-card"><span class="study-card-no">01</span><p>Para cada ocorrência documentar:</p>
-        <ol>
-          <li>Regra executada</li>
-          <li>Linha e função</li>
-          <li>Fonte do argumento</li>
-          <li>Possibilidade de o caminho ser chamado</li>
-          <li>Eventual controle sobre o dado</li>
-          <li>Impacto se o fluxo for alcançado</li>
-          <li>Nível de confiança</li>
-          <li>Recomendação</li>
-        </ol>
-      </article>
-      <article class="study-card"><span class="study-card-no">02</span><p>Uma ocorrência em código de demonstração não invocado não comprova exploração de uma rota. Pode ainda ser uma má prática e justificar remoção, mas deve ser classificada com precisão.</p></article>
-      <article class="study-card"><span class="study-card-no">03</span><p>Registrar a versão exata do Semgrep, o conjunto de regras utilizado e o commit analisado. Sem isso, o relatório não pode ser reproduzido.</p></article>
-    </div></div>
+    <div><p class="eyebrow">Fundamentação teórica · 5</p><h2>Como investigar um alerta antes de classificá-lo?</h2></div>
+    <div>
+      <div class="c7-ctx">
+        <span class="c7-ctx-label">Cenário em investigação</span>
+        <p>O Semgrep sinalizou <code>exec(command)</code> como potencial injeção de comandos. Mas o alerta, sozinho, não confirma nada. Ele aponta uma estrutura: a ferramenta reconheceu o padrão. O que fazemos a seguir?</p>
+        <p>Cada etapa abaixo representa uma pergunta que deve ser respondida antes de qualquer julgamento sobre o alerta.</p>
+      </div>
+
+      <div class="c7-step">
+        <div class="c7-step-hd">
+          <span class="c7-no">01</span>
+          <h3>Identificar: o que a ferramenta encontrou?</h3>
+        </div>
+        <div class="c7-body">
+          <p>O primeiro passo é ler o alerta com precisão. Precisamos saber qual regra foi executada, em qual arquivo e função a ocorrência aparece e qual é a linha exata.</p>
+          <ul>
+            <li>Qual regra produziu o alerta?</li>
+            <li>Em qual arquivo, função e linha?</li>
+            <li>O que exatamente foi reconhecido pelo padrão?</li>
+          </ul>
+          <div class="c7-orient"><strong>Pergunta orientadora:</strong> Se precisasse descrever o alerta para um colega em uma frase, o que diria?</div>
+        </div>
+        <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c7-ex-1" data-open="Ver exemplo" data-close="Ocultar exemplo">
+          <svg class="icon-eye" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="icon-minus" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="ex-btn-label">Ver exemplo</span>
+        </button>
+        <div class="ex-panel" id="c7-ex-1" hidden>
+          <p><strong>Alerta identificado:</strong> regra <code>review-exec-usage</code>, arquivo <code>server.ts</code>, função <code>runMaintenance</code>, linha 7. O padrão detectado é a chamada <code>exec(command)</code>. O argumento <code>command</code> é uma variável, não um literal fixo.</p>
+          <p>Com essa descrição, já é possível comunicar o alerta. Mas ainda não sabemos se existe um risco real.</p>
+        </div>
+      </div>
+
+      <div class="c7-step">
+        <div class="c7-step-hd">
+          <span class="c7-no">02</span>
+          <h3>Rastrear: de onde vem o dado?</h3>
+        </div>
+        <div class="c7-body">
+          <p>Depois de identificar o alerta, precisamos seguir o dado. A <span class="tt-term" tabindex="0">fonte do dado<span class="tt-box">Ponto de entrada de um dado no sistema: pode ser uma requisição HTTP, um arquivo, uma variável de ambiente, uma consulta ao banco de dados, entre outros.</span></span> é o ponto de partida: de onde veio o valor que chega à operação sinalizada?</p>
+          <ul>
+            <li>O argumento é um literal fixo, uma variável local ou dado externo?</li>
+            <li>Se é uma variável, quem define seu valor?</li>
+            <li>O valor vem de uma requisição, arquivo ou banco de dados?</li>
+          </ul>
+          <div class="c7-orient"><strong>Pergunta orientadora:</strong> Se um atacante controlasse a entrada do sistema, conseguiria influenciar esse argumento?</div>
+        </div>
+        <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c7-ex-2" data-open="Ver exemplo" data-close="Ocultar exemplo">
+          <svg class="icon-eye" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="icon-minus" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="ex-btn-label">Ver exemplo</span>
+        </button>
+        <div class="ex-panel" id="c7-ex-2" hidden>
+          <p><strong>Rastreamento no cenário:</strong> o parâmetro <code>command</code> chega a <code>runMaintenance</code> como argumento. Ao verificar quem chama essa função, encontramos uma rota HTTP que extrai o valor de <code>req.body.command</code>. A fonte é uma requisição HTTP controlada pelo cliente.</p>
+          <p>Isso é relevante: o dado não é fixo nem gerado internamente. Vem de fora do sistema.</p>
+        </div>
+      </div>
+
+      <div class="c7-step">
+        <div class="c7-step-hd">
+          <span class="c7-no">03</span>
+          <h3>Validar: o caminho é alcançável e há controles?</h3>
+        </div>
+        <div class="c7-body">
+          <p>Com a fonte identificada, verificamos duas coisas: se o caminho é <span class="tt-term" tabindex="0">alcançável<span class="tt-box">Alcançabilidade indica se existe um caminho de execução real que leva ao trecho analisado, considerando rotas, chamadas de função e condições existentes no código.</span></span> em produção e se existe algum controle sobre o dado antes de chegar à operação sinalizada.</p>
+          <ul>
+            <li>A rota ou função é acessível em produção?</li>
+            <li>Existe validação, lista de permissões ou sanitização no caminho?</li>
+            <li>O controle é suficiente para impedir uso malicioso?</li>
+          </ul>
+          <div class="c7-orient"><strong>Pergunta orientadora:</strong> Um atacante externo conseguiria acionar esse caminho sem obstáculo para o valor que envia?</div>
+        </div>
+        <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c7-ex-3" data-open="Ver exemplo" data-close="Ocultar exemplo">
+          <svg class="icon-eye" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="icon-minus" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="ex-btn-label">Ver exemplo</span>
+        </button>
+        <div class="ex-panel" id="c7-ex-3" hidden>
+          <p><strong>Validação no cenário:</strong> a rota <code>POST /maintenance/run</code> é acessível para usuários autenticados. Não há uma lista de comandos permitidos nem filtragem do valor de <code>req.body.command</code> antes de ele ser passado a <code>runMaintenance</code>. O caminho é alcançável e o dado não tem controle identificado.</p>
+          <p>A ausência de controle visível no fluxo sustenta o risco.</p>
+        </div>
+      </div>
+
+      <div class="c7-step">
+        <div class="c7-step-hd">
+          <span class="c7-no">04</span>
+          <h3>Decidir: qual é a classificação?</h3>
+        </div>
+        <div class="c7-body">
+          <p>Com as evidências coletadas, é hora de decidir. A classificação deve refletir o que as evidências sustentam. Além da classificação, registramos o <span class="tt-term" tabindex="0">nível de confiança<span class="tt-box">Grau de certeza sobre a classificação do alerta, baseado na quantidade e qualidade das evidências coletadas durante a investigação.</span></span> na conclusão e a recomendação técnica.</p>
+          <div class="c7-decide-grid">
+            <div class="c7-decide-card"><h4>Verdadeiro positivo</h4><p>Evidências sustentam o risco. Registrar e recomendar correção.</p></div>
+            <div class="c7-decide-card"><h4>Falso positivo</h4><p>Padrão detectado, mas evidências descartam o risco. Registrar justificativa.</p></div>
+            <div class="c7-decide-card"><h4>Necessita investigação</h4><p>Evidências insuficientes. Registrar o que falta e quem deve investigar.</p></div>
+            <div class="c7-decide-card"><h4>Risco aceito</h4><p>Risco conhecido e gerenciado. Registrar a decisão e a justificativa.</p></div>
+          </div>
+          <div class="c7-orient"><strong>Pergunta orientadora:</strong> O que as evidências mostram? Sua classificação pode ser justificada pelo que foi coletado?</div>
+        </div>
+        <button class="ex-btn" type="button" aria-expanded="false" aria-controls="c7-ex-4" data-open="Ver exemplo" data-close="Ocultar exemplo">
+          <svg class="icon-eye" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg class="icon-minus" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="ex-btn-label">Ver exemplo</span>
+        </button>
+        <div class="ex-panel" id="c7-ex-4" hidden>
+          <p><strong>Decisão no cenário:</strong> fonte HTTP confirmada, caminho alcançável, sem controle identificado no fluxo. Classificação: verdadeiro positivo para o cenário didático apresentado. Nível de confiança: alto para as evidências disponíveis. Recomendação: substituir a execução arbitrária por operações predefinidas e autorizadas.</p>
+        </div>
+      </div>
+
+      <div class="c7-repro">
+        <span class="c7-repro-label"><span class="tt-term" tabindex="0">Reprodutibilidade<span class="tt-box">Capacidade de reproduzir a análise exatamente: mesmas ferramentas, mesmas regras, mesmo código. Sem isso, o relatório não pode ser verificado nem contestado de forma fundamentada.</span></span></span>
+        <p>Nenhum resultado é válido se não puder ser reproduzido. Registrar a versão exata do Semgrep, o conjunto de regras e o commit analisado não é formalidade: é o que permite que qualquer pessoa repita a análise e chegue ao mesmo ponto de partida.</p>
+        <div class="c7-repro-flow">
+          <div class="c7-repro-node">Versão do Semgrep</div>
+          <span class="c7-repro-arrow">+</span>
+          <div class="c7-repro-node">Conjunto de regras</div>
+          <span class="c7-repro-arrow">+</span>
+          <div class="c7-repro-node">Commit analisado</div>
+          <span class="c7-repro-arrow">+</span>
+          <div class="c7-repro-node">Arquivo e linha</div>
+          <span class="c7-repro-arrow">=</span>
+          <div class="c7-repro-node">Resultado reproduzível</div>
+        </div>
+      </div>
+
+      <div class="c7-closing">
+        <p>A próxima interação coloca esse processo em prática com o caso <code>exec(command)</code> que investigamos ao longo da aula.</p>
+      </div>
+    </div>
   </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var sec7 = document.getElementById('conceito-7');
+    if(sec7){
+      var btns = sec7.querySelectorAll('.ex-btn');
+      btns.forEach(function(btn){
+        btn.addEventListener('click', function(){
+          var pid = btn.getAttribute('aria-controls');
+          var panel = pid ? document.getElementById(pid) : null;
+          var isOpen = btn.getAttribute('aria-expanded') === 'true';
+          btns.forEach(function(b){
+            b.setAttribute('aria-expanded','false');
+            var lbl = b.querySelector('.ex-btn-label');
+            if(lbl) lbl.textContent = b.dataset.open || 'Ver exemplo';
+            var p = document.getElementById(b.getAttribute('aria-controls'));
+            if(p) p.hidden = true;
+          });
+          if(!isOpen && panel){
+            btn.setAttribute('aria-expanded','true');
+            var lbl = btn.querySelector('.ex-btn-label');
+            if(lbl) lbl.textContent = btn.dataset.close || 'Ocultar exemplo';
+            panel.hidden = false;
+          }
+        });
+      });
+    }
+    // Tooltips para seções 14-16
+    var ttCur = null;
+    ['conceito-7','interacao-4','estudo-caso'].forEach(function(sid){
+      var s = document.getElementById(sid);
+      if(!s) return;
+      s.querySelectorAll('.tt-term').forEach(function(el){
+        function ttOpen(){ if(ttCur && ttCur !== el){ ttCur.removeAttribute('data-tt'); } el.setAttribute('data-tt','open'); ttCur = el; }
+        function ttClose(){ el.removeAttribute('data-tt'); if(ttCur === el) ttCur = null; }
+        el.addEventListener('mouseenter', ttOpen);
+        el.addEventListener('mouseleave', ttClose);
+        el.addEventListener('focus', ttOpen);
+        el.addEventListener('blur', ttClose);
+        el.addEventListener('click', function(e){ e.stopPropagation(); el.hasAttribute('data-tt') ? ttClose() : ttOpen(); });
+        el.addEventListener('keydown', function(e){ if(e.key==='Escape') ttClose(); });
+      });
+    });
+  });
+  </script>
 </section>
 
 <section class="cena" data-nome="Triagem" id="interacao-4">
+<style>
+#interacao-4 .i4-stage-label{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin-bottom:12px}
+#interacao-4 .i4-p{font-size:.93rem;line-height:1.6;color:var(--ink-2);margin:0 0 14px}
+#interacao-4 .i4-p code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-4 .i4-alert-box{margin:14px 0;border:1.5px solid var(--line);border-radius:12px;overflow:hidden}
+#interacao-4 .i4-alert-hd{background:var(--sunk);padding:9px 14px;border-bottom:1.5px solid var(--line);font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+#interacao-4 .i4-alert-table{width:100%;border-collapse:collapse;font-size:.86rem}
+#interacao-4 .i4-alert-table td{padding:9px 14px;border-bottom:1px solid var(--line);color:var(--ink-2);vertical-align:top;line-height:1.4}
+#interacao-4 .i4-alert-table tr:last-child td{border-bottom:0}
+#interacao-4 .i4-alert-table td:first-child{font-weight:700;color:var(--ink);width:42%}
+#interacao-4 .i4-alert-table code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-4 .i4-question{font-size:.97rem;font-weight:700;color:var(--ink);margin:16px 0 10px;line-height:1.4}
+#interacao-4 .i4-question code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-4 .i4-fb-item{display:none}
+#interacao-4 .i4-fb-item.i4-active{display:block}
+#interacao-4 .i4-fb-item code,#interacao-4 .i4-fb-q2-item code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#interacao-4 .i4-reveal-wrap{display:none;margin:20px 0;padding:18px 20px;border:1.5px dashed var(--orange);border-radius:12px;background:var(--orange-soft)}
+#interacao-4 .i4-reveal-wrap.i4-visible{display:block}
+#interacao-4 .i4-reveal-hint{font-size:.88rem;color:var(--orange-ink);margin:0 0 12px;font-weight:600}
+#interacao-4 .i4-stage2-sep{font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);display:block;margin:0 0 12px;padding-top:20px;border-top:1.5px solid var(--line)}
+#interacao-4 .i4-stage2{display:none;margin-top:4px}
+#interacao-4 .i4-stage2.i4-visible{display:block}
+#interacao-4 .i4-flow-viz{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0;padding:14px 16px;background:var(--sunk);border-radius:12px}
+#interacao-4 .i4-flow-node{border:1.5px solid var(--line);border-radius:8px;padding:8px 13px;background:var(--surface)}
+#interacao-4 .i4-flow-node.src{border-color:var(--orange);background:var(--orange-soft)}
+#interacao-4 .i4-flow-node.sink{border-color:#a03030;background:#2a1515}
+#interacao-4 .i4-flow-label{font-size:.62rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+#interacao-4 .i4-flow-node.src .i4-flow-label{color:var(--orange-ink)}
+#interacao-4 .i4-flow-node.sink .i4-flow-label{color:#cc6666}
+#interacao-4 .i4-flow-code{font-family:var(--f-mono);font-size:.82rem;color:var(--ink)}
+#interacao-4 .i4-flow-node.src .i4-flow-code{color:var(--orange-ink)}
+#interacao-4 .i4-flow-node.sink .i4-flow-code{color:#cc6666}
+#interacao-4 .i4-flow-arrow{color:var(--orange-ink);font-size:1.1rem;font-weight:700;padding:0 2px}
+#interacao-4 .i4-fb-q2-item{display:none}
+#interacao-4 .i4-fb-q2-item.i4-q2-active{display:block}
+#interacao-4 .i4-what-changed{margin-top:16px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;display:none}
+#interacao-4 .i4-what-changed.i4-visible{display:block}
+#interacao-4 .i4-wc-hd{background:var(--sunk);padding:11px 16px;border-bottom:1.5px solid var(--line)}
+#interacao-4 .i4-wc-hd h4{font-family:var(--f-disp);font-size:1.1rem;margin:0;color:var(--ink)}
+#interacao-4 .i4-wc-body{padding:14px 16px;background:var(--surface)}
+#interacao-4 .i4-wc-body p{font-size:.9rem;line-height:1.6;color:var(--ink-2);margin:0 0 8px}
+#interacao-4 .i4-wc-body p:last-child{margin:0}
+#interacao-4 .i4-wc-body em{font-style:italic;color:var(--orange-ink);font-weight:600}
+#interacao-4 .i4-wc-body strong{color:var(--ink)}
+#interacao-4 .i4-wc-body code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Aplicação rápida · interação 4</p><h2>Aplique o conceito ao cenário</h2></div>
-    <div class="lab quiz" data-correct="1" data-explanation="Rastreabilidade permite reproduzir a análise e justificar por que um alerta foi confirmado, descartado ou ficou pendente.">
-      <div class="lab-cab"><p class="eyebrow">para praticar</p><h3>Triagem</h3></div>
-      <p class="instrucao">Qual a forma adequada de registrar um resultado SAST?</p>
-      <div class="choices" role="group">
-        <button class="choice" data-value="0" type="button">Apenas o total de alertas</button>
-        <button class="choice" data-value="1" type="button">Versão, regra, arquivo, linha, fluxo/contexto, decisão de triagem e evidências</button>
-        <button class="choice" data-value="2" type="button">Somente a cor do alerta na interface</button>
+    <div><p class="eyebrow">Aplicação rápida · interação 4</p><h2>Você recebeu um alerta. Já pode confirmar a vulnerabilidade?</h2></div>
+    <div class="lab">
+      <div class="lab-cab"><p class="eyebrow">investigação progressiva</p><h3>Triagem do alerta <code>exec(command)</code></h3></div>
+
+      <span class="i4-stage-label">Etapa 1 de 2 - O primeiro sinal</span>
+      <p class="i4-p">O SAST retornou o alerta abaixo para a função <code>runMaintenance</code>. Leia as informações disponíveis antes de responder.</p>
+      <pre class="codigo"><code>// server.ts - função analisada
+function runMaintenance(command: string): void {
+  exec(command);       // &lt;-- alerta: review-exec-usage
+}</code></pre>
+
+      <div class="i4-alert-box">
+        <div class="i4-alert-hd">Alerta identificado pelo SAST</div>
+        <table class="i4-alert-table">
+          <tbody>
+            <tr><td>Regra</td><td><code>review-exec-usage</code></td></tr>
+            <tr><td>Operação sinalizada</td><td><code>exec(command)</code></td></tr>
+            <tr><td>Risco investigado</td><td>Possível injeção de comandos</td></tr>
+            <tr><td>Origem de <code>command</code></td><td>Ainda desconhecida</td></tr>
+          </tbody>
+        </table>
       </div>
-      <div class="quiz-actions"><button class="btn prim check-answer" disabled type="button">Conferir resposta</button><button class="btn reset-answer" type="button">Refazer</button></div>
-      <div aria-live="polite" class="feedback" role="status"></div>
+
+      <p class="i4-question">Com as informações acima, qual é a classificação mais adequada para este alerta?</p>
+      <div class="choices" role="group" aria-label="Escolha uma alternativa">
+        <button class="i4-choice choice" data-i4-value="0" type="button" aria-pressed="false">A. Verdadeiro positivo - o alerta confirma a vulnerabilidade</button>
+        <button class="i4-choice choice" data-i4-value="1" type="button" aria-pressed="false">B. Falso positivo - <code>exec</code> com parâmetro não é necessariamente perigoso</button>
+        <button class="i4-choice choice" data-i4-value="2" type="button" aria-pressed="false">C. Necessita investigação - precisamos saber de onde vem <code>command</code></button>
+      </div>
+      <div class="quiz-actions">
+        <button class="btn prim i4-check1" disabled type="button">Analisar minha decisão</button>
+        <button class="btn i4-reset-all" type="button">Reiniciar investigação</button>
+      </div>
+      <div aria-live="polite" role="status">
+        <div class="feedback i4-fb-item" data-state="incorrect" data-i4-for="0">
+          <strong>Ainda não é possível confirmar.</strong> O alerta indica que o padrão foi encontrado, mas não informa se o dado vem de uma entrada externa. Para classificar como verdadeiro positivo, precisamos rastrear a origem de <code>command</code>.
+        </div>
+        <div class="feedback i4-fb-item" data-state="incorrect" data-i4-for="1">
+          <strong>Esta decisão é prematura.</strong> Para descartar como falso positivo, precisamos de evidências que mostrem que o dado não é controlado externamente. Sem rastrear a origem, não temos como justificar o descarte.
+        </div>
+        <div class="feedback i4-fb-item" data-state="correct" data-i4-for="2">
+          <strong>Decisão fundamentada.</strong> Com as informações disponíveis, não é possível confirmar nem descartar. A origem de <code>command</code> é desconhecida. A próxima etapa é rastrear de onde esse valor vem.
+        </div>
+      </div>
+
+      <div class="i4-reveal-wrap">
+        <p class="i4-reveal-hint">Uma nova evidência foi encontrada. O código que chama <code>runMaintenance</code> foi localizado.</p>
+        <button class="btn prim i4-reveal-btn" type="button">Revelar o código que chama a função</button>
+      </div>
+
+      <div class="i4-stage2">
+        <span class="i4-stage2-sep">Etapa 2 de 2 - Uma nova evidência</span>
+        <p class="i4-p">O código abaixo foi encontrado na mesma base. Leia o fluxo completo antes de decidir.</p>
+        <pre class="codigo"><code>// routes/maintenance.ts
+router.post('/maintenance/run', authenticate, (req, res) => {
+  const command = req.body.command;   // entrada do cliente HTTP
+  runMaintenance(command);
+  res.json({ status: 'done' });
+});</code></pre>
+
+        <div class="i4-flow-viz">
+          <div class="i4-flow-node src">
+            <span class="i4-flow-label">Entrada HTTP</span>
+            <code class="i4-flow-code">req.body.command</code>
+          </div>
+          <span class="i4-flow-arrow">&#8594;</span>
+          <div class="i4-flow-node">
+            <span class="i4-flow-label">Função intermediária</span>
+            <code class="i4-flow-code">runMaintenance(command)</code>
+          </div>
+          <span class="i4-flow-arrow">&#8594;</span>
+          <div class="i4-flow-node sink">
+            <span class="i4-flow-label">Operação sensível</span>
+            <code class="i4-flow-code">exec(command)</code>
+          </div>
+        </div>
+
+        <p class="i4-question">Com o fluxo completo, qual é a classificação correta para este cenário didático?</p>
+        <div class="choices" role="group" aria-label="Escolha uma alternativa">
+          <button class="i4-btn2 choice" data-i4b2-value="0" type="button" aria-pressed="false">A. Verdadeiro positivo - entrada HTTP controlável, sem filtro identificado, chega a <code>exec</code></button>
+          <button class="i4-btn2 choice" data-i4b2-value="1" type="button" aria-pressed="false">B. Falso positivo - a autenticação impede que o alerta seja explorado</button>
+          <button class="i4-btn2 choice" data-i4b2-value="2" type="button" aria-pressed="false">C. Necessita investigação - falta saber o que <code>authenticate</code> faz exatamente</button>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn prim i4-check2" disabled type="button">Confirmar classificação</button>
+          <button class="btn i4-reset2" type="button">Refazer etapa 2</button>
+        </div>
+        <div aria-live="polite" role="status">
+          <div class="feedback i4-fb-q2-item" data-state="correct" data-i4b2-for="0">
+            <strong>Classificação correta para este cenário.</strong> O fluxo HTTP &rarr; <code>runMaintenance</code> &rarr; <code>exec</code> é demonstrado. A autenticação controla quem acessa, mas não filtra o valor de <code>command</code>. As evidências sustentam um verdadeiro positivo.
+          </div>
+          <div class="feedback i4-fb-q2-item" data-state="incorrect" data-i4b2-for="1">
+            <strong>Atenção com essa lógica.</strong> Autenticação define quem pode acessar uma rota, não filtra os valores passados por ela. Um usuário autenticado ainda pode enviar um comando arbitrário se não houver filtragem do conteúdo.
+          </div>
+          <div class="feedback i4-fb-q2-item" data-state="incorrect" data-i4b2-for="2">
+            <strong>Observação válida, mas incompleta.</strong> Mesmo sem saber os detalhes de <code>authenticate</code>, o fluxo já mostra que <code>req.body.command</code> chega a <code>exec</code> sem filtragem visível. Podemos registrar isso como ponto de atenção, mas as evidências atuais já justificam a classificação.
+          </div>
+        </div>
+
+        <div class="i4-what-changed">
+          <div class="i4-wc-hd"><h4>O que mudou entre as duas etapas?</h4></div>
+          <div class="i4-wc-body">
+            <p><strong>Etapa 1:</strong> só tínhamos o alerta. A origem de <code>command</code> era desconhecida. A decisão correta era <em>necessita investigação</em>.</p>
+            <p><strong>Etapa 2:</strong> rastreamos a origem até <code>req.body.command</code>. O fluxo completo foi demonstrado. Com as evidências coletadas, a classificação para este cenário didático é <em>verdadeiro positivo</em>.</p>
+            <p><strong>Conclusão:</strong> a mesma ocorrência de <code>exec(command)</code> pode ter classificações diferentes dependendo do que a investigação revela. O alerta foi o ponto de partida, não a resposta.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+  (function(){
+    var sec = document.getElementById('interacao-4');
+    if(!sec) return;
+    var choices1 = sec.querySelectorAll('.i4-choice');
+    var check1 = sec.querySelector('.i4-check1');
+    var resetAll = sec.querySelector('.i4-reset-all');
+    var fbs1 = sec.querySelectorAll('.i4-fb-item');
+    var revealWrap = sec.querySelector('.i4-reveal-wrap');
+    var revealBtn = sec.querySelector('.i4-reveal-btn');
+    var stage2 = sec.querySelector('.i4-stage2');
+    var sel1 = null, ans1 = false, CORRECT1 = '2';
+
+    choices1.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(ans1) return;
+        choices1.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        sel1 = btn.dataset.i4Value;
+        check1.disabled = false;
+      });
+    });
+
+    check1.addEventListener('click', function(){
+      if(sel1 === null || ans1) return;
+      ans1 = true;
+      check1.disabled = true;
+      choices1.forEach(function(b){ b.disabled = true; });
+      fbs1.forEach(function(f){ if(f.dataset.i4For === sel1) f.classList.add('i4-active'); });
+      revealWrap.classList.add('i4-visible');
+    });
+
+    revealBtn.addEventListener('click', function(){
+      revealWrap.classList.remove('i4-visible');
+      stage2.classList.add('i4-visible');
+    });
+
+    var choices2 = sec.querySelectorAll('.i4-btn2');
+    var check2 = sec.querySelector('.i4-check2');
+    var reset2 = sec.querySelector('.i4-reset2');
+    var fbs2 = sec.querySelectorAll('.i4-fb-q2-item');
+    var whatChanged = sec.querySelector('.i4-what-changed');
+    var sel2 = null, ans2 = false, CORRECT2 = '0';
+
+    choices2.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        if(ans2) return;
+        choices2.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        sel2 = btn.dataset.i4b2Value;
+        check2.disabled = false;
+      });
+    });
+
+    check2.addEventListener('click', function(){
+      if(sel2 === null || ans2) return;
+      ans2 = true;
+      check2.disabled = true;
+      choices2.forEach(function(b){ b.disabled = true; });
+      fbs2.forEach(function(f){ if(f.dataset.i4b2For === sel2) f.classList.add('i4-q2-active'); });
+      if(sel2 === CORRECT2) whatChanged.classList.add('i4-visible');
+    });
+
+    reset2.addEventListener('click', function(){
+      ans2 = false; sel2 = null;
+      check2.disabled = true;
+      choices2.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      fbs2.forEach(function(f){ f.classList.remove('i4-q2-active'); });
+      whatChanged.classList.remove('i4-visible');
+    });
+
+    resetAll.addEventListener('click', function(){
+      ans1 = false; sel1 = null;
+      check1.disabled = true;
+      choices1.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      fbs1.forEach(function(f){ f.classList.remove('i4-active'); });
+      revealWrap.classList.remove('i4-visible');
+      stage2.classList.remove('i4-visible');
+      ans2 = false; sel2 = null;
+      check2.disabled = true;
+      choices2.forEach(function(b){ b.setAttribute('aria-pressed','false'); b.disabled = false; });
+      fbs2.forEach(function(f){ f.classList.remove('i4-q2-active'); });
+      whatChanged.classList.remove('i4-visible');
+    });
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Caso para discussão" id="estudo-caso">
+<style>
+#estudo-caso .ec-intro{font-size:.93rem;line-height:1.6;color:var(--ink-2);margin:0 0 16px}
+#estudo-caso .ec-intro code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#estudo-caso .ec-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+#estudo-caso .ec-tab-btn{border:1.5px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:8px;padding:8px 16px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--f-body);transition:border-color .12s,color .12s,background .12s}
+#estudo-caso .ec-tab-btn[aria-pressed="true"]{border-color:var(--orange);color:var(--orange-ink);background:var(--orange-soft)}
+#estudo-caso .ec-panel[hidden]{display:none}
+#estudo-caso .ec-bad-box{background:var(--sunk);border:1.5px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+#estudo-caso .ec-part-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px}
+#estudo-caso .ec-bad-quote{font-style:italic;font-size:.93rem;line-height:1.6;color:var(--ink-2);border-left:4px solid var(--line);padding-left:14px;margin:0 0 14px}
+#estudo-caso .ec-gaps-hd{font-size:.82rem;font-weight:700;color:var(--ink);margin-bottom:8px}
+#estudo-caso .ec-gap-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px}
+#estudo-caso .ec-gap-list li{font-size:.82rem;color:var(--ink-2);padding:6px 10px 6px 32px;background:var(--sunk);border-radius:6px;position:relative;line-height:1.4}
+#estudo-caso .ec-gap-list li::before{content:"!";position:absolute;left:9px;top:7px;font-size:.72rem;font-weight:800;color:var(--muted)}
+#estudo-caso .ec-report-card{border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+#estudo-caso .ec-report-hd{background:var(--sunk);padding:14px 18px;border-bottom:1.5px solid var(--line)}
+#estudo-caso .ec-report-id{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--orange-ink);margin-bottom:4px}
+#estudo-caso .ec-report-title{font-family:var(--f-disp);font-size:1.2rem;color:var(--ink)}
+#estudo-caso .ec-report-body{background:var(--surface);display:flex;flex-direction:column}
+#estudo-caso .ec-report-section{padding:14px 18px;border-bottom:1px solid var(--line)}
+#estudo-caso .ec-report-section:last-child{border-bottom:0}
+#estudo-caso .ec-report-section h4{font-family:var(--f-body);font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 8px}
+#estudo-caso .ec-report-section p{font-size:.88rem;line-height:1.6;color:var(--ink-2);margin:0 0 6px}
+#estudo-caso .ec-report-section p:last-child{margin:0}
+#estudo-caso .ec-report-section code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:4px;color:var(--orange-ink)}
+#estudo-caso .ec-report-section strong{color:var(--ink)}
+#estudo-caso .ec-flow-row{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:8px 0}
+#estudo-caso .ec-flow-node{background:var(--sunk);border:1.5px solid var(--line);border-radius:8px;padding:5px 11px;font-family:var(--f-mono);font-size:.79rem;color:var(--ink-2)}
+#estudo-caso .ec-flow-node.src{border-color:var(--orange);background:var(--orange-soft);color:var(--orange-ink)}
+#estudo-caso .ec-flow-node.sink{border-color:#a03030;background:#2a1515;color:#cc6666}
+#estudo-caso .ec-flow-arrow{color:var(--orange-ink);font-weight:700;padding:0 2px}
+#estudo-caso .ec-template-wrap{margin-top:24px;border-top:1.5px solid var(--line);padding-top:20px}
+#estudo-caso .ec-template-hd{font-family:var(--f-disp);font-size:1.2rem;margin:0 0 6px;color:var(--ink)}
+#estudo-caso .ec-template-intro{font-size:.88rem;color:var(--ink-2);margin:0 0 12px;line-height:1.5}
+#estudo-caso .ec-template-code-wrap{background:#22201E;border-radius:10px;padding:14px 18px;margin:0 0 12px;overflow-x:auto}
+#estudo-caso .ec-template-code-wrap pre{color:#F3EADF;font-family:var(--f-mono);font-size:.79rem;line-height:1.65;margin:0;white-space:pre}
+#estudo-caso .ec-copy-status{font-size:.82rem;color:var(--good);margin-left:10px;font-weight:600}
+#estudo-caso .ec-closing{margin-top:24px;border-top:1.5px solid var(--line);padding-top:20px}
+#estudo-caso .ec-closing-callout{background:var(--surface);border-left:4px solid var(--orange);padding:12px 18px;border-radius:0 10px 10px 0;margin-bottom:14px}
+#estudo-caso .ec-closing-callout p{font-size:.91rem;line-height:1.6;color:var(--ink-2);margin:0}
+#estudo-caso .ec-closing-callout strong{color:var(--ink)}
+#estudo-caso .ec-closing-final{font-size:.9rem;line-height:1.6;color:var(--ink-2)}
+#estudo-caso .ec-closing-final strong{color:var(--ink)}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Exemplo comentado</p><h2>Leia, formule hipótese, depois analise</h2></div>
+    <div><p class="eyebrow">Exemplo comentado</p><h2>Da suspeita ao relatório: como documentar uma vulnerabilidade?</h2></div>
     <div class="lab">
-      <div class="lab-cab"><p class="eyebrow">Estudo de caso independente</p><h3>Exemplo isolado: alerta estático</h3></div>
-      <p class="instrucao">Leia o trecho, formule uma hipótese e só então abra a análise comentada.</p>
-      <pre class="codigo"><code>import { exec } from 'node:child_process';
-exec('echo treinamento');
-// Padrão reconhecido: chamada a exec(...).
-// Contexto: string fixa neste exemplo.</code></pre>
-      <details class="conta">
-        <summary>Mostrar discussão orientadora</summary>
-        <div class="corpo">
-          <p>Uma regra que reconhece <code>exec(...)</code> pode emitir alerta. Isso basta para provar que a entrada do usuário chega ao shell?</p>
-          <ul style="margin:.6rem 0 0;padding-left:1.3rem;line-height:1.65">
-            <li>O argumento é literal ou vem de uma variável?</li>
-            <li>A variável tem origem em uma requisição HTTP ou de outro lugar?</li>
-            <li>Existe alguma sanitização entre a origem e a chamada?</li>
+      <div class="lab-cab"><p class="eyebrow">comparativo de registros</p><h3>Dois modos de documentar o mesmo alerta</h3></div>
+
+      <p class="ec-intro">Classificar um alerta é só parte do trabalho. O resultado precisa ser documentado de forma que qualquer pessoa da equipe consiga reproduzir a análise e entender a decisão. Compare os dois registros abaixo para o mesmo alerta <code>exec(command)</code>.</p>
+
+      <div class="ec-tabs" role="tablist">
+        <button class="ec-tab-btn" aria-pressed="true" data-ec-tab="bad" type="button">Registro insuficiente</button>
+        <button class="ec-tab-btn" aria-pressed="false" data-ec-tab="good" type="button">Registro fundamentado</button>
+      </div>
+
+      <div class="ec-panel" id="ec-panel-bad">
+        <div class="ec-bad-box">
+          <span class="ec-part-label">Exemplo de registro insuficiente</span>
+          <div class="ec-bad-quote">"O Semgrep encontrou um problema de segurança na função exec. É necessário corrigir."</div>
+          <p class="ec-gaps-hd">O que está faltando nesse registro:</p>
+          <ul class="ec-gap-list">
+            <li>Qual regra produziu o alerta</li>
+            <li>Localização exata no código (arquivo, função, linha)</li>
+            <li>Origem e propagação do dado</li>
+            <li>Evidência que sustenta a conclusão</li>
+            <li>Impacto potencial se explorado</li>
+            <li>Recomendação técnica específica</li>
+            <li>Versão do Semgrep e commit analisado (reprodutibilidade)</li>
           </ul>
-          <p class="ref-nota">Este exemplo é independente da API avaliada no projeto.</p>
         </div>
-      </details>
+      </div>
+
+      <div class="ec-panel" id="ec-panel-good" hidden>
+        <div class="ec-report-card">
+          <div class="ec-report-hd">
+            <div class="ec-report-id">ACH-SAST-001</div>
+            <div class="ec-report-title">Entrada HTTP encaminhada a execução de comandos</div>
+          </div>
+          <div class="ec-report-body">
+            <div class="ec-report-section">
+              <h4>Classificação e regra</h4>
+              <p><strong>Classificação:</strong> Verdadeiro positivo (cenário didático apresentado).</p>
+              <p><strong>Regra:</strong> <code>review-exec-usage</code> &nbsp;|&nbsp; <strong>Localização:</strong> <code>server.ts</code>, função <code>runMaintenance</code>, linha 7.</p>
+            </div>
+            <div class="ec-report-section">
+              <h4>Descrição e fluxo</h4>
+              <p>O sistema recebe um valor via <code>req.body.command</code> e o repassa, sem filtro visível, até a chamada <code>exec(command)</code>. Fluxo demonstrado:</p>
+              <div class="ec-flow-row">
+                <span class="ec-flow-node src">req.body.command</span>
+                <span class="ec-flow-arrow">&#8594;</span>
+                <span class="ec-flow-node">runMaintenance(command)</span>
+                <span class="ec-flow-arrow">&#8594;</span>
+                <span class="ec-flow-node sink">exec(command)</span>
+              </div>
+            </div>
+            <div class="ec-report-section">
+              <h4>Evidência</h4>
+              <p>O código demonstra um caminho de <code>req.body.command</code> até <code>exec</code> sem restrição de valor identificada. A autenticação controla o acesso à rota, mas não filtra o conteúdo de <code>command</code>.</p>
+            </div>
+            <div class="ec-report-section">
+              <h4>Impacto potencial</h4>
+              <p>Execução de comandos arbitrários com os privilégios do processo, em qualquer sistema operacional que o servidor execute.</p>
+            </div>
+            <div class="ec-report-section">
+              <h4>Recomendação</h4>
+              <p>Substituir a execução de comandos arbitrários por operações predefinidas e autorizadas. Se a execução de processos externos for necessária, usar <code>execFile</code> com o executável fixo e argumentos validados por lista de permissões.</p>
+            </div>
+            <div class="ec-report-section">
+              <h4>Confiança e reprodutibilidade</h4>
+              <p><strong>Nível de confiança:</strong> alto para o cenário apresentado.</p>
+              <p><strong>Para reproduzir:</strong> registrar versão do Semgrep, conjunto de regras, commit e localização exata no relatório final.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ec-template-wrap">
+        <h3 class="ec-template-hd">Modelo para o laboratório</h3>
+        <p class="ec-template-intro">Use este modelo como ponto de partida para documentar sua análise durante o laboratório. Cada campo tem um propósito investigativo.</p>
+        <div class="ec-template-code-wrap">
+          <pre id="ec-tpl-pre">## [ID] - [Título do alerta]
+
+**Classificação:** [Verdadeiro positivo | Falso positivo | Necessita investigação | Risco aceito]
+**Regra:** [nome-da-regra]
+**Localização:** [arquivo, função, linha]
+**Nível de confiança:** [alto | médio | baixo]
+
+### Descrição
+[O que a ferramenta encontrou e por que é relevante]
+
+### Fluxo identificado
+`[origem]` -> `[propagação]` -> `[operação sensível]`
+
+### Evidência
+[O que sustenta sua conclusão: o dado é externo? há controle? o caminho é alcançável?]
+
+### Impacto potencial
+[O que pode acontecer se o fluxo for explorado]
+
+### Recomendação
+[O que deve ser feito para corrigir ou mitigar]
+
+### Reprodutibilidade
+- Semgrep: [versão]
+- Regras: [conjunto utilizado]
+- Commit: [hash]
+- Localização: [arquivo:linha]</pre>
+        </div>
+        <button class="btn ec-copy-btn" type="button">Copiar modelo</button>
+        <span class="ec-copy-status" aria-live="polite"></span>
+      </div>
+
+      <div class="ec-closing">
+        <div class="ec-closing-callout">
+          <p>Um registro insuficiente não é neutro: ele pode levar a regressões não detectadas, re-análise desnecessária e dificuldade em priorizar o que corrigir. Um registro fundamentado transforma o resultado da análise em conhecimento compartilhável.</p>
+        </div>
+        <p class="ec-closing-final"><strong>No laboratório:</strong> ao analisar os alertas da API do projeto, use o modelo acima como referência. O alerta é o ponto de partida; o registro é o que fica.</p>
+      </div>
     </div>
   </div>
+  <script>
+  (function(){
+    var sec = document.getElementById('estudo-caso');
+    if(!sec) return;
+    var tabBtns = sec.querySelectorAll('.ec-tab-btn');
+    var panels = { bad: document.getElementById('ec-panel-bad'), good: document.getElementById('ec-panel-good') };
+    tabBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var tab = btn.dataset.ecTab;
+        tabBtns.forEach(function(b){ b.setAttribute('aria-pressed','false'); });
+        btn.setAttribute('aria-pressed','true');
+        Object.keys(panels).forEach(function(k){ if(panels[k]) panels[k].hidden = (k !== tab); });
+      });
+    });
+    var copyBtn = sec.querySelector('.ec-copy-btn');
+    var copyStatus = sec.querySelector('.ec-copy-status');
+    var tplPre = document.getElementById('ec-tpl-pre');
+    if(copyBtn && tplPre){
+      copyBtn.addEventListener('click', function(){
+        var text = tplPre.textContent;
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(function(){
+            copyStatus.textContent = 'Copiado!';
+            setTimeout(function(){ copyStatus.textContent = ''; }, 2500);
+          }).catch(function(){
+            copyStatus.textContent = 'Selecione e copie manualmente.';
+          });
+        } else {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            copyStatus.textContent = 'Copiado!';
+            setTimeout(function(){ copyStatus.textContent = ''; }, 2500);
+          } catch(e){ copyStatus.textContent = 'Selecione e copie manualmente.'; }
+        }
+      });
+    }
+  })();
+  </script>
 </section>
 
 <section class="cena" data-nome="Registro de ideias" id="anotacoes">
@@ -939,28 +3071,80 @@ exec('echo treinamento');
   </div>
 </section>
 
-<section class="cena" data-nome="Orientações do laboratório" id="laboratorio">
+<section class="cena" data-nome="Aplicação no projeto" id="laboratorio">
+<style>
+#laboratorio .percurso{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:16px 0}
+#laboratorio .percurso-passo{background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:11px 13px 12px;position:relative;padding-top:22px}
+#laboratorio .percurso-num{position:absolute;top:-11px;left:11px;background:var(--orange);color:#fff;font-family:var(--f-disp);font-size:.68rem;font-weight:700;border-radius:999px;padding:2px 9px;letter-spacing:.04em}
+#laboratorio .percurso-passo h4{font-family:var(--f-disp);font-size:.88rem;margin:0 0 4px;color:var(--ink);line-height:1.2}
+#laboratorio .percurso-passo p{font-size:.78rem;line-height:1.5;color:var(--ink-2);margin:0}
+#laboratorio .percurso-passo code{font-family:var(--f-mono);font-size:.85em;background:var(--sunk);padding:0 3px;border-radius:3px;color:var(--orange-ink)}
+#laboratorio .arquivos-dl{margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:7px;list-style:none}
+#laboratorio .arquivos-dl li{background:var(--sunk);border:1.5px solid var(--line);border-radius:8px;padding:9px 12px}
+#laboratorio .arquivos-dl .arq-nome{font-family:var(--f-mono);font-size:.82rem;font-weight:700;color:var(--orange-ink);display:block;margin-bottom:3px}
+#laboratorio .arquivos-dl .arq-desc{font-size:.82rem;color:var(--ink-2);line-height:1.5}
+#laboratorio .lab-sec-title{font-family:var(--f-disp);font-size:.95rem;margin:16px 0 5px;color:var(--ink)}
+#laboratorio .instrucao{max-width:none}
+@media(max-width:800px){#laboratorio .percurso{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:540px){#laboratorio .percurso{grid-template-columns:1fr 1fr}}
+</style>
   <div class="wrap pilha">
-    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 3 · Análise estática e regras</h2></div>
+    <div><p class="eyebrow">Aplicação no projeto real</p><h2>Etapa 3 · nossa primeira auditoria automatizada</h2></div>
     <div class="lab projeto">
-      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 3 · Análise estática e regras</h3></div>
-      <p class="instrucao">Use o roteiro abaixo para preparar a prática. <strong>Inspecione o código no repositório da equipe</strong> e consulte o Moodle para os critérios e a entrega oficial.</p>
-      <ul class="check-list">
-        <li>Preservar a revisão manual antes de executar a primeira varredura.</li>
-        <li>Executar Semgrep conforme o roteiro liberado no Moodle; registrar configuração, versão e commit.</li>
-        <li>Classificar cada alerta como confirmado, não confirmado (FP com justificativa) ou pendente de evidência.</li>
-        <li>Elaborar uma regra personalizada com um caso que gera alerta e outro que não deve gerar.</li>
-        <li>Entregar a revisão manual parcial formal pelo Moodle, conforme o plano de ensino.</li>
-      </ul>
-      <div class="callout orange" style="margin-top:14px">
-        <h3>Registro esperado</h3>
-        <p><code>entregas/03_semgrep.md</code> + regra YAML. <strong>Entrega parcial avaliativa da revisão manual.</strong></p>
+      <div class="lab-cab"><p class="eyebrow">Projeto integrador · Atividade orientada</p><h3>Etapa 3: nossa primeira auditoria automatizada</h3></div>
+      <p class="instrucao">Na aula anterior, investigamos manualmente o código da API. Agora utilizaremos o <strong>Semgrep</strong> para automatizar parte dessa investigação. O objetivo não é encontrar o maior número de alertas, mas compreender o que a ferramenta detectou, investigar os resultados e criar uma regra própria.</p>
+
+      <p class="lab-sec-title">Percurso de trabalho</p>
+      <div class="percurso">
+        <div class="percurso-passo">
+          <span class="percurso-num">01</span>
+          <h4>Preservar a revisão manual</h4>
+          <p>Finalize e faça commit dos achados manuais antes da primeira varredura automatizada.</p>
+        </div>
+        <div class="percurso-passo">
+          <span class="percurso-num">02</span>
+          <h4>Executar o Semgrep</h4>
+          <p>Use o Docker com as regras de <code>rules/classroom.yml</code>. Registre versão e commit.</p>
+        </div>
+        <div class="percurso-passo">
+          <span class="percurso-num">03</span>
+          <h4>Investigar os alertas</h4>
+          <p>Examine cada resultado, identifique regra, contexto e evidências antes de classificar.</p>
+        </div>
+        <div class="percurso-passo">
+          <span class="percurso-num">04</span>
+          <h4>Criar uma regra personalizada</h4>
+          <p>Desenvolva um YAML simples, com um caso que gera alerta e outro que não deve gerar.</p>
+        </div>
+        <div class="percurso-passo">
+          <span class="percurso-num">05</span>
+          <h4>Registrar e comparar</h4>
+          <p>Documente a execução e compare com os achados da revisão manual anterior.</p>
+        </div>
       </div>
+
+      <p class="lab-sec-title">O que deverá ficar registrado?</p>
+      <ul class="arquivos-dl">
+        <li>
+          <span class="arq-nome">entregas/03_semgrep.md</span>
+          <span class="arq-desc">Relatório com os comandos utilizados, versão e configuração da ferramenta, alertas investigados, evidências, justificativas e comparação com a revisão manual.</span>
+        </li>
+        <li>
+          <span class="arq-nome">rules/minha-regra.yml</span>
+          <span class="arq-desc">Regra personalizada desenvolvida pela equipe, com exemplos de correspondência esperada e não correspondência.</span>
+        </li>
+      </ul>
+
+      <div class="callout orange" style="margin-top:14px">
+        <h3>Entrega parcial formal</h3>
+        <p>A revisão manual parcial deverá ser formalizada no Moodle pelo <strong>link do commit específico</strong> que contém a versão final de <code>entregas/02_revisao_manual.md</code>. Não altere retroativamente esse documento para incluir descobertas feitas pelo Semgrep.</p>
+      </div>
+
       <div class="lab-links">
+        <a class="btn prim" href="../laboratorio/index.html#etapa-3" style="color:white">Abrir instruções detalhadas da Etapa 3</a>
         <a class="btn" data-target="githubOrganization">Repositórios GitHub</a>
         <a class="btn" href="../laboratorio/instalacao.html">Preparar o ambiente</a>
         <a class="btn" href="../laboratorio/github.html">Como acessar o GitHub</a>
-        <a class="btn" href="../laboratorio/index.html">Orientações do projeto</a>
       </div>
     </div>
   </div>
